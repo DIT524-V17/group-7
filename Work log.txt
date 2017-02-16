@@ -1,0 +1,5 @@
+15/02 - made the car motor to work using my own sketch. Speed 
+currently non adjustable.
+16/02 - checked steering system, encountered problem (see problem log)
+Problem fixed on the same day, steering system almost complete,
+but still requires some adjustments.
