@@ -1,0 +1,2 @@
+1)	15.02 – motor always runs at maximum speed
+2)	16.02 – steering servo turned out to be damaged beyond repair and doesn’t function properly. Replacement and adjustments in progress.
