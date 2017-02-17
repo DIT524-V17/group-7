@@ -3,3 +3,4 @@ currently non adjustable.
 16/02 - checked steering system, encountered problem (see problem log)
 Problem fixed on the same day, steering system almost complete,
 but still requires some adjustments.
+17/02 - tested the motor, calibrated it.
