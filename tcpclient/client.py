@@ -26,7 +26,6 @@ def pingserver():                                       # Pings the server every
         s.send("!ping")                                 # The returning data will be handled by receivedata()
         time.sleep(5)
 
-senddata()
-# _thread.start_new_thread(senddata(), ("Thread-SendData", 2, ))
-# _thread.start_new_thread(senddata(), ("Thread-ReceiveData", 3, ))
-# _thread.start_new_thread(pingserver(), ("Thread-pingServer", 3, ))
+_thread.start_new_thread(senddata(), ("Thread-SendData", 2, ))
+_thread.start_new_thread(receivedata(), ("Thread-ReceiveData", 3, ))
+_thread.start_new_thread(pingserver(), ("Thread-pingServer", 3, ))
