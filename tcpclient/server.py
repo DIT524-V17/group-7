@@ -4,37 +4,69 @@ import socket
 import _thread
 import time
 
-s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)    # create a socket object
+receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)    # create a socket object
+transmitter = socket.socket(socket.AF_INET, socket.SOCK_STREAM)    # create a socket object
+
+host = socket.gethostname()
+port = 9010
+port2 = 9009
+
+def init():
+    initreceiver()
+    inittransmitter()
 
 
-def senddata(cs):
+def initreceiver():
+    receiver.bind((host, port))  # bind to the port
+    while 1:
+        clientsocket, addr = receiver.accept()
+        print("Connection from %s" % str(addr))
+        if clientsocket.getsockname() != "":
+            break
+
+
+def disconnected():
+    print("Disconnected")
+    transmitter.close()  # Closes the connection if the client drops.
+    receiver.close()
+    _thread.exit()
+
+
+def inittransmitter():
+    attempts = 0
     while 1:
         try:
-            cs.send(input().encode('ascii'))               # Sends input to server.
+            transmitter.connect((host, port2))  # Connect to the local machine.
+            break
         except:
-            cs.close()  # Closes the connection if the client drops.
-            _thread.exit()
+            attempts += 1
+            if attempts < 6:
+                print("#%s Attempting to connect. " % attempts)
+            else:
+                print("Ending program")
+                sys.exit(2)
+
+def senddata():
+    while 1:
+        try:
+            transmitter.send(input().encode('ascii'))               # Sends input to server.
+        except:
+            disconnected()
 
 
-def receivedata(cs):
+def receivedata():
     while 1:                                            # Infinite loop.
         try:
-            msg = cs.recv(1024)                           # Maximum amount of data to be sent.
+            msg = receiver.recv(1024)                           # Maximum amount of data to be sent.
             msg = msg.decode('ascii')
             print(msg)
         except:
-            cs.close()                                        # Closes the connection if the client drops.
-            _thread.exit()
+            disconnected()
 
-host = socket.gethostname()
+receiver.bind((host, port))                                     # bind to the port
 
-s.bind((host, 9010))                                     # bind to the port
+receiver.listen(5)                                              # queue up to 5 requests
 
-s.listen(5)                                              # queue up to 5 requests
-
-while 1:
-    clientsocket, addr = s.accept()
-    print("Got a connection from %s" % str(addr))
-    _thread.start_new_thread(senddata, (clientsocket,))
-    _thread.start_new_thread(receivedata, (clientsocket,))
-    time.sleep(3)
+init()
+_thread.start_new_thread(senddata(), ("Thread-SendData", 2, ))
+_thread.start_new_thread(receivedata(), ("Thread-ReceiveData", 3, ))
