@@ -2,14 +2,28 @@
 # Since: 1st of March, 2017.
 import _thread
 import socket
+import sys
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)   # Define web socket.
 # s.connect(("192.168.0.148", 9010))                      # Connect to the raspberry pi.
-s.connect((socket.gethostname(), 9010))                      # Connect to the local machine.
+
+attempts = 0
+while 1:
+    try:
+        s.connect((socket.gethostname(), 9010))                      # Connect to the local machine.
+        break
+    except:
+        attempts = attempts +1
+        if attempts < 6:
+            print("No device found. Attempting to connect. # %s" % attempts)
+        else:
+            print("Ending program")
+            sys.exit(2)
+
+print("Connected.")
 
 
 def senddata():
-    s.send(("Connected").encode('ascii'))
     while 1:
         try:
             s.send(input().encode('ascii'))               # Sends input to server.

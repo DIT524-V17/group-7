@@ -6,8 +6,8 @@ import time
 
 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)    # create a socket object
 
+
 def senddata(cs):
-    cs.send(("Connected").encode('ascii'))
     while 1:
         try:
             cs.send(input().encode('ascii'))               # Sends input to server.
