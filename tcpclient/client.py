@@ -1,6 +1,7 @@
 # Author: Pontus Laestadius.
 # Since: 1st of March, 2017.
 import _thread
+from threading import Thread
 import socket
 import sys
 import time
