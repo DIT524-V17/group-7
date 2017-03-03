@@ -20,22 +20,27 @@ class Receiver(Thread):
         self.start()
 
     def run(self):
-        self.receiver.bind((self.host, self.port))  # bind to the port
-        self.receiver.listen(5)  # queue up to 5 requests
+        self.receiver.bind((self.host, self.port))
+        self.receiver.listen(5)
         while 1:
             (client, address) = self.receiver.accept()
             if client.getsockname() != "":
                 print("Receiver online")
                 break
-        while 1:  # Infinite loop.
-            msg = client.recv(1024)  # Maximum amount of data to be sent.
-            if not msg:
-                self.disconnected("receivedata(): peer disconnected")
-            if self.connection == False:
-                self.connection = True
-                continue
-            msg = msg.decode('ascii')
-            print(msg)
+        while 1:
+            try:
+                msg = client.recv(1024)
+                if not msg:
+                    self.disconnected("receivedata(): peer disconnected")
+                if self.connection == False:
+                    self.connection = True
+                    continue
+                msg = msg.decode('ascii')
+                print(msg)
+            except:
+                self.disconnected("receivedata()")
+                del self
+
 
     def disconnected(self, str):
         print("Disconnected at: %s" % str)
@@ -58,22 +63,24 @@ class Transmitter(Thread):
         attempts = 0
         while 1:
             try:
-                self.transmitter.connect((self.host, self.port))  # Connect to the local machine.
+                self.transmitter.connect((self.host, self.port))
+                self.transmitter.send("1".encode('ascii'))  # It sends a "confirmation" to the receiver. That reacts once it receives the first command.
                 break
             except:
                 attempts += 1
                 if attempts < 6:
                     print("#%s Attempting to connect. " % attempts)
                 else:
-                    print("Ending program")
-                    sys.exit(2)
+                    print("Couldn't connect.")
+                    del self
         print("Transmitter online")
 
         while 1:
             try:
-                self.transmitter.send(input().encode('ascii'))  # Sends input to server.
+                self.transmitter.send(input().encode('ascii'))
             except OSError:
                 self.disconnected("senddata()")
+                del self
 
     def disconnected(self, str):
         print("Disconnected at: %s" % str)

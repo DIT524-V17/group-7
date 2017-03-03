@@ -3,6 +3,7 @@
 import socket
 from common import Receiver
 from common import Transmitter
+import time
 
 host = socket.gethostname()
 port = 9005
@@ -10,7 +11,7 @@ port2 = 9000
 
 
 def init():
-    Transmitter(host, port)
+    tranmitterclient = Transmitter(host, port)
     Receiver(host, port2)
 
 
