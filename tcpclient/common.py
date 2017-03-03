@@ -35,5 +35,41 @@ class Receiver(Thread):
 
     def disconnected(self, str):
         print("Disconnected at: %s" % str)
-        self.exit()
 
+
+class Transmitter(Thread):
+
+    transmitter = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    host = ""
+    port = 0
+
+    def __init__(self, host, port):
+        Thread.__init__(self)
+        self.host = host
+        self.port = port
+        self.daemon = True
+        self.start()
+
+    def run(self):
+        attempts = 0
+        while 1:
+            try:
+                self.transmitter.connect((self.host, self.port))  # Connect to the local machine.
+                break
+            except:
+                attempts += 1
+                if attempts < 6:
+                    print("#%s Attempting to connect. " % attempts)
+                else:
+                    print("Ending program")
+                    sys.exit(2)
+        print("Transmitter online")
+
+        while 1:
+            try:
+                self.transmitter.send(input().encode('ascii'))  # Sends input to server.
+            except OSError:
+                self.disconnected("senddata()")
+
+    def disconnected(self, str):
+        print("Disconnected at: %s" % str)
