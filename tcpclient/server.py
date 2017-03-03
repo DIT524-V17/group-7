@@ -1,35 +1,50 @@
 # Author: Pontus Laestadius.
 # Since: 2nd of March, 2017.
-import socket
 import _thread
+import socket
+import sys
 import time
 
 receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)    # create a socket object
 transmitter = socket.socket(socket.AF_INET, socket.SOCK_STREAM)    # create a socket object
 
 host = socket.gethostname()
-port = 9010
-port2 = 9009
+port = 9005
+port2 = 9000
 
 def init():
-    initreceiver()
+    print("3")
+    _thread.start_new_thread(initreceiver(), ("Thread-ReceiveData", 3,))
+    print("4")
     inittransmitter()
+    print("Receiver: ", receiver.getsockname(), " Transmitter: ", transmitter.getsockname() )
+    _thread.start_new_thread(senddata(), ("Thread-SendData", 2,))
 
 
 def initreceiver():
     receiver.bind((host, port))  # bind to the port
+    receiver.listen(5)  # queue up to 5 requests
     while 1:
-        clientsocket, addr = receiver.accept()
-        print("Connection from %s" % str(addr))
-        if clientsocket.getsockname() != "":
+        (client, address) = receiver.accept()
+        if client.getsockname() != "":
+            print("Receiver online")
             break
+    while 1:                                            # Infinite loop.
+        msg = client.recv(1024)                 # Maximum amount of data to be sent.
+        if not msg:
+            disconnected("receivedata(): peer disconnected")
+
+        msg = msg.decode('ascii')
+        print(msg)
 
 
-def disconnected():
-    print("Disconnected")
+
+def disconnected(str):
+    print("Disconnected at: %s" % str)
     transmitter.close()  # Closes the connection if the client drops.
     receiver.close()
     _thread.exit()
+    init()  # most likely doesn't execute since the thread is killed in the last statement.
 
 
 def inittransmitter():
@@ -45,28 +60,15 @@ def inittransmitter():
             else:
                 print("Ending program")
                 sys.exit(2)
+    print("Transmitter online")
+
 
 def senddata():
     while 1:
         try:
             transmitter.send(input().encode('ascii'))               # Sends input to server.
-        except:
-            disconnected()
+        except OSError:
+            disconnected("senddata()")
 
-
-def receivedata():
-    while 1:                                            # Infinite loop.
-        try:
-            msg = receiver.recv(1024)                           # Maximum amount of data to be sent.
-            msg = msg.decode('ascii')
-            print(msg)
-        except:
-            disconnected()
-
-receiver.bind((host, port))                                     # bind to the port
-
-receiver.listen(5)                                              # queue up to 5 requests
 
 init()
-_thread.start_new_thread(senddata(), ("Thread-SendData", 2, ))
-_thread.start_new_thread(receivedata(), ("Thread-ReceiveData", 3, ))
