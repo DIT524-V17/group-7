@@ -1,7 +1,8 @@
+# Author: Pontus Laestadius.
+# Since: 3rd of March, 2017.
 from threading import Thread
 import socket
 import sys
-import time
 
 
 class Receiver(Thread):
@@ -9,6 +10,7 @@ class Receiver(Thread):
     receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     host = ""
     port = 0
+    connection = False
 
     def __init__(self, host, port):
         Thread.__init__(self)
@@ -29,7 +31,9 @@ class Receiver(Thread):
             msg = client.recv(1024)  # Maximum amount of data to be sent.
             if not msg:
                 self.disconnected("receivedata(): peer disconnected")
-
+            if self.connection == False:
+                self.connection = True
+                continue
             msg = msg.decode('ascii')
             print(msg)
 

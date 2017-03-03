@@ -11,10 +11,10 @@ port2 = 9000
 
 
 def init():
-    print("3")
     receiver = Receiver(host, port)
-    time.sleep(5)
-    transmitter = Transmitter(host, port)
+    while not receiver.connection:
+        pass
+    transmitter = Transmitter(host, port2)
 
 
 init()
