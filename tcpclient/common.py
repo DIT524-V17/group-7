@@ -41,7 +41,7 @@ class Receiver(Thread):
                 self.disconnected("receivedata()")
                 del self
 
-
+    @staticmethod
     def disconnected(self, str):
         print("Disconnected at: %s" % str)
 
@@ -79,8 +79,5 @@ class Transmitter(Thread):
             try:
                 self.transmitter.send(input().encode('ascii'))
             except OSError:
-                self.disconnected("senddata()")
+                Receiver.disconnected(self, "senddata()")
                 del self
-
-    def disconnected(self, str):
-        print("Disconnected at: %s" % str)
