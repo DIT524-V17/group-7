@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
@@ -9,16 +10,6 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="t.s.o.r.f.frost.MainActivity">
-
-    <Button
-        android:text="Steer Left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/button"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="161dp"
-        android:layout_marginTop="25dp"
-        android:id="@+id/button3" />
 
     <Button
         android:text="Steer Right"
@@ -45,8 +36,15 @@
         android:id="@+id/button"
         android:layout_marginBottom="22dp"
         android:layout_above="@+id/button2"
-        android:layout_alignEnd="@+id/switch1"
-        android:onClick="forwardTest"/>
+        android:layout_alignEnd="@+id/switch1" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@mipmap/ic_launcher"
+        android:id="@+id/imageView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
 
     <Button
         android:text="Reverse"
@@ -55,5 +53,15 @@
         android:layout_marginBottom="23dp"
         android:id="@+id/button2"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignEnd="@+id/button" />
+
+    <Button
+        android:text="Steer Left"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:id="@+id/button3"
+        android:layout_alignBaseline="@+id/button2"
+        android:layout_alignBottom="@+id/button2"
+        android:layout_toStartOf="@+id/button4" />
 </RelativeLayout>
