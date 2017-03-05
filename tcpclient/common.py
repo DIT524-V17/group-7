@@ -4,6 +4,7 @@ from threading import Thread
 import socket
 import sys
 
+textconverter = 'utf'
 
 class Receiver(Thread):
 
@@ -27,7 +28,7 @@ class Receiver(Thread):
             if client.getsockname() != "":
                 print("Receiver online")
                 break
-        while 1:
+        while self.host != "":
             try:
                 msg = client.recv(1024)
                 if not msg:
@@ -35,15 +36,18 @@ class Receiver(Thread):
                 if self.connection == False:
                     self.connection = True
                     continue
-                msg = msg.decode('ascii')
+                msg = msg.decode(textconverter)
                 print(msg)
             except:
-                self.disconnected("receivedata()")
-                del self
+                print("Disconnected")
+                self.host = ""
+                self.connection = False
+                self.receiver = ""
+
 
     @staticmethod
-    def disconnected(self, str):
-        print("Disconnected at: %s" % str)
+    def disconnected(s):
+        print("Disconnected at: %s" % s)
 
 
 class Transmitter(Thread):
@@ -64,7 +68,7 @@ class Transmitter(Thread):
         while 1:
             try:
                 self.transmitter.connect((self.host, self.port))
-                self.transmitter.send("1".encode('ascii'))  # It sends a "confirmation" to the receiver. That reacts once it receives the first command.
+                self.transmitter.send("1".encode(textconverter))  # It sends a "confirmation" to the receiver. That reacts once it receives the first command.
                 break
             except:
                 attempts += 1
@@ -77,7 +81,7 @@ class Transmitter(Thread):
 
         while 1:
             try:
-                self.transmitter.send(input().encode('ascii'))
+                self.transmitter.send(input().encode(textconverter))
             except OSError:
                 Receiver.disconnected(self, "senddata()")
                 del self
