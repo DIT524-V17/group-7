@@ -20,4 +20,3 @@ def init():
 init()
 while 1:
     pass
-

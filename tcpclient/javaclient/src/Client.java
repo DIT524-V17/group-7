@@ -2,6 +2,7 @@
 import java.net.*;
 import java.io.*;
 
+import java.util.Stack;
 import java.util.Scanner;
 import java.util.Stack;
 
@@ -22,7 +23,13 @@ public class Client {
 		Transmitter R1 = initTransmitter(host, port);
 		Receiver R2 = initReceiver(host, port2);
 
-		while (true); // TODO: 05/03/2017 currently always keeps the client alive. Replace with automatic reconnection.
+		Scanner sc = new Scanner(System.in);
+		
+		while (true){
+			R1.write(sc.next());
+		}
+
+		// TODO: 05/03/2017 currently always keeps the client alive. Replace with automatic reconnection.
 	}
 
 	public static Transmitter initTransmitter(String host, int port){
@@ -42,26 +49,17 @@ class BaseSocket implements Runnable {
 	private Thread t;
 	private String host;
 	private int port;
-	Socket socket;
 	Stack<String> input = new Stack<>();
-
-	public void add(String s){
-		input.add(s);
-	}
 
 	// Macro for add.
 	public void write(String s){
+		// TODO: 06/03/2017 Add command vertification here. Preferably O(N). 
 		input.add(s);
 	}
 
 	BaseSocket(String host, int port) {
 		this.host = host;
 		this.port = port;
-		try {
-			socket = new Socket(host, port);
-		} catch (IOException e){
-			e.printStackTrace();
-		}
 	}
 
 	public void run() {
@@ -82,10 +80,15 @@ class BaseSocket implements Runnable {
 class Transmitter extends BaseSocket implements Runnable {
 	private Thread t;
 	private Stack<String> input = new Stack<>();
-
+	Socket socket;
 
 	Transmitter(String host, int port) {
 		super(host,port);
+		try {
+			socket = new Socket(host, port);
+		} catch (IOException e){
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -101,17 +104,28 @@ class Transmitter extends BaseSocket implements Runnable {
 		input.add(0, "5");
 
 		try {
-			DataOutputStream out = new DataOutputStream(super.socket.getOutputStream());
+			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+			p(this.getClass().toString() + " online.");
 
 			try {
-				while (!super.socket.isInputShutdown()) // Checks if the socket is able to receive data.
-					if (!input.isEmpty()) // Checks if the stack has any commands in it waiting.
-						out.writeUTF(input.pop()); // TODO: 05/03/2017 Needs to be replaced for android input.
+				while (!socket.isInputShutdown()) // Checks if the socket is able to receive data.
+
+				if (!input.isEmpty()) // Checks if the stack has any commands in it waiting.
+				{
+					p("r2");
+					out.writeUTF(input.pop()); // TODO: 05/03/2017 Needs to be replaced for android input.
+
+				}
+
+
+					Thread.sleep(500);
 			} finally {
 				p("Abandon Transmitter thread, It's going down!");
 			}
 
 		} catch (IOException e){
+			e.printStackTrace();
+		} catch (InterruptedException e){
 			e.printStackTrace();
 		}
 
@@ -126,17 +140,28 @@ class Transmitter extends BaseSocket implements Runnable {
 class Receiver extends BaseSocket implements Runnable {
 	private Thread t;
 	private Stack<String> output = new Stack<>();
+	ServerSocket ssocket;
+	Socket socket;
 
 
 	Receiver(String host, int port) {
 		super(host,port);
+		try {
+			ssocket = new ServerSocket(port);
+			ssocket.setSoTimeout(10000);
+
+		} catch (IOException e){
+			e.printStackTrace();
+		}
 	}
 
 	@Override
 	public void run() {
 
 		try {
+			socket = ssocket.accept();
 			DataInputStream in = new DataInputStream(socket.getInputStream());
+			p(this.getClass().toString() + " online.");
 
 			while (true)
 				p(in.readUTF());
