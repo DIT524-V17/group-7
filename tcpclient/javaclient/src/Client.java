@@ -2,8 +2,7 @@
 import java.net.*;
 import java.io.*;
 
-import java.util.Stack;
-import java.util.Scanner;
+import java.util.*;
 import java.util.Stack;
 
 public class Client {
@@ -20,14 +19,8 @@ public class Client {
 			System.out.print("Unkown host");
 		}
 
-		Transmitter R1 = initTransmitter(host, port);
+		Transmitter r1 = initTransmitter(host, port);
 		Receiver R2 = initReceiver(host, port2);
-
-		Scanner sc = new Scanner(System.in);
-		
-		while (true){
-			R1.write(sc.next());
-		}
 
 		// TODO: 05/03/2017 currently always keeps the client alive. Replace with automatic reconnection.
 	}
@@ -49,11 +42,12 @@ class BaseSocket implements Runnable {
 	private Thread t;
 	private String host;
 	private int port;
-	Stack<String> input = new Stack<>();
+	Queue<String> input = new PriorityQueue<>();
+	Socket socket;
 
 	// Macro for add.
 	public void write(String s){
-		// TODO: 06/03/2017 Add command vertification here. Preferably O(N). 
+		// TODO: 06/03/2017 Add command vertification here. Preferably O(1).
 		input.add(s);
 	}
 
@@ -79,8 +73,6 @@ class BaseSocket implements Runnable {
 
 class Transmitter extends BaseSocket implements Runnable {
 	private Thread t;
-	private Stack<String> input = new Stack<>();
-	Socket socket;
 
 	Transmitter(String host, int port) {
 		super(host,port);
@@ -93,32 +85,27 @@ class Transmitter extends BaseSocket implements Runnable {
 
 	@Override
 	public void run() {
-
-		input.add(0, "CC"); // Don't touch this. It opens the receiving reading socket on the python server.
-
-		// Test inputs, remove before implementation.
-		input.add(0, "1");
-		input.add(0, "2");
-		input.add(0, "3");
-		input.add(0, "4");
-		input.add(0, "5");
+		write("cc"); // Enables the receiving socket. Do not remove.
 
 		try {
 			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 			p(this.getClass().toString() + " online.");
 
 			try {
-				while (!socket.isInputShutdown()) // Checks if the socket is able to receive data.
+				while (!socket.isInputShutdown()) { // Checks if the socket is able to receive data.
+					if (input.size() != 0) System.out.print(input.size());
+					if (!input.isEmpty()){ // Checks if the st4ack has any commands in it waiting.
+						String s = input.poll();
+						p("Sending command: " + s);
+						out.writeUTF(s); // TODO: 05/03/2017 Needs to be replaced for android input.
 
-				if (!input.isEmpty()) // Checks if the stack has any commands in it waiting.
-				{
-					p("r2");
-					out.writeUTF(input.pop()); // TODO: 05/03/2017 Needs to be replaced for android input.
+					}
+
 
 				}
 
 
-					Thread.sleep(500);
+				Thread.sleep(500);
 			} finally {
 				p("Abandon Transmitter thread, It's going down!");
 			}
@@ -139,10 +126,7 @@ class Transmitter extends BaseSocket implements Runnable {
 
 class Receiver extends BaseSocket implements Runnable {
 	private Thread t;
-	private Stack<String> output = new Stack<>();
-	ServerSocket ssocket;
-	Socket socket;
-
+	private ServerSocket ssocket;
 
 	Receiver(String host, int port) {
 		super(host,port);

@@ -37,6 +37,7 @@ class Receiver(Thread):
                     self.connection = True
                     continue
                 msg = msg.decode(textconverter)
+                # msg = msg[1:100]
                 print(msg)
             except:
                 print("Disconnected")
