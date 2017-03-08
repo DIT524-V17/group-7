@@ -38,14 +38,6 @@
         android:layout_above="@+id/button2"
         android:layout_alignEnd="@+id/switch1" />
 
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/ic_launcher"
-        android:id="@+id/imageView"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true" />
-
     <Button
         android:text="Reverse"
         android:layout_width="wrap_content"
@@ -64,4 +56,12 @@
         android:layout_alignBaseline="@+id/button2"
         android:layout_alignBottom="@+id/button2"
         android:layout_toStartOf="@+id/button4" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:srcCompat="@mipmap/ic_launcher"
+        android:id="@+id/imageView"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>
