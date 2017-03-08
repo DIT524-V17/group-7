@@ -14,13 +14,13 @@ public class Client {
 	public static void main(String [] args) {
 
 		try {
-			host = InetAddress.getLocalHost().getHostName();
+			host = InetAddress.getLocalHost().getHostName(); // TODO: 07/03/2017 replace with raspberry pi ip when implementing. 
 		} catch (UnknownHostException e){
 			System.out.print("Unkown host");
 		}
 
 		Transmitter r1 = initTransmitter(host, port);
-		Receiver R2 = initReceiver(host, port2);
+		Receiver r2 = initReceiver(host, port2);
 
 		// TODO: 05/03/2017 currently always keeps the client alive. Replace with automatic reconnection.
 	}
@@ -93,26 +93,16 @@ class Transmitter extends BaseSocket implements Runnable {
 
 			try {
 				while (!socket.isInputShutdown()) { // Checks if the socket is able to receive data.
-					if (input.size() != 0) System.out.print(input.size());
 					if (!input.isEmpty()){ // Checks if the st4ack has any commands in it waiting.
 						String s = input.poll();
-						p("Sending command: " + s);
 						out.writeUTF(s); // TODO: 05/03/2017 Needs to be replaced for android input.
-
 					}
-
-
 				}
-
-
-				Thread.sleep(500);
 			} finally {
 				p("Abandon Transmitter thread, It's going down!");
 			}
 
 		} catch (IOException e){
-			e.printStackTrace();
-		} catch (InterruptedException e){
 			e.printStackTrace();
 		}
 
@@ -133,7 +123,6 @@ class Receiver extends BaseSocket implements Runnable {
 		try {
 			ssocket = new ServerSocket(port);
 			ssocket.setSoTimeout(10000);
-
 		} catch (IOException e){
 			e.printStackTrace();
 		}
@@ -147,8 +136,9 @@ class Receiver extends BaseSocket implements Runnable {
 			DataInputStream in = new DataInputStream(socket.getInputStream());
 			p(this.getClass().toString() + " online.");
 
-			while (true)
+			while (true){
 				p(in.readUTF());
+			}
 
 		}catch(IOException e) {
 			e.printStackTrace();

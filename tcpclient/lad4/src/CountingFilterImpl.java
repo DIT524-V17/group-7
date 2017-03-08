@@ -5,7 +5,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class CountingFilterImpl implements CountingFilter {
-   
+
+	Object[] bloom;
+
     /** Initiates a counting filter, the capacity indicates how much memory can be used
      * (memory usage must be O(capacity)) */
     public CountingFilterImpl(int capacity){
@@ -14,9 +16,7 @@ public class CountingFilterImpl implements CountingFilter {
     }
 
     public CountingFilterImpl(int number, boolean b){ // The boolean is just so it doesn't override the other constructor
-
-	    int findPrimes = 0;
-
+	    int findPrimes = 0;                                             // Used for counting from 1 to N.
 	    Collection<Integer> optimusPrime = new HashSet<>();             // Stores all existing known prime numbers.
 	    optimusPrime.add(2);                                            // Add two since it's the only even prime factorization required.
 
@@ -27,12 +27,12 @@ public class CountingFilterImpl implements CountingFilter {
 				    c = false;                                          // Not a prime, and does not add it to the collection.
 				    break;                                              // Break out of this foreach loop.
 			    }
-		    if (c){ // Adds it to the known primes.
-			    optimusPrime.add(findPrimes++); // Increment because we want it to jump 2 steps.
-
-			    if (findPrimes > number){// Ends the method if the prime found is bigger than the capacity number.
-				    System.out.println("closest prime bigger than: " + number + " is " + --findPrimes);
-				    findPrimes = -1;
+		    if (c){                                                     // Adds it to the known primes.
+			    optimusPrime.add(findPrimes++);                         // Increment because we want it to jump 2 steps.
+			    if (findPrimes > number){                               // Ends the method if the prime found is bigger than the capacity number.
+				    System.out.println("closest prime bigger than: " + number + " is " + --findPrimes);// TODO: 07/03/2017 declare array size here.
+				    bloom = new Object[findPrimes];
+				    findPrimes = -1;                                    // Ends the infinite loop.
 			    }
 		    }
 	    }

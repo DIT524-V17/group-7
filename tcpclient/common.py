@@ -37,8 +37,7 @@ class Receiver(Thread):
                     self.connection = True
                     continue
                 msg = msg.decode(textconverter)
-                # msg = msg[1:100]
-                print(msg)
+                print(msg) # ---------------------------------------------------------------- Redirect your stuff here.
             except:
                 print("Disconnected")
                 self.host = ""
@@ -69,7 +68,7 @@ class Transmitter(Thread):
         while 1:
             try:
                 self.transmitter.connect((self.host, self.port))
-                self.transmitter.send("1".encode(textconverter))  # It sends a "confirmation" to the receiver. That reacts once it receives the first command.
+                self.transmitter.send("cc".encode(textconverter))  # It sends a "confirmation" to the receiver. That reacts once it receives the first command.
                 break
             except:
                 attempts += 1
