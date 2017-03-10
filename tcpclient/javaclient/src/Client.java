@@ -1,26 +1,26 @@
-// File Name GreetingClient.java
 import java.net.*;
 import java.io.*;
 
 import java.util.*;
-import java.util.Stack;
 
 public class Client {
 
 	static int port = 9005;
 	static int port2 = 9000;
-	static String host = "";
+	static String host = "192.168.0.120";
 
 	public static void main(String [] args) {
 
+		/*
 		try {
-			host = InetAddress.getLocalHost().getHostName(); // TODO: 07/03/2017 replace with raspberry pi ip when implementing. 
+			host = InetAddress.getLocalHost().getHostName(); // TODO: 07/03/2017 replace with raspberry pi ip when implementing.
 		} catch (UnknownHostException e){
 			System.out.print("Unkown host");
 		}
+		*/
 
 		Transmitter r1 = initTransmitter(host, port);
-		Receiver r2 = initReceiver(host, port2);
+		// Receiver r2 = initReceiver(host, port2);
 
 		// TODO: 05/03/2017 currently always keeps the client alive. Replace with automatic reconnection.
 	}
