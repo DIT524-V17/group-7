@@ -3,7 +3,6 @@
 import socket
 from common import Receiver
 from common import Transmitter
-import time
 
 host = socket.gethostname()
 port = 9005
