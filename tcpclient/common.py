@@ -40,7 +40,9 @@ class Receiver(Thread):
         print("Looping.")
 
         while 1:
+
             (client, address) = self.receiver.accept()
+            print(client.getsockname)
             if client.getsockname() != "":
                 print("Receiver online")
                 break
