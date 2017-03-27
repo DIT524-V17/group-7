@@ -1,0 +1,8 @@
+Monday 27/03-2017: 7 hours
+Title: Integration and redesign
+-Integrating App-Wifi-Raspberry-arduino connection.
+-Fixed issue with app crashing the connection.
+-Redesigned application.
+-Set up git on raspberry.
+
+Tuesday 28/03-2017:
