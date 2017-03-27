@@ -34,11 +34,15 @@ Learning Shell syntax and Linux.
 Starting to not hate it.
 
 
-Monday 27-03: 3+
+Monday 27-03: 6 hours
 Title: Artifacts thy be gone
 Figure out why artifacts appear on anything other than packages with 5 length. (See common.py)
 Improved the TCP connection. Added comments, Ready it for pull request
 Setup git branch for work logs.
+Enabled TCP connection to send and receive data both ways.
+Wrote a shell script for automatically pulling the repository and executing the server script on boot.
+Integrating with Sebastian and Tim to get the raspberry working fine.
+Current Issue with the shell script: Boots on launch, But crashes instantly.
 
 
 
