@@ -132,13 +132,18 @@ public class MainActivity extends AppCompatActivity {
             });
     }
 
-
+    /**
+     * AsyncTask used to allow sub-threading in the main application.
+     * Initiates the Transmitter with the 'host' id and correct port.
+     * TODO: Rewrite this to actually make sense. Override the two other methods if they are needed later.
+     */
    public static class threads extends AsyncTask<String, Void, Void> {
        static Transmitter r1;
         @Override
         public Void doInBackground(String... params) {
 
             try {
+                //Initializes the Transmitter 'r1' with ethe appropriate host and port.
                 r1 = initTransmitter(host, port);
 
 

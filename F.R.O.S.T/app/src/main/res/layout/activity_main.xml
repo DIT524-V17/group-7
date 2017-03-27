@@ -29,30 +29,22 @@
         android:id="@+id/button2" />
 
     <Button
-        android:text="Steer Left"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/button"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="161dp"
-        android:layout_marginTop="25dp"
-        android:id="@+id/button3" />
-
-    <Button
         android:text="Steer Right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:id="@+id/button4"
+        android:layout_alignBaseline="@+id/button3"
         android:layout_alignBottom="@+id/button3"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="36dp"
-        android:id="@+id/button4" />
+        android:layout_alignParentEnd="true" />
 
-    <Switch
-        android:text="Controls"
+    <Button
+        android:text="Steer Left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
-        android:id="@+id/switch1"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentStart="true" />
+        android:layout_marginTop="27dp"
+        android:id="@+id/button3"
+        android:layout_alignTop="@+id/button"
+        android:layout_toEndOf="@+id/button"
+        android:layout_marginStart="8dp" />
 </RelativeLayout>
