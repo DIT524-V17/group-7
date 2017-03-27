@@ -4,15 +4,22 @@ from threading import Thread
 import socket
 import sys
 
+# What type of format will the text be encoded/decoded with.
 textconverter = 'utf'
 
 class Receiver(Thread):
 
+    # Declare default socket
     receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    # Declare new host and port.
     host = ""
     port = 0
+
+    # Used for if the socket is still active or not.
     connection = False
 
+    # Constructor that defines the host and port of the receiver.
     def __init__(self, host, port):
         Thread.__init__(self)
         self.host = host
@@ -20,9 +27,16 @@ class Receiver(Thread):
         self.daemon = True
         self.start()
 
+    # On run
     def run(self):
+
+        # binds the server to the port.
         self.receiver.bind((self.host, self.port))
+
+        # Listens for packages of size 5. Any other size causes artifacts.
         self.receiver.listen(5)
+
+
         while 1:
             (client, address) = self.receiver.accept()
             if client.getsockname() != "":
