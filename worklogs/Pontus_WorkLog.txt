@@ -1,0 +1,47 @@
+This log starts on the 23rd of March towards the end of sprint 3.
+What was done before and not logged: 
+
+Researched wifi connectivity. (none working methods) (wow that was a wasted sprint)
+Read up on TCP. (Working method) 
+Learned python: basics, sockets, threads, objects. (used for TCP server-client)
+Wrote a Java TCP client for the android application.
+Worked on integration for the car with Sebastian.
+Total hours up to this point: 60 hours. (sprint 1,2 half of 3)
+
+Proper log and documentation starts here:
+
+Thursday 23-03: 8 hours
+Title: Integration 
+Configuring the old Raspberry Pi 1. issues connecting, so we are using the 3 instead.
+Working on TCP connection.
+Solving artifacts. They only appear on packets smaller than 5 characters. Or bigger than 5.
+Started with mounting components on the car.
+Theorizing a technique for automating the rasberry pi so we wont have to use it.
+Researching shell scripts for rasberry pi.
+Working on radar design and solution.
+Drew 3 different designs to be discussed on the following meeting.
+
+
+Friday 24-03: 5 hours
+Title: Integration and Shell
+Researching Shell scrips for executing commands autounomously later on.
+Mounting components on the car. Includes soldering and taping.
+Research crontab.
+
+Saturday 25-03: 1 hour
+Title: Linux
+Learning Shell syntax and Linux.
+Starting to not hate it.
+
+
+Monday 27-03: 3+
+Title: Artifacts thy be gone
+Figure out why artifacts appear on anything other than packages with 5 length. (See common.py)
+Improved the TCP connection. Added comments, Ready it for pull request
+Setup git branch for work logs.
+
+
+
+
+
+
