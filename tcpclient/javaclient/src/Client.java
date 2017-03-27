@@ -8,11 +8,12 @@ public class Client {
 	private static int port = 9005;
 	private static int port2 = 9000;
 	private static String host = "192.168.0.120";
+	static Boolean c = false;
 
 	public static void main(String [] args) {
-		Boolean c = false;
 		while (true){
 			if (!c){
+				System.out.println("Connecting");
 				init();
 				c = true;
 			}
@@ -78,6 +79,7 @@ class Transmitter extends BaseSocket implements Runnable {
 			socket = new Socket(host, port);
 		} catch (IOException e){
 			e.printStackTrace();
+
 		}
 	}
 
@@ -90,15 +92,17 @@ class Transmitter extends BaseSocket implements Runnable {
 			p(this.getClass().toString() + " online.");
 
 			try {
-				while (!socket.isInputShutdown())  // Checks if the socket is able to receive data.
+				while (!socket.isInputShutdown() && Client.c)  // Checks if the socket is able to receive data.
 					if (!input.isEmpty()) // Checks if the stack has any commands in it waiting.
 						out.writeUTF(input.poll());
 			} finally {
 				p("Abandon Transmitter thread, It's going down!");
+				Client.c = false;
 			}
 
 		} catch (IOException e){
 			e.printStackTrace();
+			Client.c = false;
 		}
 
 		p(this.getClass().toString() + " exiting.");
@@ -120,6 +124,7 @@ class Receiver extends BaseSocket implements Runnable {
 			ssocket.setSoTimeout(10000);
 		} catch (IOException e){
 			e.printStackTrace();
+			Client.c = false;
 		}
 	}
 
@@ -131,12 +136,12 @@ class Receiver extends BaseSocket implements Runnable {
 			DataInputStream in = new DataInputStream(socket.getInputStream());
 			p(this.getClass().toString() + " online.");
 
-			while (true){
-				p(in.readUTF());
-			}
+			while (Client.c)
+				p(in.readUTF()); // TODO: 27/03/2017 Replace with where you want the output to go.
 
 		}catch(IOException e) {
 			e.printStackTrace();
+			Client.c = false;
 		}
 
 		p(this.getClass().toString() + " exiting.");

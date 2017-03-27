@@ -29,10 +29,16 @@ class Receiver(Thread):
     def run(self):
 
         # binds the server to the port.
+        print("Binding.")
         self.receiver.bind((self.host, self.port))
+
+        print("Listening.")
 
         # Listens for packages of size 5. Any other size causes artifacts.
         self.receiver.listen(5)
+
+        print("Looping.")
+
         while 1:
             (client, address) = self.receiver.accept()
             if client.getsockname() != "":
@@ -81,8 +87,12 @@ class Transmitter(Thread):
         attempts = 0
         while 1:
             try:
+
+                # Connects the transmitter to the phone.
                 self.transmitter.connect((self.host, self.port))
-                self.transmitter.send("cc".encode(textconverter))  # It sends a "confirmation" to the receiver. That reacts once it receives the first command.
+
+                # It sends a "confirmation" to the receiver. That reacts once it receives the first command.
+                self.transmitter.send("cc".encode(textconverter))
                 break
             except:
                 attempts += 1
