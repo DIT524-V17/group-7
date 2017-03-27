@@ -3,20 +3,19 @@
 from threading import Thread
 import socket
 import sys
+import serial, time
 
-# What type of format will the text be encoded/decoded with.
 textconverter = 'utf'
+
+# Defines the Arduino Serial for writing the commands.
+usbconnection = serial.Serial('/dev/ttyACM0', 9600, timeout=.1);
+
 
 class Receiver(Thread):
 
-    # Declare default socket
     receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-    # Declare new host and port.
     host = ""
     port = 0
-
-    # Used for if the socket is still active or not.
     connection = False
 
     # Constructor that defines the host and port of the receiver.
@@ -27,7 +26,6 @@ class Receiver(Thread):
         self.daemon = True
         self.start()
 
-    # On run
     def run(self):
 
         # binds the server to the port.
@@ -35,8 +33,6 @@ class Receiver(Thread):
 
         # Listens for packages of size 5. Any other size causes artifacts.
         self.receiver.listen(5)
-
-
         while 1:
             (client, address) = self.receiver.accept()
             if client.getsockname() != "":
@@ -47,21 +43,25 @@ class Receiver(Thread):
                 msg = client.recv(1024)
                 if not msg:
                     self.disconnected("receivedata(): peer disconnected")
-                if self.connection == False:
+                if not self.connection:
                     self.connection = True
                     continue
                 msg = msg.decode(textconverter)
-                print(msg) # ---------------------------------------------------------------- Redirect your stuff here.
+                print(msg)
+
+                # Tim's Added line for sending the commands to the Arduino
+                usbconnection.write(msg.encode())
+
+                # If the message
             except:
-                print("Disconnected")
-                self.host = ""
-                self.connection = False
-                self.receiver = ""
+                self.disconnected("Exception caught")
 
-
-    @staticmethod
-    def disconnected(s):
+    # Handles errors.
+    def disconnected(self, s):
         print("Disconnected at: %s" % s)
+        self.host = ""
+        self.connection = False
+        self.receiver = ""
 
 
 class Transmitter(Thread):

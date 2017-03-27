@@ -5,24 +5,23 @@ import java.util.*;
 
 public class Client {
 
-	static int port = 9005;
-	static int port2 = 9000;
-	static String host = "192.168.0.120";
+	private static int port = 9005;
+	private static int port2 = 9000;
+	private static String host = "192.168.0.120";
 
 	public static void main(String [] args) {
-
-		/*
-		try {
-			host = InetAddress.getLocalHost().getHostName(); // TODO: 07/03/2017 replace with raspberry pi ip when implementing.
-		} catch (UnknownHostException e){
-			System.out.print("Unkown host");
+		Boolean c = false;
+		while (true){
+			if (!c){
+				init();
+				c = true;
+			}
 		}
-		*/
+	}
 
+	public static void init(){
 		Transmitter r1 = initTransmitter(host, port);
-		// Receiver r2 = initReceiver(host, port2);
-
-		// TODO: 05/03/2017 currently always keeps the client alive. Replace with automatic reconnection.
+		Receiver r2 = initReceiver(host, port2);
 	}
 
 	public static Transmitter initTransmitter(String host, int port){
@@ -56,8 +55,7 @@ class BaseSocket implements Runnable {
 		this.port = port;
 	}
 
-	public void run() {
-	}
+	public void run() {}
 
 	static void p(String s){
 		System.out.println(s);
@@ -92,12 +90,9 @@ class Transmitter extends BaseSocket implements Runnable {
 			p(this.getClass().toString() + " online.");
 
 			try {
-				while (!socket.isInputShutdown()) { // Checks if the socket is able to receive data.
-					if (!input.isEmpty()){ // Checks if the st4ack has any commands in it waiting.
-						String s = input.poll();
-						out.writeUTF(s); // TODO: 05/03/2017 Needs to be replaced for android input.
-					}
-				}
+				while (!socket.isInputShutdown())  // Checks if the socket is able to receive data.
+					if (!input.isEmpty()) // Checks if the stack has any commands in it waiting.
+						out.writeUTF(input.poll());
 			} finally {
 				p("Abandon Transmitter thread, It's going down!");
 			}
