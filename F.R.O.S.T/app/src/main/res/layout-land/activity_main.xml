@@ -63,4 +63,17 @@
         android:id="@+id/imageView"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true" />
+
+    <Switch
+        android:text="Faster"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView"
+        android:layout_alignParentStart="true"
+        android:textOff="Fast"
+        android:textOn="Faster"
+        android:background="@android:color/holo_green_dark"
+        android:textColor="@android:color/white"
+        android:layout_marginStart="25dp"
+        android:id="@+id/switch_1" />
 </RelativeLayout>

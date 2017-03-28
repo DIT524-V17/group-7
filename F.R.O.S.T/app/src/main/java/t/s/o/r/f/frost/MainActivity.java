@@ -10,6 +10,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.view.View.OnTouchListener;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -19,7 +21,6 @@ import static t.s.o.r.f.frost.Client.*;
 
 public class MainActivity extends AppCompatActivity {
 
-    //static String drive = "d070";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -38,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
                         //Sends a "forward" commmand to the Raspberry pi (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
-                            threads.r1.write("d070?");
+                                threads.r1.write("d070?");
 
 
                             // System.out.println("Drive forward");
@@ -130,6 +131,28 @@ public class MainActivity extends AppCompatActivity {
                     return false;
                 }
             });
+
+        
+        /**
+         * Temporary switch for setting a different speed.
+         * TODO:Remove when the joystick is to be implemented.
+         */
+        /*
+        Switch faster = (Switch) findViewById(R.id.switch_1);
+        faster.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    //workDammit = true;
+                    //System.out.println("false now");
+                }
+
+                else{
+                    // workDammit = false;
+                    //System.out.println("true now");
+                }
+            }
+        });*/
     }
 
     /**
