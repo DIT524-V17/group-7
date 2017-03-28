@@ -2,6 +2,7 @@
 
 int flame_sensor_pin = 6 ;                           // initializing pin 7 as the sensor output pin
 int flame_pin = HIGH ;                                   // state of sensor
+boolean flame;
 
 Servo motor, steer;
 String input;
@@ -56,14 +57,14 @@ void loop() {
 
   if (flame_pin == HIGH ){
     Serial.println ( " FLAME " ) ;
-   // digitalWrite ( led_pin  , HIGH ) ;            // if state is high, then turn high the led
-  }
+    Serial.write("flame");
+    flame = true;
 
-  else{
-    Serial.println ( " no flame " ) ;
-  //  digitalWrite ( led_pin , LOW ) ;             // otherwise turn it low
-  } 
-    
+  }else if(flame && flame_pin == LOW){
+    Serial.write("No flame");
+    flame = false;
+    Serial.println("No more flame");
+  }
 }
 
 void serialEvent() {
