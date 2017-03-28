@@ -54,26 +54,15 @@ void loop() {
 
   flame_pin = digitalRead ( flame_sensor_pin ) ;                // reading from the sensor
 
-  if (flame_pin == HIGH )                                        // applying condition
-
-  {
-
+  if (flame_pin == HIGH ){
     Serial.println ( " FLAME " ) ;
-
    // digitalWrite ( led_pin  , HIGH ) ;            // if state is high, then turn high the led
-
   }
 
-  else
-
-  {
-
+  else{
     Serial.println ( " no flame " ) ;
-
   //  digitalWrite ( led_pin , LOW ) ;             // otherwise turn it low
-
   } 
-
     
 }
 
