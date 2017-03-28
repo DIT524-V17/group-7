@@ -5,4 +5,8 @@ Title: Integration and redesign
 -Redesigned application.
 -Set up git on raspberry.
 
-Tuesday 28/03-2017:
+Tuesday 28/03-2017: 2 hours
+Title: Integration and test case creation
+-Researched ways for test case creation.
+-App/raspberry testing.
+-Modify car speed through app.
