@@ -1,0 +1,11 @@
+Monday 27/03: 7 Hours
+Title: Integration
+Worked on the intregration between the raspberry and arduino with Pontus and Sebastian. 
+Improved code base for the steering and controlling speed.
+
+Tuesday 28/03: 3 Hours
+Title: Intregation
+Fixed a bug in the arduino sketch for the steering and speed controlling.
+Made a pull request with the sketch to master.
+Worked in intregation of the flame sensor with Isabelle.
+Started working on communication from arduino to raspberry.
