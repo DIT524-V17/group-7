@@ -34,16 +34,25 @@ Learning Shell syntax and Linux.
 Starting to not hate it.
 
 
-Monday 27-03: 6 hours
+- Sprint 4 -
+
+
+Monday 27-03: 8 hours
 Title: Artifacts thy be gone
 Figure out why artifacts appear on anything other than packages with 5 length. (See common.py)
-Improved the TCP connection. Added comments, Ready it for pull request
+Improved the TCP connection, both on the python server and the client side.
 Setup git branch for work logs.
 Enabled TCP connection to send and receive data both ways.
 Wrote a shell script for automatically pulling the repository and executing the server script on boot.
 Integrating with Sebastian and Tim to get the raspberry working fine.
 Current Issue with the shell script: Boots on launch, But crashes instantly.
 
+Tuesday 28-03: 4 hours
+Title: Demoable product
+Worked on improving shell script.
+Improved TCP client.
+TCP server now auto reconnects.
+Current issue: Script does not work on boot. Requires a 'restart' service command.
 
 
 
