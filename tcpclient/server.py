@@ -6,6 +6,7 @@ import socket
 from common import Receiver
 from common import Transmitter
 import time
+import os
 
 host = "192.168.0.120"
 port = 9005
@@ -13,6 +14,9 @@ port2 = 9000
 
 
 def init():
+    while not os.system("ping -c 1 google.com") == 0:
+        pass
+
     receiver = Receiver(host, port)
     while 1:
         pass
