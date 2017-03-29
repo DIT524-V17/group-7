@@ -38,7 +38,7 @@ class Receiver(Thread):
     def accept(self):
         (client, address) = self.receiver.accept()
         if client.getsockname() != "":
-            print("Client: " + client.getpeername() + " connected")
+            # print("Client: " + client.getpeername() + " connected")
             self.connection = True
         else:
             self.accept()
