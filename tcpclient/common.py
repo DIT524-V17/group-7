@@ -18,7 +18,6 @@ class Receiver(Thread):
     peer = ""
 
     def __init__(self, host, port):
-        assert (9000 >= port <= 9010), "Port must be between 9000-9010"
         assert (host != ""), "Receiver self.host is empty"
         Thread.__init__(self)
         self.host = host
