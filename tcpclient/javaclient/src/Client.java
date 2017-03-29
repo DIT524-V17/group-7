@@ -42,13 +42,21 @@ class BaseSocket implements Runnable {
 	private Thread t;
 	private String host;
 	private int port;
-	Queue<String> input = new PriorityQueue<>();
+	private Queue<String> input = new PriorityQueue<>();
 	Socket socket;
 
 	// Macro for add.
 	public void write(String s){
 		// TODO: 06/03/2017 Add command vertification here. Preferably O(1).
 		input.add(s);
+	}
+
+	// Macro for read
+	public String read(){
+		// TODO: 06/03/2017 Add command vertification here. Preferably O(1).
+		if (!input.isEmpty()) // Checks if the stack has any commands in it waiting.
+			return input.poll();
+		return null;
 	}
 
 	BaseSocket(String host, int port) {
@@ -93,15 +101,15 @@ class Transmitter extends BaseSocket implements Runnable {
 
 			try {
 				while (!socket.isInputShutdown() && Client.c)  // Checks if the socket is able to receive data.
-					if (!input.isEmpty()) // Checks if the stack has any commands in it waiting.
-						out.writeUTF(input.poll());
-			} finally {
-				p("Abandon Transmitter thread, It's going down!");
+					out.writeUTF(read());
+			} finally { // The client is not connected correctly.
+				p("(╯°□°）╯︵ ┻━┻");
 				Client.c = false;
 			}
 
 		} catch (IOException e){
 			e.printStackTrace();
+			p("┬─┬ノ( º _ ºノ)");
 			Client.c = false;
 		}
 
