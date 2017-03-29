@@ -92,8 +92,7 @@ class Transmitter(Thread):
             except:
                 attempts += 1
                 # If there have been more than 5 attempts. End process.
-                assert (attempts <= 5), "¯\_(ツ)_/¯"
-                print("#%s Attempting to connect. " % attempts)
+                assert (attempts <= 5), "Couldn't connect"
 
         print("Transmitter online")
 
