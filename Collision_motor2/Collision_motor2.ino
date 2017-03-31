@@ -64,7 +64,7 @@ if (distancecheck<=10){
     rotat.write(pos);              // tell servo to go to position in variable 'pos'
     delay(15);  
      int distance=measure();
-     if (distancecheck<=10){
+     if (distance<=10){
   ESC1.write(90);
 }
   }
