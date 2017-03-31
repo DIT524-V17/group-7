@@ -1,5 +1,9 @@
 #include <Servo.h>
 
+int flame_sensor_pin = 6 ;                           // initializing pin 7 as the sensor output pin
+int flame_pin = HIGH ;                                   // state of sensor
+boolean flame;
+
 Servo motor, steer;
 String input;
 boolean completeCommand;
@@ -12,6 +16,8 @@ void setup() {
     steer.attach(5);
     steer.write(45);
     pinMode(12, OUTPUT);
+
+    pinMode ( flame_sensor_pin , INPUT ) ;             // declaring sensor pin as input pin for Arduino
     
     Serial.begin(9600);  
 }
@@ -46,6 +52,19 @@ void loop() {
         input = "";
         completeCommand = false;
     }
+
+  flame_pin = digitalRead ( flame_sensor_pin ) ;                // reading from the sensor
+
+  if (flame_pin == HIGH && !flame){
+    Serial.write("f001");
+    flame = true;
+    digitalWrite(12, HIGH);
+
+  }else if(flame && flame_pin == LOW){
+    Serial.write("f000");
+    flame = false;
+    digitalWrite(12, LOW);
+  }
 }
 
 void serialEvent() {
