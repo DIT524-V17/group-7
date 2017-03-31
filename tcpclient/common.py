@@ -1,12 +1,13 @@
 # Author: Pontus Laestadius.
 # Since: 3rd of March, 2017.
-# Maintained since: 29th of March, 2017
 from threading import Thread
 import socket
-import serial
+import sys
+import serial, time
 
 textconverter = 'utf'
-usbconnection = serial.Serial('/dev/ttyACM0', 9600, timeout=.1)
+usbconnection = serial.Serial('/dev/ttyACM0', 9600, timeout=.1);
+
 
 
 class Receiver(Thread):
@@ -15,10 +16,9 @@ class Receiver(Thread):
     host = ""
     port = 0
     connection = False
-    peer = ""
+    
 
     def __init__(self, host, port):
-        assert (host != ""), "Receiver self.host is empty"
         Thread.__init__(self)
         self.host = host
         self.port = port
@@ -28,40 +28,34 @@ class Receiver(Thread):
     def run(self):
         self.receiver.bind((self.host, self.port))
         self.receiver.listen(5)
+        usbconnection.write("L000?".encode());
+        usbconnection.write("L000?".encode());
+        self.reconnect()
 
-        # Enables the LED on the car
-        usbconnection.write("L000?".encode())
-        usbconnection.write("L000?".encode())
-        self.accept()
 
-    # Accepts the client trying to connect
-    def accept(self):
-        (client, address) = self.receiver.accept()
-        if client.getsockname() != "":
-            # print("Client: " + client.getpeername() + " connected")
-            self.connection = True
-        else:
-            self.accept()
-
-    def handler(self, client):
-
-        # While you are connected.
+    def reconnect(self):
+        while 1:
+            (client, address) = self.receiver.accept()
+            if client.getsockname() != "":
+                print("Receiver online")
+                self.connection = True
+                break
         while client.getsockname() != "" and self.connection:
-            self.message(client)
+            msg = client.recv(1024)
+            if not msg:
+                break
+              #      self.disconnected("receivedata(): peer disconnected")
+            msg = msg.decode(textconverter)
+            print(msg) 
 
-        # If the client disconnects
+            usbconnection.write(msg.encode());
+            #print(usbconnection.readline());
+            
         self.connection = False
         self.disconnected("client offline")
-        self.accept()
-
-    # Receive and print commands
-    @staticmethod
-    def message(client):
-        try:
-            usbconnection.write(client.recv(1024))
-        except:
-            raise
-
+        self.reconnect()
+        
+                
     @staticmethod
     def disconnected(s):
         print("Disconnected at: %s" % s)
@@ -85,20 +79,20 @@ class Transmitter(Thread):
         while 1:
             try:
                 self.transmitter.connect((self.host, self.port))
-                # It sends a "confirmation" to the receiver. That reacts once it receives the first command.
-                self.transmitter.send("cc".encode(textconverter))
+                self.transmitter.send("cc".encode(textconverter))  # It sends a "confirmation" to the receiver. That reacts once it receives the first command.
                 break
             except:
                 attempts += 1
-                # If there have been more than 5 attempts. End process.
-                assert (attempts <= 5), "Couldn't connect"
-
+                if attempts < 6:
+                    print("#%s Attempting to connect. " % attempts)
+                else:
+                    print("Couldn't connect.")
+                    del self
         print("Transmitter online")
 
-    # Send one message to the android.
-    def send(self):
         while 1:
             try:
                 self.transmitter.send(input().encode(textconverter))
             except OSError:
-                Receiver.disconnected("couldn't send data, have you tried using AOL?")
+                Receiver.disconnected(self, "senddata()")
+                del self
