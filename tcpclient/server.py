@@ -14,8 +14,9 @@ port2 = 9000
 
 
 def init():
-    while not os.system("ping -c 1 google.com") == 0:
-        pass
+    #Pings google.com to check for internet connection.
+    # while not os.system("ping -c 1 google.com") == 0:
+    #     pass
 
     receiver = Receiver(host, port)
     while 1:

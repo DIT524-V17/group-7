@@ -21,8 +21,8 @@ public class Client {
 	}
 
 	public static void init(){
-		Transmitter r1 = initTransmitter(host, port);
 		Receiver r2 = initReceiver(host, port2);
+		Transmitter r1 = initTransmitter(host, port);
 	}
 
 	public static Transmitter initTransmitter(String host, int port){
@@ -103,13 +103,13 @@ class Transmitter extends BaseSocket implements Runnable {
 				while (!socket.isInputShutdown() && Client.c)  // Checks if the socket is able to receive data.
 					out.writeUTF(read());
 			} finally { // The client is not connected correctly.
-				p("(╯°□°）╯︵ ┻━┻");
+				p("(╯°□°）╯︵ ┻━┻ Screw networking.");
 				Client.c = false;
 			}
 
 		} catch (IOException e){
 			e.printStackTrace();
-			p("┬─┬ノ( º _ ºノ)");
+			p("┬─┬ノ( º _ ºノ) I caught the table but you're still offline.");
 			Client.c = false;
 		}
 
