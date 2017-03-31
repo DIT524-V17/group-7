@@ -18,7 +18,6 @@ import java.util.Scanner;
 
 import static t.s.o.r.f.frost.Client.*;
 
-
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -28,7 +27,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button forward = (Button) findViewById(R.id.button);
         new threads().execute();
-
        // final Transmitter r1 = initTransmitter(host, port);
         //final Transmitter r2 = initTransmitter(host, port2);
         //Sets the TouchListener to 'button' which in this case refers to the *FORWARD* button. (Check XML).
@@ -57,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-
             Button reverse = (Button) findViewById(R.id.button2);
             //Sets the TouchListener to 'button2' which in this case refers to the *Reverse* button. (Check XML).
             reverse.setOnTouchListener(new View.OnTouchListener() {
@@ -82,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
                     return false;
                 }
             });
-
 
             Button rightSteer = (Button) findViewById(R.id.button4);
             //Sets the TouchListener to 'button4' which in this case refers to the *Right Steer* button. (Check XML).
@@ -132,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-        
         /**
          * Temporary switch for setting a different speed.
          * TODO:Remove when the joystick is to be implemented.
@@ -177,7 +172,6 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
-
 
     /*public void forwardTest(View view){
         Button Forward = (Button) view;
