@@ -14,10 +14,13 @@ port2 = 9000
 def init():
     print(host)
     receiver = Receiver(host, port)
-    
+
+    # Waits until the receiver is up and running.
     while not receiver.connection:
        pass
-    transmitter = Transmitter(receiver.receiver.getpeername(), port2)
+
+    # Uses the address from the first connection to identify who it's connecting to.
+    transmitter = Transmitter(receiver.address, port2)
 
     while 1:
         pass

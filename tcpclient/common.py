@@ -13,10 +13,10 @@ usbconnection = serial.Serial('/dev/ttyACM0', 9600, timeout=.1);
 class Receiver(Thread):
 
     receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    host = ""
-    port = 0
+    host = None
+    port = None
     connection = False
-    
+    address = None
 
     def __init__(self, host, port):
         Thread.__init__(self)
