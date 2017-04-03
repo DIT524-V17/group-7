@@ -1,5 +1,12 @@
 #! bin/bash
 
+
+ping -q -c5 google.com > /dev/null
+ 
+if [ $? -eq 0 ]
+then
+
+
 # The Address can be in use. This clears the port for TCP use.
 sudo fuser -k 9005/tcp
 
@@ -17,4 +24,7 @@ python tcpclient/server.py
 
 # In case of emergency. Call 911.
 cd
+
+fi
+done
 
