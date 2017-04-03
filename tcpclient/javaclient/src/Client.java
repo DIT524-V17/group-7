@@ -3,6 +3,13 @@ import java.io.*;
 
 import java.util.*;
 
+/**
+ * @author Pontus Laestadius
+ * Date: DD-MM-YYYY
+ * @since 20-03-2017
+ * Maintained since: 31-03-2017
+ */
+
 public class Client {
 
 	private static int port = 9005;

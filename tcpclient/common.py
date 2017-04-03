@@ -83,11 +83,8 @@ class Transmitter(Thread):
                 break
             except:
                 attempts += 1
-                if attempts < 6:
-                    print("#%s Attempting to connect. " % attempts)
-                else:
-                    print("Couldn't connect.")
-                    del self
+                assert attempts < 6
+                Receiver.disconnected("Unable to connect transmitter to")
         print("Transmitter online")
 
         while 1:
