@@ -28,5 +28,4 @@ python tcpclient/server.py
 cd
 
 fi
-done
 
