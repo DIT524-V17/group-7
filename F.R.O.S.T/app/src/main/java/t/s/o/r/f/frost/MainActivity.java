@@ -17,10 +17,55 @@ import java.util.Scanner;
 import static t.s.o.r.f.frost.Client.*;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements JoystickView.JoystickListener{
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        JoystickView joystick = new JoystickView(this);
+        setContentView(R.layout.activity_main);
+        new threads().execute();
+
+    }
+
+    @Override
+    public void onJoystickMoved(float speed, float angle, int id) {
+        String speedCommand = "";
+        String steerCommand = "";
+        switch (id){
+            case R.id.joystickCamera:
+
+                speedCommand = "" + 0;
+                steerCommand = "" + 0;
+
+                // Sets the speed
+                // threads.r1.write("d" + speedCommand + "?");
+
+
+                // Sets the angle
+                threads.r1.write("a" + steerCommand + "?");
+                // hreads.r1.write("a070?");
+
+                //Log.d("Camera Joystick", "X percent: " + xPercent + " Y percent: " + yPercent);
+                break;
+            case R.id.joystickCar:
+
+                speedCommand = "" + 0;
+                steerCommand = "" + 0;
+
+                // Sets the speed
+                threads.r1.write("d" + speedCommand + "?");
+
+
+                // Sets the angle
+                threads.r1.write("a" + steerCommand + "?");
+                //Log.d("Car Joystick", "X percent: " + xPercent + " Y percent: " + yPercent);
+                break;
+        }
+    }
 
     //static String drive = "d070";
-    @Override
+    /*@Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
@@ -130,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                     return false;
                 }
             });
-    }
+    }*/
 
     /**
      * AsyncTask used to allow sub-threading in the main application.
