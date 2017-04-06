@@ -7,7 +7,7 @@ import java.util.*;
  * @author Pontus Laestadius
  * Date format: DD-MM-YYYY
  * @since 20-03-2017
- * Maintained since: 05-04-2017
+ * Maintained since: 06-04-2017
  */
 
 public class Client {
@@ -19,7 +19,6 @@ public class Client {
 	public static void main(String [] args) {
 		while (true){
 			if (!c){
-				System.out.println("Connecting");
 				init();
 				c = true;
 			}
@@ -27,7 +26,7 @@ public class Client {
 	}
 
 	public static void init(){
-		Transmitter r1 = init(host, port);
+		Transmitter r1 = init(host, port); // TODO: 06/04/2017 Use this for GUI reconnectability with some modifications
 	}
 
 	public static Transmitter init(String host, int port){
@@ -41,13 +40,51 @@ class BaseSocket implements Runnable {
 	private Thread t;
 	private String host;
 	private int port;
+
+	// A queue is used to handle all input commands so they go in the proper order and are not lost.
 	Queue<String> input = new PriorityQueue<>();
+	Queue<String> output = new PriorityQueue<>(); // TODO: 06/04/2017 make a read function for this. 
 	Socket socket;
 
 	// Macro for add.
 	public void write(String s){
 		// TODO: 06/03/2017 Add command vertification here. Preferably O(1).
 		input.add(s);
+	}
+
+	/**
+	 *
+	 * @return the first command in the queue.
+	 */
+	public String read(){
+		if (!output.isEmpty())
+			return output.poll();
+		else
+			return "";
+	}
+
+	/**
+	 *
+	 * @return all the queued up output as an array of strings.
+	 */
+	public String[] readAll(){
+		int i = 0;
+		String[] res = new String[output.size()];
+		while (!output.isEmpty())
+			res[i++] = read();
+		return res;
+	}
+
+	/**
+	 *
+	 * @return a formated version of all queued up output received.
+	 */
+	public String readAllFormated(){
+		String[] format = readAll();
+		String formatted = "";
+		for (String f: format)
+			formatted += f + ", ";
+		return formatted.substring(0, formatted.length()-3);
 	}
 
 	BaseSocket(String host, int port) {
@@ -83,7 +120,7 @@ class Transmitter extends BaseSocket implements Runnable {
 
 	@Override
 	public void run() {
-		write("cc"); // Enables the receiving socket. Do not remove.
+		write("cc"); // Enables the receiving socket. Do not remove. // TODO: 06/04/2017 remove this. 
 
 		try { // Catches IO exceptions
 
@@ -100,7 +137,8 @@ class Transmitter extends BaseSocket implements Runnable {
 						while (!input.isEmpty()) // Checks if the stack has any commands in it waiting.
 							out.writeUTF(input.poll());
 					if (in.available() > 0)
-						p(in.readUTF()); // TODO: 27/03/2017 Replace with where you want the output to go.
+						output.add(in.readUTF());
+
 				}
 
 			} finally {
@@ -113,7 +151,7 @@ class Transmitter extends BaseSocket implements Runnable {
 			Client.c = false;
 		}
 
-		p(this.getClass().toString() + " exiting.");
+		p(this.getClass().toString().substring(6) + " exiting.");
 	}
 
 	void start () {
