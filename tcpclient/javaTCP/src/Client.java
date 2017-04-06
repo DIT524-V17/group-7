@@ -126,9 +126,7 @@ class Transmitter extends BaseSocket implements Runnable {
 
 			// Out and input streams.
 			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // I hate Java.
 
 			p(this.getClass().toString() + " online.");
 
@@ -140,8 +138,10 @@ class Transmitter extends BaseSocket implements Runnable {
 					// if (in.available() > 0){
 						// output.add(in.readUTF());
 					String s = in.readLine();
-					if (s != null)
+					if (s != null){
 						p(s);
+						output.add(s);
+					}
 					// }
 
 				}
