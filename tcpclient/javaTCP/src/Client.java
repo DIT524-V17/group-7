@@ -120,13 +120,14 @@ class Transmitter extends BaseSocket implements Runnable {
 
 	@Override
 	public void run() {
-		write("cc"); // Enables the receiving socket. Do not remove. // TODO: 06/04/2017 remove this. 
+		write("cc"); // Enables the receiving socket. Do not remove. // TODO: 06/04/2017 remove this.
 
 		try { // Catches IO exceptions
 
 			// Out and input streams.
 			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-			DataInputStream in = new DataInputStream(socket.getInputStream());
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
 
 
 			p(this.getClass().toString() + " online.");
@@ -136,8 +137,12 @@ class Transmitter extends BaseSocket implements Runnable {
 					if (!socket.isInputShutdown())  // Checks if the socket is able to receive data.
 						while (!input.isEmpty()) // Checks if the stack has any commands in it waiting.
 							out.writeUTF(input.poll());
-					if (in.available() > 0)
-						output.add(in.readUTF());
+					// if (in.available() > 0){
+						// output.add(in.readUTF());
+					p("1");
+						p(in.readLine());
+					p("2");
+					// }
 
 				}
 

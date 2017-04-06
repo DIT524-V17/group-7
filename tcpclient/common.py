@@ -53,19 +53,17 @@ class Receiver(Thread):
             msg = client.recv(1024)
 
             # If there does not exist a message due to a connection issue, End loop.
-            if not msg:
-                break
+            if msg:
+                # Decodes the message received from bytes to text using either utf or ascii.
+                msg = msg.decode(textconverter)
 
-            # Decodes the message received from bytes to text using either utf or ascii.
-            msg = msg.decode(textconverter)
-
-            # Writes the message to the serial port on the arduino.
-            usbconnection.write(msg.encode())
+                # Writes the message to the serial port on the arduino.
+                usbconnection.write(msg.encode())
 
             # Reads from the Serial and sends it to the client.
             # if usbconnection.readline():
             #    self.client.send(usbconnection.readline().decode().encode(textconverter))
-            self.client.send("Reply".encode(textconverter))
+            self.client.send("Reply")
 
         # If a client disconnects. Open the port again so a new client can connect.
         self.connection = False
