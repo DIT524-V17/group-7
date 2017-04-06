@@ -63,7 +63,7 @@ class Receiver(Thread):
             # Reads from the Serial and sends it to the client.
             # if usbconnection.readline():
             #    self.client.send(usbconnection.readline().decode().encode(textconverter))
-            self.client.send("Reply")
+            self.client.send("Reply \n")
 
         # If a client disconnects. Open the port again so a new client can connect.
         self.connection = False

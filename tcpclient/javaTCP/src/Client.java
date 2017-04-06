@@ -139,9 +139,9 @@ class Transmitter extends BaseSocket implements Runnable {
 							out.writeUTF(input.poll());
 					// if (in.available() > 0){
 						// output.add(in.readUTF());
-					p("1");
-						p(in.readLine());
-					p("2");
+					String s = in.readLine();
+					if (s != null)
+						p(s);
 					// }
 
 				}
