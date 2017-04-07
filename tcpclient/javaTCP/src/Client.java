@@ -13,7 +13,8 @@ import java.util.*;
 public class Client {
 
 	private static int port = 9005;
-	private static String host = "192.168.0.120";
+	// private static String host = "192.168.0.120";
+	private static String host = "DESKTOP-KMQH395";
 	static Boolean c = false;
 
 	public static void main(String [] args) {
@@ -120,8 +121,6 @@ class Transmitter extends BaseSocket implements Runnable {
 
 	@Override
 	public void run() {
-		write("cc"); // Enables the receiving socket. Do not remove. // TODO: 06/04/2017 remove this.
-
 		try { // Catches IO exceptions
 
 			// Out and input streams.
@@ -137,13 +136,18 @@ class Transmitter extends BaseSocket implements Runnable {
 							out.writeUTF(input.poll());
 					// if (in.available() > 0){
 						// output.add(in.readUTF());
-					String s = in.readLine();
-					if (s != null){
-						p(s);
-						output.add(s);
-					}
-					// }
 
+					out.flush();
+					String fromServer = null;
+					/*
+					I like how java is like: 1 statement per line, Make it simple.
+					Then they have this in the tutorial to save a single line
+					https://docs.oracle.com/javase/tutorial/networking/sockets/clientServer.html
+					 */
+					while ((fromServer = in.readLine()) != null) {
+						p(fromServer);
+						output.add(fromServer);
+					}
 				}
 
 			} finally {
@@ -155,8 +159,6 @@ class Transmitter extends BaseSocket implements Runnable {
 			e.printStackTrace();
 			Client.c = false;
 		}
-
-		p(this.getClass().toString().substring(6) + " exiting.");
 	}
 
 	void start () {

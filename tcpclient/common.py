@@ -49,8 +49,13 @@ class Receiver(Thread):
         # Only breas when/if the client disconnects from the server.
         while self.connection:
 
+            Transmitter(client)
+
+            print("3")
+
             # Receives up to 1024 bytes I think. Do some more reserach on teh purpose of this.
             msg = client.recv(1024)
+
 
             # If there does not exist a message due to a connection issue, End loop.
             if msg:
@@ -60,10 +65,7 @@ class Receiver(Thread):
                 # Writes the message to the serial port on the arduino.
                 usbconnection.write(msg.encode())
 
-            # Reads from the Serial and sends it to the client.
-            # if usbconnection.readline():
-            #    self.client.send(usbconnection.readline().decode().encode(textconverter))
-            client.sendAll(("Reply").encode("hex"))
+
 
         # If a client disconnects. Open the port again so a new client can connect.
         self.connection = False
@@ -74,3 +76,21 @@ class Receiver(Thread):
     @staticmethod
     def disconnected(s):
         print("Disconnected at: %s" % s)
+
+class Transmitter(Thread):
+
+    s = None
+
+    def __init__(self, ssocket):
+        Thread.__init__(self)
+        self.s = ssocket
+        self.daemon = True
+        self.start()
+
+    # On thread run.
+    def run(self):
+        while 1:
+
+            # Reads from the Serial and sends it to the client.
+            if usbconnection.readline():
+                self.client.send(usbconnection.readline().decode().encode(textconverter))
