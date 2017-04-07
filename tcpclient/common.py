@@ -50,15 +50,15 @@ class Receiver(Thread):
         # Only breas when/if the client disconnects from the server.
         while self.connection:
 
-
-            print("3")
-
             # Receives up to 1024 bytes I think. Do some more reserach on teh purpose of this.
             msg = client.recv(1024)
 
 
             # If there does not exist a message due to a connection issue, End loop.
             if msg:
+
+                print("Sending to Arduino: " + msg)
+
                 # Decodes the message received from bytes to text using either utf or ascii.
                 msg = msg.decode(textconverter)
 
