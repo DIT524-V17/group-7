@@ -44,12 +44,12 @@ class Receiver(Thread):
             # The getsockname is not an empty string if it has a connected client.
             if client.getsockname() != "":
                 self.connection = True
+                Transmitter(client)
                 break
 
         # Only breas when/if the client disconnects from the server.
         while self.connection:
 
-            Transmitter(client)
 
             print("3")
 

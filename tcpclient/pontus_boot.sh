@@ -18,8 +18,8 @@ cd /home/pi/GitRasp/group-7
 # Fuck it.
 sudo git reset --hard origin/TCPclient
 
-sudo git fetch
-sudo git pull
+# sudo git fetch
+# sudo git pull
 # sudo go kill yourself
 
 # Run TCP server
