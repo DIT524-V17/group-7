@@ -50,7 +50,7 @@ class Receiver(Thread):
         while self.connection:
 
             try:
-                if usbconnection.readline():
+                if usbconnection.read() > 0:
                     client.send(usbconnection.readline().decode().encode(textconverter))
             except BrokenPipeError:
                 break
