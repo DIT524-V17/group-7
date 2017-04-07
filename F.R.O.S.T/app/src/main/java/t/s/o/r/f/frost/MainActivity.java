@@ -22,9 +22,11 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        System.out.println("The hellz?");
         JoystickView joystick = new JoystickView(this);
         setContentView(R.layout.activity_main);
-        new threads().execute();
+        //new threads().execute();
+        System.out.println("The hell?");
 
     }
 
@@ -43,22 +45,26 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
 
 
                 // Sets the angle
-                threads.r1.write("a" + steerCommand + "?");
+               // threads.r1.write("a" + steerCommand + "?");
                 // hreads.r1.write("a070?");
 
                 //Log.d("Camera Joystick", "X percent: " + xPercent + " Y percent: " + yPercent);
                 break;
             case R.id.joystickCar:
 
-                speedCommand = "" + 0;
-                steerCommand = "" + 0;
+                // Translating input from joystick according to protocol
+                speedCommand = "" + (int) 90 + speed/5;
+                if(speedCommand.length() != 3) speedCommand = "0" + speedCommand;
+                steerCommand = angle >= 0 && angle <= 180? "0" + (90 - (int) angle / 2) : "0" + (int)(360-angle)/2;
+                if(steerCommand.length() != 3) steerCommand = "0" + steerCommand;
 
                 // Sets the speed
-                threads.r1.write("d" + speedCommand + "?");
-
+               // threads.r1.write("d" + speedCommand + "?");
+                System.out.println("d" + speedCommand + "?");
 
                 // Sets the angle
-                threads.r1.write("a" + steerCommand + "?");
+                //threads.r1.write("a" + steerCommand + "?");
+                System.out.println("a" + steerCommand + "?");
                 //Log.d("Car Joystick", "X percent: " + xPercent + " Y percent: " + yPercent);
                 break;
         }
@@ -182,7 +188,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
      * Initiates the Transmitter with the 'host' id and correct port.
      * TODO: Rewrite this to actually make sense. Override the two other methods if they are needed later.
      */
-   public static class threads extends AsyncTask<String, Void, Void> {
+   /*public static class threads extends AsyncTask<String, Void, Void> {
        static Transmitter r1;
         @Override
         public Void doInBackground(String... params) {
@@ -198,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
             }
             return null;
         }
-    }
+    }*/
 
 
     /*public void forwardTest(View view){
