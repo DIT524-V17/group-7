@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button forward = (Button) findViewById(R.id.button);
         new threads().execute();
+        //Transmitter r1 = threads.getR1();
        // final Transmitter r1 = initTransmitter(host, port);
         //final Transmitter r2 = initTransmitter(host, port2);
         //Sets the TouchListener to 'button' which in this case refers to the *FORWARD* button. (Check XML).
