@@ -7,7 +7,7 @@ import java.util.*;
  * @author Pontus Laestadius
  * Date format: DD-MM-YYYY
  * @since 20-03-2017
- * Maintained since: 06-04-2017
+ * Maintained since: 07-04-2017
  */
 
 public class Client {

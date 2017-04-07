@@ -1,6 +1,6 @@
 # Author: Pontus Laestadius.
 # Since: 3rd of March, 2017.
-# Maintained since: 5th of April 2017.
+# Maintained since: 7th of April 2017.
 from threading import Thread
 import socket
 import sys
@@ -79,7 +79,7 @@ class Receiver(Thread):
 
 class Transmitter(Thread):
 
-    s = None
+    s = socket
 
     def __init__(self, ssocket):
         Thread.__init__(self)
@@ -93,4 +93,4 @@ class Transmitter(Thread):
 
             # Reads from the Serial and sends it to the client.
             if usbconnection.readline():
-                self.client.send(usbconnection.readline().decode().encode(textconverter))
+                self.s.send(usbconnection.readline().decode().encode(textconverter))
