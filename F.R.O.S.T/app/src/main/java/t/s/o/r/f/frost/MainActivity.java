@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.view.View.OnTouchListener;
 import android.widget.CompoundButton;
 import android.widget.Switch;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -27,10 +28,20 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button forward = (Button) findViewById(R.id.button);
         new threads().execute();
+
+        String recieved = threads.r1.read();
+        TextView textView = (TextView) findViewById(R.id.textHere);
+
+        if(recieved == "F001?") {
+            textView.setText(recieved);
+        }
         //Transmitter r1 = threads.getR1();
        // final Transmitter r1 = initTransmitter(host, port);
         //final Transmitter r2 = initTransmitter(host, port2);
         //Sets the TouchListener to 'button' which in this case refers to the *FORWARD* button. (Check XML).
+
+
+
         forward.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -129,6 +140,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+
+
         /**
          * Temporary switch for setting a different speed.
          * TODO:Remove when the joystick is to be implemented.
@@ -136,16 +149,17 @@ public class MainActivity extends AppCompatActivity {
         /*
         Switch faster = (Switch) findViewById(R.id.switch_1);
         faster.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            String readRes = threads.r1.read();
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked){
-                    //workDammit = true;
-                    //System.out.println("false now");
+                    workDammit = true;
+                    System.out.println(threads.r1.read());
                 }
 
                 else{
-                    // workDammit = false;
-                    //System.out.println("true now");
+                    workDammit = false;
+                    System.out.println(threads.r1.read());
                 }
             }
         });*/
@@ -163,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 //Initializes the Transmitter 'r1' with ethe appropriate host and port.
-                r1 = initTransmitter(host, port);
+                r1 = init(host, port);
 
 
             } catch (Exception e) {

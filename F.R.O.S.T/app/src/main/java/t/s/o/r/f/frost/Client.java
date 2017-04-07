@@ -1,42 +1,36 @@
-package t.s.o.r.f.frost;// File Name GreetingClient.java
-import java.net.*;
-import java.io.*;
+package t.s.o.r.f.frost;
 
 import java.net.*;
 import java.io.*;
-
 import java.util.*;
+/**
+ * @author Pontus Laestadius
+ * Date format: DD-MM-YYYY
+ * @since 20-03-2017
+ * Maintained since: 07-04-2017
+ */
 
 public class Client {
 
 	static int port = 9005;
-	static int port2 = 9000;
 	static String host = "192.168.0.120";
+	static Boolean c = false;
 
 	public static void main(String [] args) {
-
-		/*
-		try {
-			host = InetAddress.getLocalHost().getHostName(); // TODO: 07/03/2017 replace with raspberry pi ip when implementing.
-		} catch (UnknownHostException e){
-			System.out.print("Unkown host");
+		while (true){
+			if (!c){
+				init();
+				c = true;
+			}
 		}
-		*/
-
-		Transmitter r1 = initTransmitter(host, port);
-		// Receiver r2 = initReceiver(host, port2);
-
-		// TODO: 05/03/2017 currently always keeps the client alive. Replace with automatic reconnection.
 	}
 
-	public static Transmitter initTransmitter(String host, int port){
+	public static void init(){
+		Transmitter r1 = init(host, port); // TODO: 06/04/2017 Use this for GUI reconnectability with some modifications
+	}
+
+	public static Transmitter init(String host, int port){
 		Transmitter R1 = new Transmitter(host, port);
-		R1.start();
-		return R1;
-	}
-
-	public static Receiver initReceiver(String host, int port){
-		Receiver R1 = new Receiver(host, port);
 		R1.start();
 		return R1;
 	}
@@ -46,7 +40,10 @@ class BaseSocket implements Runnable {
 	private Thread t;
 	private String host;
 	private int port;
+
+	// A queue is used to handle all input commands so they go in the proper order and are not lost.
 	Queue<String> input = new PriorityQueue<>();
+	Queue<String> output = new PriorityQueue<>(); // TODO: 06/04/2017 make a read function for this. 
 	Socket socket;
 
 	// Macro for add.
@@ -55,13 +52,47 @@ class BaseSocket implements Runnable {
 		input.add(s);
 	}
 
+	/**
+	 *
+	 * @return the first command in the queue.
+	 */
+	public String read(){
+		if (!output.isEmpty())
+			return output.poll();
+		else
+			return "";
+	}
+
+	/**
+	 *
+	 * @return all the queued up output as an array of strings.
+	 */
+	public String[] readAll(){
+		int i = 0;
+		String[] res = new String[output.size()];
+		while (!output.isEmpty())
+			res[i++] = read();
+		return res;
+	}
+
+	/**
+	 *
+	 * @return a formated version of all queued up output received.
+	 */
+	public String readAllFormated(){
+		String[] format = readAll();
+		String formatted = "";
+		for (String f: format)
+			formatted += f + ", ";
+		return formatted.substring(0, formatted.length()-3);
+	}
+
 	BaseSocket(String host, int port) {
 		this.host = host;
 		this.port = port;
 	}
 
-	public void run() {
-	}
+	public void run() {}
 
 	static void p(String s){
 		System.out.println(s);
@@ -89,28 +120,44 @@ class Transmitter extends BaseSocket implements Runnable {
 
 	@Override
 	public void run() {
-		write("cc"); // Enables the receiving socket. Do not remove.
+		try { // Catches IO exceptions
 
-		try {
+			// Out and input streams.
 			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // I hate Java.
+
 			p(this.getClass().toString() + " online.");
 
 			try {
-				while (!socket.isInputShutdown()) { // Checks if the socket is able to receive data.
-					if (!input.isEmpty()){ // Checks if the st4ack has any commands in it waiting.
-						String s = input.poll();
-						out.writeUTF(s); // TODO: 05/03/2017 Needs to be replaced for android input.
+				while (Client.c){
+					if (!socket.isInputShutdown())  // Checks if the socket is able to receive data.
+						while (!input.isEmpty()) // Checks if the stack has any commands in it waiting.
+							out.writeUTF(input.poll());
+					// if (in.available() > 0){
+					// output.add(in.readUTF());
+
+					out.flush();
+					String fromServer = null;
+					/*
+					I like how java is like: 1 statement per line, Make it simple.
+					Then they have this in the tutorial to save a single line
+					https://docs.oracle.com/javase/tutorial/networking/sockets/clientServer.html
+					 */
+					while ((fromServer = in.readLine()) != null) {
+						p(fromServer);
+						output.add(fromServer);
 					}
 				}
+
 			} finally {
-				p("Abandon Transmitter thread, It's going down!");
+				p("Abandon " + this.getClass().toString().substring(6) + ", It's going down!");
+				Client.c = false;
 			}
 
 		} catch (IOException e){
 			e.printStackTrace();
+			Client.c = false;
 		}
-
-		p(this.getClass().toString() + " exiting.");
 	}
 
 	void start () {
@@ -118,40 +165,4 @@ class Transmitter extends BaseSocket implements Runnable {
 	}
 }
 
-class Receiver extends BaseSocket implements Runnable {
-	private Thread t;
-	private ServerSocket ssocket;
 
-	Receiver(String host, int port) {
-		super(host,port);
-		try {
-			ssocket = new ServerSocket(port);
-			ssocket.setSoTimeout(10000);
-		} catch (IOException e){
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void run() {
-
-		try {
-			socket = ssocket.accept();
-			DataInputStream in = new DataInputStream(socket.getInputStream());
-			p(this.getClass().toString() + " online.");
-
-			while (true){
-				p(in.readUTF());
-			}
-
-		}catch(IOException e) {
-			e.printStackTrace();
-		}
-
-		p(this.getClass().toString() + " exiting.");
-	}
-
-	void start () {
-		super.start();
-	}
-}

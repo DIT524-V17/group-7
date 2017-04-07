@@ -76,4 +76,14 @@
         android:textColor="@android:color/white"
         android:layout_marginStart="25dp"
         android:id="@+id/switch_1" />
+
+    <TextView
+        android:id="@+id/textHere"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/button"
+        android:layout_below="@+id/switch_1"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="20dp"
+        android:text="noFire" />
 </RelativeLayout>
