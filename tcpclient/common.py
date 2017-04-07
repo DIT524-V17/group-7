@@ -49,11 +49,9 @@ class Receiver(Thread):
         # Only breas when/if the client disconnects from the server.
         while self.connection:
 
-            try:
-                if usbconnection.read() > 0:
-                    client.send(usbconnection.readline().decode().encode(textconverter))
-            except BrokenPipeError:
-                break
+            Transmitter(client)
+
+            print("3")
 
             # Receives up to 1024 bytes I think. Do some more reserach on teh purpose of this.
             msg = client.recv(1024)
@@ -78,3 +76,25 @@ class Receiver(Thread):
     @staticmethod
     def disconnected(s):
         print("Disconnected at: %s" % s)
+
+
+class Transmitter(Thread):
+
+    s = socket
+
+    def __init__(self, ssocket):
+        Thread.__init__(self)
+        self.s = ssocket
+        self.daemon = True
+        self.start()
+
+    # On thread run.
+    def run(self):
+        while 1:
+
+            # Reads from the Serial and sends it to the client.
+            try:
+                if usbconnection.readline():
+                    self.s.send(usbconnection.readline().decode().encode(textconverter))
+            except BrokenPipeError:
+                raise
