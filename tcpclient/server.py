@@ -5,10 +5,8 @@ from common import Receiver
 import socket
 
 def init():
-    # Receiver("192.168.0.120", 9005)
+    Receiver("192.168.0.120", 9005)
     print(socket.gethostname())
-    Receiver(socket.gethostname(), 9005)
-
 
     while 1:
         pass

@@ -13,8 +13,7 @@ import java.util.*;
 public class Client {
 
 	private static int port = 9005;
-	// private static String host = "192.168.0.120";
-	private static String host = "DESKTOP-KMQH395";
+	private static String host = "192.168.0.120";
 	static Boolean c = false;
 
 	public static void main(String [] args) {
