@@ -6,6 +6,7 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.menu.ActionMenuItemView;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -22,11 +23,9 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        System.out.println("The hellz?");
         JoystickView joystick = new JoystickView(this);
         setContentView(R.layout.activity_main);
-        //new threads().execute();
-        System.out.println("The hell?");
+        new threads().execute();
 
     }
 
@@ -52,20 +51,33 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
                 break;
             case R.id.joystickCar:
 
+
+                // min 29
+                // max 52
                 // Translating input from joystick according to protocol
-                speedCommand = "" + (int) 90 + speed/5;
-                if(speedCommand.length() != 3) speedCommand = "0" + speedCommand;
-                steerCommand = angle >= 0 && angle <= 180? "0" + (90 - (int) angle / 2) : "0" + (int)(360-angle)/2;
-                if(steerCommand.length() != 3) steerCommand = "0" + steerCommand;
+                speedCommand = "" + (int)-(speed/4 - 95);
+
+                for(int i = 0; speedCommand.length() < 3; i++)
+                    speedCommand = "0" + speedCommand;
+
+
+
+
+                steerCommand = angle >= 0 && angle <= 180? "" + (90 - (int) angle / 2) : "" + (int)(360-angle)/2;
+
+                for(int i = 0; steerCommand.length() < 3; i++)
+                 steerCommand = "0" + steerCommand;
 
                 // Sets the speed
                // threads.r1.write("d" + speedCommand + "?");
-                System.out.println("d" + speedCommand + "?");
+                threads.r1.write("d" + speedCommand + "?");
+                //System.out.println("d" + speedCommand + "?");
+                Log.e("Speed","d" + speedCommand + "?");
 
                 // Sets the angle
-                //threads.r1.write("a" + steerCommand + "?");
-                System.out.println("a" + steerCommand + "?");
-                //Log.d("Car Joystick", "X percent: " + xPercent + " Y percent: " + yPercent);
+                threads.r1.write("a" + steerCommand + "?");
+
+                Log.e("Angle","a" + steerCommand + "?");
                 break;
         }
     }
@@ -188,14 +200,14 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
      * Initiates the Transmitter with the 'host' id and correct port.
      * TODO: Rewrite this to actually make sense. Override the two other methods if they are needed later.
      */
-   /*public static class threads extends AsyncTask<String, Void, Void> {
+   public static class threads extends AsyncTask<String, Void, Void> {
        static Transmitter r1;
         @Override
         public Void doInBackground(String... params) {
 
             try {
                 //Initializes the Transmitter 'r1' with ethe appropriate host and port.
-                r1 = initTransmitter(host, port);
+                r1 = init(host, port);
 
 
             } catch (Exception e) {
@@ -204,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
             }
             return null;
         }
-    }*/
+    }
 
 
     /*public void forwardTest(View view){

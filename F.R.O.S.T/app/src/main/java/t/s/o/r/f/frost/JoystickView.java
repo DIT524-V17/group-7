@@ -10,6 +10,7 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
@@ -107,11 +108,12 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
                 float angle = (float) Math.toDegrees(Math.asin(e.getY()/e.getX()));
                 if (displacement < baseRadius) {
 
-                    if(e.getY() - centerY < 0)
+                    if(e.getY() - centerY > 0)
                         speed = -speed;
 
                     drawJoystick(e.getX(), e.getY());
-                    joystickCallback.onJoystickMoved(speed / baseRadius * 100, (e.getY() - centerY)/baseRadius, getId());
+                    //Log.e("Joystick angle", speed/baseRadius * 100 +"");
+                    joystickCallback.onJoystickMoved(speed/baseRadius * 100, angle, getId());
 
                 }
                 else {
@@ -120,12 +122,12 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
                     float constrainedX = centerX + (e.getX() - centerX) * ratio;
                     float constrainedY = centerY + (e.getY() - centerY) * ratio;
 
-                    speed = (float) Math.sqrt(Math.pow(constrainedX, 2) + Math.pow(constrainedY, 2));
-                    if(e.getY() - centerY < 0)
+                    speed = 100;
+                    if(e.getY() - centerY > 0)
                         speed = -speed;
 
                     drawJoystick(constrainedX, constrainedY);
-                    joystickCallback.onJoystickMoved(speed / baseRadius * 100, angle, getId());//(constrainedX - centerX) / baseRadius, (constrainedY - centerY) / baseRadius, getId());
+                    joystickCallback.onJoystickMoved(speed, angle, getId());//(constrainedX - centerX) / baseRadius, (constrainedY - centerY) / baseRadius, getId());
                 }
             }
             else{
