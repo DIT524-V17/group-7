@@ -92,5 +92,8 @@ class Transmitter(Thread):
         while 1:
 
             # Reads from the Serial and sends it to the client.
-            if usbconnection.readline():
-                self.s.send(usbconnection.read(4).decode().encode(textconverter))
+            try:
+                if usbconnection.readline():
+                    self.s.send(usbconnection.readline().decode().encode(textconverter))
+            except:
+                raise

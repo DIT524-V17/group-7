@@ -18,12 +18,6 @@ cd /home/pi/GitRasp/group-7
 # Fuck it.
 sudo git reset --hard origin/TCPclient
 
-# Fetch any updated files
-git fetch
-
-# Pull new files
-git pull
-
 # Run TCP server
 python tcpclient/server.py
 
