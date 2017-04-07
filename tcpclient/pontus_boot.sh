@@ -1,7 +1,7 @@
 #! bin/bash
 
 # Pings google, to check for internet connection,
-ping -q -c5 google.com > /dev/null
+ping -q -c2 google.com > /dev/null
  
 # If there exists a network connection run rest of the script.
 # If there does not, kill the script and let the service auto-restart.
