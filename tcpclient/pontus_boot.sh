@@ -15,6 +15,9 @@ sudo fuser -k 9005/tcp
 # Locate the Git repository
 cd /home/pi/GitRasp/group-7
 
+# Fuck it.
+sudo git reset --hard origin/TCPclient
+
 # Fetch any updated files
 git fetch
 
