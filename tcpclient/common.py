@@ -38,7 +38,7 @@ class Receiver:
         try:
             # Always accepts the client.
             (client, address) = self.receiver.accept()
-            print("1. Client connected. Name: " + client.getsockname())
+            print("1. Client connected.")
             client.setblocking(0)
             self.connection = True
         except:
@@ -75,10 +75,7 @@ class Receiver:
             except socket.error:
                 # If a client disconnects. Open the port again so a new client can connect.
                 self.connection = False
-                self.disconnected("------------- \n" +
-                                  client.getsockname() + " offline. " +
-                                  "\n Re-establishing socket. "
-                                  "\n ------------- ")
+                print("4. Disconnected client")
             self.reconnect()
 
 
