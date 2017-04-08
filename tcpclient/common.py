@@ -33,15 +33,18 @@ class Receiver:
     # Handles connecting and reconnecting.
     def reconnect(self):
 
+        print("-2")
         try:
             # Always accepts the client.
             (client, address) = self.receiver.accept()
+            print("-1")
             self.connection = True
             client.setblocking(0)
         except TimeoutError:
             raise
-        finally:
-            self.reconnect()
+
+        self.reconnect()
+        print("0")
 
         # Only breaks when/if the client disconnects from the server.
         while self.connection:
