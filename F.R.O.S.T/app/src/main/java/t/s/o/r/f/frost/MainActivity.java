@@ -29,12 +29,12 @@ public class MainActivity extends AppCompatActivity {
         Button forward = (Button) findViewById(R.id.button);
         new threads().execute();
 
-        String recieved = threads.r1.read();
-        TextView textView = (TextView) findViewById(R.id.textHere);
+       // String recieved = threads.r1.read();
+       // TextView textView = (TextView) findViewById(R.id.textHere);
 
-        if(recieved == "F001?") {
-            textView.setText(recieved);
-        }
+        //if(recieved == "F001?") {
+       //     textView.setText(recieved);
+       // }
         //Transmitter r1 = threads.getR1();
        // final Transmitter r1 = initTransmitter(host, port);
         //final Transmitter r2 = initTransmitter(host, port2);
@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         //Sends a "forward" commmand to the Raspberry pi (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-
+                            System.out.println("Hello");
                                 threads.r1.write("d070?");
 
 
