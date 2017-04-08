@@ -2,5 +2,7 @@
 # Since: 2nd of March, 2017.
 # Maintained since: 7th of April 2017.
 from common import Receiver
+import socket
 
-Receiver("192.168.43.249", 9005)
+print(socket.gethostbyname(socket.gethostname()));
+Receiver(socket.gethostbyname(socket.gethostname()), 9005)
