@@ -3,4 +3,4 @@
 # Maintained since: 7th of April 2017.
 from common import Receiver
 
-Receiver("192.168.0.120", 9005)
+Receiver("172.20.10.3", 9005)
