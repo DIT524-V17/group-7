@@ -54,8 +54,6 @@ class Receiver:
             if ready[0]:
                 self.msg = client.recv(4096)
 
-            print("1")
-
             # If there does not exist a message due to a connection issue, End loop.
             if self.msg:
 
@@ -74,8 +72,6 @@ class Receiver:
                 info = usbconnection.readline().decode()
                 print("4. To Android: " + info)
                 client.send(info.encode(textconverter))
-
-            print("5")
 
 
         # If a client disconnects. Open the port again so a new client can connect.
