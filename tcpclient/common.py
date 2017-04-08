@@ -37,7 +37,6 @@ class Receiver:
             # Always accepts the client.
             (client, address) = self.receiver.accept()
             self.connection = True
-            Transmitter(client)
             client.setblocking(0)
         except TimeoutError:
             raise
@@ -60,7 +59,12 @@ class Receiver:
 
                 # Writes the message to the serial port on the arduino.
                 usbconnection.write(msg.encode())
+                usbconnection.flush()
 
+            # Found this solution here:
+            # http://stackoverflow.com/questions/38645060/what-is-the-equivalent-of-serial-available-in-pyserial
+            while usbconnection.in_waiting:  # Or: while ser.inWaiting():
+                client.send(usbconnection.readline().decode().encode(textconverter))
 
         # If a client disconnects. Open the port again so a new client can connect.
         self.connection = False
@@ -71,24 +75,3 @@ class Receiver:
     @staticmethod
     def disconnected(s):
         print("Disconnected at: %s" % s)
-
-
-class Transmitter(Thread):
-
-    s = socket
-
-    def __init__(self, ssocket):
-        Thread.__init__(self)
-        self.s = ssocket
-        self.daemon = True
-        self.start()
-
-    # On thread run.
-    def run(self):
-        while 1:
-
-            # Reads from the Serial and sends it to the client.
-            try:
-                self.s.send(usbconnection.readline().decode().encode(textconverter))
-            except BrokenPipeError:
-                raise
