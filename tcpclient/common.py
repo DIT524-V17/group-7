@@ -4,6 +4,7 @@
 from threading import Thread
 import socket
 import serial, time
+import select
 
 textconverter = 'utf'
 usbconnection = serial.Serial('/dev/ttyACM0', 9600, timeout=.1)
@@ -17,6 +18,7 @@ class Receiver:
     port = None
     connection = False
     address = None
+    msg = None
 
     def __init__(self, host, port):
         self.host = host
@@ -32,46 +34,46 @@ class Receiver:
 
     # Handles connecting and reconnecting.
     def reconnect(self):
-
-        print("-2")
+        print("0. Awaiting connection.")
         try:
             # Always accepts the client.
             (client, address) = self.receiver.accept()
-            print("-1")
+            print("1. Client connected.")
+            client.setblocking(0)
             self.connection = True
         except TimeoutError:
             raise
 
-        print("0")
-
         # Only breaks when/if the client disconnects from the server.
         while self.connection:
 
-            # Receives up to 1024 bytes I think. Do some more reserach on teh purpose of this.
-            msg = client.recv(1024)
+            # This follows this example of how to use select in python:
+            # This will give me a none blocking message receiver.
+            # http://stackoverflow.com/questions/2719017/how-to-set-timeout-on-pythons-socket-recv-method
+            ready = select.select([client], [], [], 1)
+            if ready[0]:
+                self.msg = client.recv(4096)
 
             print("1")
 
-
             # If there does not exist a message due to a connection issue, End loop.
-            if msg:
-                print("2")
-                print("Sending to Arduino: " + msg)
+            if self.msg:
 
                 # Decodes the message received from bytes to text using either utf or ascii.
-                msg = msg.decode(textconverter)
+                self.msg = self.msg.decode(textconverter)
+
+                print("2. To Arduino: " + self.msg)
 
                 # Writes the message to the serial port on the arduino.
-                usbconnection.write(msg.encode())
+                usbconnection.write(self.msg.encode())
                 usbconnection.flush()
-
-            print("3")
 
             # Found this solution here:
             # http://stackoverflow.com/questions/38645060/what-is-the-equivalent-of-serial-available-in-pyserial
             while usbconnection.inWaiting():  # Or: while ser.inWaiting():
-                print("4")
-                client.send(usbconnection.readline().decode().encode(textconverter))
+                info = usbconnection.readline().decode()
+                print("4. To Android: " + info)
+                client.send(info.encode(textconverter))
 
             print("5")
 
