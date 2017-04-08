@@ -35,14 +35,11 @@ class Receiver:
     # Handles connecting and reconnecting.
     def reconnect(self):
         print("0. Awaiting connection.")
-        try:
-            # Always accepts the client.
-            (client, address) = self.receiver.accept()
-            print("1. Client connected.")
-            client.setblocking(0)
-            self.connection = True
-        except:
-            raise
+        # Always accepts the client.
+        (client, address) = self.receiver.accept()
+        print("1. Client connected.")
+        client.setblocking(0)
+        self.connection = True
 
         # Only breaks when/if the client disconnects from the server.
         while self.connection:
@@ -75,9 +72,8 @@ class Receiver:
             except socket.error:
                 # If a client disconnects. Open the port again so a new client can connect.
                 self.connection = False
-                print("4. Disconnected client")
-            self.reconnect()
-
+                print("4. Client disconnected")
+        self.reconnect()
 
     # Used for logs. Can be extended to support more features but is not important.
     @staticmethod
