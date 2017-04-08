@@ -4,5 +4,5 @@
 from common import Receiver
 import socket
 
-print(socket.gethostname())
-Receiver(socket.gethostname(), 9005)
+print(socket.getfqdn())
+Receiver("192.168.43.249", 9005)
