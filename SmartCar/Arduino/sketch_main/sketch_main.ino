@@ -15,9 +15,11 @@
 
 #define MAX_DISTANCE_ULTRASONIC 400
 
-int flame_pin;
+int flame_pin;e
 int velocity;
 int range;
+
+
 int collisionServoPosition = START_POSITION_STEER_SERVO;
 int collision_delay = 250;
 int flame_delay = 500;
@@ -72,15 +74,14 @@ void loop() {
         case 'd':
             velocity = input.substring(1, 4).toInt();
             if ((!flame && !obstacle) || velocity >= 90){
-                Serial.println(velocity);
                 motor.write(velocity);
-            } else{
+            }/* else{
                 motor.write(START_POSITION_MOTOR_SERVO); //REMOVE THIS??????????????????????????????????????????
                 motor.write(110);
                 delay(5);
                 motor.write(START_POSITION_MOTOR_SERVO);
                 collision_delay = 0;
-            }
+            }*/
             break;
      
         default:
@@ -109,7 +110,7 @@ void loop() {
       digitalWrite(LED_PIN, LOW);
       flame_delay = 0;
     }
-
+    /*
     //Moves the servo connected to the ultrasonic sensor
     collisionDirection ? collisionServoPosition-- : collisionServoPosition++;
     collisionServo.write(collisionServoPosition);
@@ -120,11 +121,11 @@ void loop() {
     }else if (collisionServoPosition <= 10){
         collisionDirection = false;
     }  
-
+    */
     //Pings the ultrasonic sensor
     range_string = sonar.ping_cm();
     range = range_string.toInt();
-    range_string = "c000" + range_string + '\n';
+    range_string = "c" + range_string + '\n';
     if (lastDistance != range && ++distance_Delay >= 100){
        // Serial.write(range);
         Serial.print(range_string);
