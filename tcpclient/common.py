@@ -41,7 +41,7 @@ class Receiver:
             print("1. Client connected. Name: " + client.getsockname())
             client.setblocking(0)
             self.connection = True
-        except TimeoutError:
+        except:
             raise
 
         # Only breaks when/if the client disconnects from the server.
