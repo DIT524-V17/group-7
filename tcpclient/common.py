@@ -37,8 +37,9 @@ class Receiver:
         try:
             # Always accepts the client.
             (client, address) = self.receiver.accept()
-            print("-1")
+            print("-1: Client Accepted")
             self.connection = True
+            client.settimeout(1)
         except TimeoutError:
             raise
 
@@ -50,12 +51,11 @@ class Receiver:
             # Receives up to 1024 bytes I think. Do some more reserach on teh purpose of this.
             msg = client.recv(1024)
 
-            print("1")
+            print("1: After Recv")
 
 
             # If there does not exist a message due to a connection issue, End loop.
             if msg:
-                print("2")
                 print("Sending to Arduino: " + msg)
 
                 # Decodes the message received from bytes to text using either utf or ascii.
@@ -65,16 +65,11 @@ class Receiver:
                 usbconnection.write(msg.encode())
                 usbconnection.flush()
 
-            print("3")
-
             # Found this solution here:
             # http://stackoverflow.com/questions/38645060/what-is-the-equivalent-of-serial-available-in-pyserial
             while usbconnection.inWaiting():  # Or: while ser.inWaiting():
-                print("4")
+                print("2: Receiving a message")
                 client.send(usbconnection.readline().decode().encode(textconverter))
-
-            print("5")
-
 
         # If a client disconnects. Open the port again so a new client can connect.
         self.connection = False
