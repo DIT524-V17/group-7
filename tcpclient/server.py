@@ -4,5 +4,5 @@
 from common import Receiver
 import socket
 
-print(socket.gethostbyname(socket.gethostname()));
-Receiver(socket.gethostbyname(socket.gethostname()), 9005)
+print(socket.getfqdn())
+Receiver(socket.getfqdn(), 9005)
