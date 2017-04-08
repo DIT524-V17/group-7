@@ -39,7 +39,6 @@ class Receiver:
             (client, address) = self.receiver.accept()
             print("-1")
             self.connection = True
-            client.setblocking(0)
         except TimeoutError:
             raise
 
