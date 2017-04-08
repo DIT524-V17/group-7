@@ -133,11 +133,9 @@ class Transmitter extends BaseSocket implements Runnable {
 					if (!socket.isInputShutdown())  // Checks if the socket is able to receive data.
 						while (!input.isEmpty()) // Checks if the stack has any commands in it waiting.
 							out.writeUTF(input.poll());
-					// if (in.available() > 0){
-						// output.add(in.readUTF());
 
 					out.flush();
-					String fromServer = null;
+					String fromServer;
 					/*
 					I like how java is like: 1 statement per line, Make it simple.
 					Then they have this in the tutorial to save a single line

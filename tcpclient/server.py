@@ -3,11 +3,4 @@
 # Maintained since: 7th of April 2017.
 from common import Receiver
 
-
-def init():
-    Receiver("192.168.0.120", 9005)
-    while 1:
-        pass
-
-
-init()
+Receiver("192.168.0.120", 9005)
