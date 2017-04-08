@@ -43,7 +43,6 @@ class Receiver:
         except TimeoutError:
             raise
 
-        self.reconnect()
         print("0")
 
         # Only breaks when/if the client disconnects from the server.
