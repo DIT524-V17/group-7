@@ -69,7 +69,7 @@ class Receiver:
 
             # Found this solution here:
             # http://stackoverflow.com/questions/38645060/what-is-the-equivalent-of-serial-available-in-pyserial
-            while usbconnection.in_waiting:  # Or: while ser.inWaiting():
+            while usbconnection.inWaiting():  # Or: while ser.inWaiting():
                 print("4")
                 client.send(usbconnection.readline().decode().encode(textconverter))
 
