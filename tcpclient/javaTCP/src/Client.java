@@ -143,7 +143,6 @@ class Transmitter extends BaseSocket implements Runnable {
 					https://docs.oracle.com/javase/tutorial/networking/sockets/clientServer.html
 					 */
 					while ((fromServer = in.readLine()) != null) {
-						p(fromServer);
 						output.add(fromServer);
 					}
 				}

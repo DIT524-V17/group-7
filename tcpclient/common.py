@@ -34,46 +34,46 @@ class Receiver:
 
     # Handles connecting and reconnecting.
     def reconnect(self):
-        print("0. Awaiting connection.")
-        # Always accepts the client.
-        (client, address) = self.receiver.accept()
-        print("1. Client connected.")
-        client.setblocking(0)
-        self.connection = True
+        while 1:
+            print("0. Awaiting connection.")
+            # Always accepts the client.
+            (client, address) = self.receiver.accept()
+            print("1. Client connected.")
+            client.setblocking(0)
+            self.connection = True
 
-        # Only breaks when/if the client disconnects from the server.
-        while self.connection:
+            # Only breaks when/if the client disconnects from the server.
+            while self.connection:
 
-            try:
-                # This follows this example of how to use select in python:
-                # This will give me a none blocking message receiver.
-                # http://stackoverflow.com/questions/2719017/how-to-set-timeout-on-pythons-socket-recv-method
-                ready = select.select([client], [], [], 1)
-                if ready[0]:
-                    self.msg = client.recv(4096)
+                try:
+                    # This follows this example of how to use select in python:
+                    # This will give me a none blocking message receiver.
+                    # http://stackoverflow.com/questions/2719017/how-to-set-timeout-on-pythons-socket-recv-method
+                    ready = select.select([client], [], [], 1)
+                    if ready[0]:
+                        self.msg = client.recv(4096)
 
-                # If there does not exist a message due to a connection issue, End loop.
-                if self.msg:
-                    # Decodes the message received from bytes to text using either utf or ascii.
-                    self.msg = self.msg.decode(textconverter)
+                    # If there does not exist a message due to a connection issue, End loop.
+                    if self.msg:
+                        # Decodes the message received from bytes to text using either utf or ascii.
+                        self.msg = self.msg.decode(textconverter)
 
-                    print("2. To Arduino: " + self.msg)
+                        print("2. To Arduino: " + self.msg)
 
-                    # Writes the message to the serial port on the arduino.
-                    usbconnection.write(self.msg.encode())
-                    usbconnection.flush()
+                        # Writes the message to the serial port on the arduino.
+                        usbconnection.write(self.msg.encode())
+                        usbconnection.flush()
 
-                # Found this solution here:
-                # http://stackoverflow.com/questions/38645060/what-is-the-equivalent-of-serial-available-in-pyserial
-                while usbconnection.inWaiting():  # Or: while ser.inWaiting():
-                    info = usbconnection.readline().decode()
-                    print("3. To Android: " + info)
-                    client.send(info.encode(textconverter))
-            except socket.error:
-                # If a client disconnects. Open the port again so a new client can connect.
-                self.connection = False
-                print("4. Client disconnected")
-        self.reconnect()
+                    # Found this solution here:
+                    # http://stackoverflow.com/questions/38645060/what-is-the-equivalent-of-serial-available-in-pyserial
+                    while usbconnection.inWaiting():  # Or: while ser.inWaiting():
+                        info = usbconnection.readline().decode()
+                        print("3. To Android: " + info)
+                        client.send(info.encode(textconverter))
+                except socket.error:
+                    # If a client disconnects. Open the port again so a new client can connect.
+                    self.connection = False
+                    print("4. Client disconnected ")
 
     # Used for logs. Can be extended to support more features but is not important.
     @staticmethod
