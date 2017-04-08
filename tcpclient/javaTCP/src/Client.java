@@ -1,8 +1,6 @@
 import java.net.*;
 import java.io.*;
-
 import java.util.*;
-
 /**
  * @author Pontus Laestadius
  * Date format: DD-MM-YYYY
@@ -12,8 +10,8 @@ import java.util.*;
 
 public class Client {
 
-	private static int port = 9005;
-	private static String host = "192.168.0.120";
+	static int port = 9005;
+	static String host = "192.168.0.120";
 	static Boolean c = false;
 
 	public static void main(String [] args) {
@@ -40,16 +38,24 @@ class BaseSocket implements Runnable {
 	private Thread t;
 	private String host;
 	private int port;
+	DataOutputStream out;
 
 	// A queue is used to handle all input commands so they go in the proper order and are not lost.
 	Queue<String> input = new PriorityQueue<>();
-	Queue<String> output = new PriorityQueue<>(); // TODO: 06/04/2017 make a read function for this. 
+	Queue<String> output = new PriorityQueue<>(); // TODO: 06/04/2017 make a read function for this.
 	Socket socket;
 
 	// Macro for add.
 	public void write(String s){
 		// TODO: 06/03/2017 Add command vertification here. Preferably O(1).
-		input.add(s);
+
+		try{
+			out.writeUTF(s);
+			out.flush();
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+
 	}
 
 	/**
@@ -123,19 +129,14 @@ class Transmitter extends BaseSocket implements Runnable {
 		try { // Catches IO exceptions
 
 			// Out and input streams.
-			DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+			out = new DataOutputStream(socket.getOutputStream());
 			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // I hate Java.
 
 			p(this.getClass().toString() + " online.");
 
 			try {
 				while (Client.c){
-					if (!socket.isInputShutdown())  // Checks if the socket is able to receive data.
-						while (!input.isEmpty()) // Checks if the stack has any commands in it waiting.
-							out.writeUTF(input.poll());
-
-					out.flush();
-					String fromServer;
+					String fromServer = null;
 					/*
 					I like how java is like: 1 statement per line, Make it simple.
 					Then they have this in the tutorial to save a single line
