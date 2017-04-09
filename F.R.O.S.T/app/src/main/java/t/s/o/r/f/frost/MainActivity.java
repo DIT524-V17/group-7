@@ -9,8 +9,12 @@ import android.support.v7.view.menu.ActionMenuItemView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.view.View.OnTouchListener;
+import android.widget.TextView;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -20,19 +24,31 @@ import static t.s.o.r.f.frost.Client.*;
 
 public class MainActivity extends AppCompatActivity implements JoystickView.JoystickListener{
 
+
+    TextView tv;
+    View v;
+    static TextView ccValue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         JoystickView joystick = new JoystickView(this);
         setContentView(R.layout.activity_main);
-        new threads().execute();
+        //new threads().execute();
+        tv = (TextView) findViewById(R.id.collision_text);
+        v = findViewById(R.id.view4);
+        ccValue = (TextView) findViewById(R.id.ccValue);
+        animate();
 
     }
 
     @Override
     public void onJoystickMoved(float speed, float angle, int id) {
+
         String speedCommand = "";
         String steerCommand = "";
+        int speedPause = 0;
+        int anglePause = 0;
         switch (id){
             case R.id.joystickCamera:
 
@@ -52,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
             case R.id.joystickCar:
 
 
+                speedPause++;
+                anglePause++;
                 // min 29
                 // max 52
                 // Translating input from joystick according to protocol
@@ -60,24 +78,37 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
                 for(int i = 0; speedCommand.length() < 3; i++)
                     speedCommand = "0" + speedCommand;
 
+                //::::for loop separator::::\\
+                Log.e("ANGLEIFS", "" + angle);
+                if(angle > 45 && angle <= 135 || angle > 225 && angle <= 315){
+                   // threads.r1.write("a045?");
+                }
+                else if(angle > 135 && angle <= 225){
+                   // threads.r1.write("a000?");
+                }
+                else {//if(angle > 180 && angle <=225 || angle > 315 && <= 45){
+                  //  threads.r1.write("a090?");
+                }
+                //else i
+                //steerCommand = angle >= 0 && angle <= 180? "" + (90 - (int) angle / 2) : "" + (int)(360-angle)/2;
 
+                //for(int i = 0; steerCommand.length() < 3; i++)
+                 //steerCommand = "0" + steerCommand;
 
-
-                steerCommand = angle >= 0 && angle <= 180? "" + (90 - (int) angle / 2) : "" + (int)(360-angle)/2;
-
-                for(int i = 0; steerCommand.length() < 3; i++)
-                 steerCommand = "0" + steerCommand;
+                //::::for loop separator::::\\
 
                 // Sets the speed
                // threads.r1.write("d" + speedCommand + "?");
-                threads.r1.write("d" + speedCommand + "?");
+
+               // threads.r1.write("d" + speedCommand + "?");
+                Log.e("Speed", "d" + speedCommand + "?");
+
                 //System.out.println("d" + speedCommand + "?");
-                Log.e("Speed","d" + speedCommand + "?");
 
                 // Sets the angle
-                threads.r1.write("a" + steerCommand + "?");
 
-                Log.e("Angle","a" + steerCommand + "?");
+                //Sthreads.r1.write("a" + steerCommand + "?");
+               // Log.e("Angle","a" + steerCommand + "?");
                 break;
         }
     }
@@ -200,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
      * Initiates the Transmitter with the 'host' id and correct port.
      * TODO: Rewrite this to actually make sense. Override the two other methods if they are needed later.
      */
-   public static class threads extends AsyncTask<String, Void, Void> {
+  /* public static class threads extends AsyncTask<String, Void, Void> {
        static Transmitter r1;
         @Override
         public Void doInBackground(String... params) {
@@ -209,6 +240,10 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
                 //Initializes the Transmitter 'r1' with ethe appropriate host and port.
                 r1 = init(host, port);
 
+                while (true){
+                    handleInput();
+                }
+
 
             } catch (Exception e) {
                 System.out.println("Screw you");
@@ -216,7 +251,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
             }
             return null;
         }
-    }
+    }*/
 
 
     /*public void forwardTest(View view){
@@ -229,4 +264,49 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
         ((Button) view).setText("Does this happen?");
         System.out.println("OK");
     } */
+
+    /**
+     * Author: Pontus Laestadius
+     * Content: Collision control GUI and Input interface.
+     */
+    void animate(){
+
+        Animation rotation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        // Animation rotationback = AnimationUtils.loadAnimation(this, R.anim.rotateback);
+
+        AnimationSet s = new AnimationSet(true);//false means don't share interpolators
+        s.addAnimation(rotation);
+        // s.addAnimation(rotationback);
+        rotation.setRepeatCount(Animation.INFINITE);
+        v.startAnimation(s);
+
+        Button button = (Button)findViewById(R.id.button);
+        button.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                // click handling code
+                if (tv.getText().equals("Collision"))
+                    tv.setText("");
+                else
+                    tv.setText("Collision");
+            }
+        });
+    }
+
+  /*  static void handleInput(){
+        String s = threads.r1.read();
+        if (s.length() < 2) return;
+        System.out.println("HandleInput: " + s);
+        int value = Integer.parseInt(s.substring(1));
+        switch (s.charAt(0)){
+            case 'c':
+                updateCollisionIndicator(ccValue,value);
+                break;
+        }
+    }*/
+
+    static void updateCollisionIndicator(TextView view, int value){
+        view.setText(value == 0 ? "+" : value + "");
+
+    }
 }

@@ -28,7 +28,7 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
 
         centerX = getWidth() /2;
         centerY = getHeight() / 2;
-        baseRadius = Math.min(getWidth(), getHeight()) / (float) 3.3;
+        baseRadius = Math.min(getWidth(), getHeight()) / (float) 2.4;
         hatRadius = Math.min(getWidth(), getHeight()) / (float)5.5;
 
     }
@@ -105,7 +105,11 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
             if(e.getAction() != e.ACTION_UP) {
                 float displacement = (float) Math.sqrt(Math.pow(e.getX() - centerX, 2) + Math.pow(e.getY() - centerY, 2));
                 float speed = displacement;
-                float angle = (float) Math.toDegrees(Math.asin(e.getY()/e.getX()));
+                float angle = (float) Math.toDegrees(Math.sin((displacement/e.getY() - centerY)));
+                //if(e.getY() - centerY < 0)
+
+                //Log.e("X", "" + e.getX());
+                Log.e("Y", "" + (e.getY()-centerY));
                 if (displacement < baseRadius) {
 
                     if(e.getY() - centerY > 0)
