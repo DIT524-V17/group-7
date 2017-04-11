@@ -15,10 +15,9 @@
 
 #define MAX_DISTANCE_ULTRASONIC 400
 
-int flame_pin;e
+int flame_pin;
 int velocity;
 int range;
-
 
 int collisionServoPosition = START_POSITION_STEER_SERVO;
 int collision_delay = 250;
@@ -75,13 +74,7 @@ void loop() {
             velocity = input.substring(1, 4).toInt();
             if ((!flame && !obstacle) || velocity >= 90){
                 motor.write(velocity);
-            }/* else{
-                motor.write(START_POSITION_MOTOR_SERVO); //REMOVE THIS??????????????????????????????????????????
-                motor.write(110);
-                delay(5);
-                motor.write(START_POSITION_MOTOR_SERVO);
-                collision_delay = 0;
-            }*/
+            }
             break;
      
         default:
@@ -110,18 +103,6 @@ void loop() {
       digitalWrite(LED_PIN, LOW);
       flame_delay = 0;
     }
-    /*
-    //Moves the servo connected to the ultrasonic sensor
-    collisionDirection ? collisionServoPosition-- : collisionServoPosition++;
-    collisionServo.write(collisionServoPosition);
-
-    //Switches the direction of the collision servo
-    if (collisionServoPosition >= 90){
-        collisionDirection = true;
-    }else if (collisionServoPosition <= 10){
-        collisionDirection = false;
-    }  
-    */
     //Pings the ultrasonic sensor
     range_string = sonar.ping_cm();
     range = range_string.toInt();
@@ -135,6 +116,7 @@ void loop() {
 
     //Allows the car to drive backwards if an obstacle is in from of the car
     if (velocity < 90){
+      //Is true if the range is less than 50 cm or if the flame sensor has set the flame variable to true
         if (((range != 0 && range <= 50) && ++collision_delay >= 250) || flame){
             if (range > 20){
                 motor.write(velocity +(50 - range)/2);
@@ -146,6 +128,7 @@ void loop() {
                 delay(300);
                 motor.write(START_POSITION_MOTOR_SERVO);
             }
+        //Sets obstacle to false if the obstacle in front of the car disapeared
         } else if (obstacle){
             obstacle = false;
             motor.write(START_POSITION_MOTOR_SERVO);
