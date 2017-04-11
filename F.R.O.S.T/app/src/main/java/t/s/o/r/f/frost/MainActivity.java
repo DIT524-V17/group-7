@@ -178,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
             try {
                 //Initializes the Transmitter 'r1' with ethe appropriate host and port.
                 r1 = init(host, port);
-
+                
 
             } catch (Exception e) {
                 System.out.println("Screw you");
