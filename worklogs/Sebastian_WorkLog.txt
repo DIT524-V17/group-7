@@ -10,3 +10,17 @@ Title: Integration and test case creation
 -Researched ways for test case creation.
 -App/raspberry testing.
 -Modify car speed through app.
+
+Saturday 08-04-2017: 12 hours
+Title: Integration and demo emergency fixes
+-Helped on joystick integration.
+-Worked on two-way connection integration into application.
+-Helped with arduino sketch.
+
+Tuesday 11-04-2107:
+
+Wednesday 12-04-2017:
+
+Thursday 13-04-2017:
+
+Friday 14-04-2017:
