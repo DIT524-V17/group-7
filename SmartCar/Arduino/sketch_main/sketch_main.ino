@@ -91,8 +91,10 @@ void loop() {
     flame_pin = digitalRead (FLAME_SENSOR_PIN) ;
 
     //If the flame sensor sees a flame it writes a command that says it sees a flame
-    if (flame_pin == HIGH && !flame && ++flame_delay >= 500){
-      Serial.write("f001\n");
+    if (flame_pin == HIGH && !flame){
+      if (++flame_delay >= 500){
+          Serial.write("f001\n");
+      }
       flame = true;
       digitalWrite(LED_PIN, HIGH);
 
