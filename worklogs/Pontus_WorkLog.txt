@@ -47,12 +47,89 @@ Wrote a shell script for automatically pulling the repository and executing the 
 Integrating with Sebastian and Tim to get the raspberry working fine.
 Current Issue with the shell script: Boots on launch, But crashes instantly.
 
-Tuesday 28-03: 4 hours
+Tuesday 28-03: 5 hours
 Title: Demoable product
 Worked on improving shell script.
 Improved TCP client.
 TCP server now auto reconnects.
 Current issue: Script does not work on boot. Requires a 'restart' service command.
+Rewrote a lot of the common.py server script. Added better error detection.
+Make it possible for the TCP to send information to the client.
+
+
+Wednesday 29-03: 3 hours 
+Title: Documentation
+Improved TCP.
+Shell script can now fetch and pull the latest files from git on boot.
+Researching linux runlevel and making the service wait before the internet connection.
+
+
+Pi commands if I forget:
+
+sudo service pontus_boot.sh status/restart/start/stop
+	-Interacts with the scripts run time.
+
+sudo nano /etc/systemd/system/pontus_boot.service
+	-Opens the GNU for editing the service.
+
+sudo fuser -k 9005/tcp 
+	-Resets the port so it wont be in use.
+
+sudo systemctl daemon-reload
+	-Restarts all the daemon services.
+
+
+Friday 31-03: 2 hours
+Title: Thy shall be automated
+Added shell script to git.
+
+
+
+Monday 03-04: 5 hours
+Title: Done
+The Raspberry pi has been fully automated. 
+The shell script will now work without manual controls.
+
+Tuesday 04-04: 1 hour
+Title: I made a booboo
+Researched additional information about TCP and realized I suck at everything.
+
+Wednesday 05-04: 2 hours
+Title: I'm stupid
+Not enough research led to a an issue that should've been a none-issue.
+Spent half an hour rewriting the entire TCP on both sides because of my stupid mistakes.
+Testing new TCP connection.
+
+Thursday 06-04: 5 hours
+Title: Modelling
+Improved TCP to handle outputs. / Attempted to.
+To decide. What do we want to send, Camera or just information for the demo.
+Testing.
+Make a user story for GUI component for collision control and started working on it.
+Nearly finished with the GUI task, needs about 2 more hours then done.
+Pair programming with Isabelle
+
+Friday 07-04: 10 hours
+Title: TCP
+Figure out why TCP doesn't do two ways. socket.recv() blocks the flow.
+Another issue was that readline would be blocking until it would receive a newline character like \n.
+git objects ended up corrupted..
+Two way connection is now working, Reconnection has stopped working.
+
+
+------ Sprint 5 
+
+Saturday 08-04: 11 hours
+Helped integrating joystick.
+Completed my GUI task.
+Helped with collision control.
+Two way connection is being integrated.
+Pair programmed with Sebastian and Tim to test the car for the demo.
+
+
+Monday 11-04:
+
+
 
 
 
