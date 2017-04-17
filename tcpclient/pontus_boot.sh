@@ -1,6 +1,6 @@
 #! bin/bash
 
-# Pings google, to check for internet connection,
+# Pings google twice, to check for internet connection.
 ping -q -c2 google.com > /dev/null
  
 # If there exists a network connection run rest of the script.
@@ -10,17 +10,18 @@ then
 
 
 # The Address can be in use. This clears the port for TCP use.
-sudo fuser -k 9005/tcp
+# This is now done in the Python script.
+# sudo fuser -k 9005/tcp
 
 # Locate the Git repository
 cd /home/pi/GitRasp/group-7
 
+# Fetch any latest git changes.
 sudo git fetch
-sudo git pull
 
-# Fuck it.
+# Pulling can always cause issues.
+# By doing this it will always ignore all local changes, since It shouldn't have any anyways.
 sudo git reset --hard origin/TCPclient
-# sudo go kill yourself
 
 # Run TCP server
 python tcpclient/server.py
