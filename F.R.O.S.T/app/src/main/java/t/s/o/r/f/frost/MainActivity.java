@@ -36,10 +36,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button forward = (Button) findViewById(R.id.button);
         new threads().execute();
+       /*
         tv = (TextView) findViewById(R.id.collision_text);
         v = findViewById(R.id.view4);
         ccValue = (TextView) findViewById(R.id.ccValue);
         animate();
+        */
 
        // String recieved = threads.r1.read();
        // TextView textView = (TextView) findViewById(R.id.textHere);
@@ -153,6 +155,29 @@ public class MainActivity extends AppCompatActivity {
             });
 
 
+        // Experimental reconnection button. Done blindly, as I did not have car, needs testing
+        Button recon = (Button) findViewById(R.id.button5);
+        //on touch listener for reconnect button
+        recon.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                try {
+                    //attempts to reconnect app to server
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        threads.closeConnection(); //can be commented out
+                        new threads().execute();
+                         /*new1.closeConnection()); //Another way to restart connection??
+                          new1.execute();*/
+                    }
+                } catch (Exception e) {
+                    System.out.println("Reconnect failed");
+                    e.printStackTrace();
+                }
+                return false;
+            }
+        });
+
+
 
 
         /**
@@ -178,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         });*/
     }
 
-
+/*
     void animate(){
 
         Animation rotation = AnimationUtils.loadAnimation(this, R.anim.rotate);
@@ -218,6 +243,7 @@ public class MainActivity extends AppCompatActivity {
         ccValue.setText(value == 0 ? "+" : value + "");
 
     }
+    */
 
     /**
      * AsyncTask used to allow sub-threading in the main application.
@@ -239,6 +265,10 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
             return null;
+        }
+        //It should probably halt the current connection
+        public static void closeConnection (){
+            r1=null;
         }
     }
 
