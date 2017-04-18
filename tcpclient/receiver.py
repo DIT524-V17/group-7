@@ -69,7 +69,7 @@ class Receiver:
             # This follows this example of how to use select in python:
             # http://stackoverflow.com/questions/2719017/how-to-set-timeout-on-pythons-socket-recv-method
             # This will give me a none blocking message receiver.
-            ready = select.select([client], [], [], .1)
+            ready = select.select([client], [], [], 1)
 
             # Only breaks when/if the client disconnects from the server.
             while self.connection:
