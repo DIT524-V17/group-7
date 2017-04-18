@@ -13,6 +13,10 @@ import android.view.View.OnTouchListener;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.AnimationUtils;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -21,6 +25,10 @@ import static t.s.o.r.f.frost.Client.*;
 
 public class MainActivity extends AppCompatActivity {
 
+    TextView tv;
+    View v;
+    static TextView ccValue;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -28,6 +36,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button forward = (Button) findViewById(R.id.button);
         new threads().execute();
+        tv = (TextView) findViewById(R.id.collision_text);
+        v = findViewById(R.id.view4);
+        ccValue = (TextView) findViewById(R.id.ccValue);
+        animate();
 
        // String recieved = threads.r1.read();
        // TextView textView = (TextView) findViewById(R.id.textHere);
@@ -142,6 +154,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
         /**
          * Temporary switch for setting a different speed.
          * TODO:Remove when the joystick is to be implemented.
@@ -163,6 +176,47 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });*/
+    }
+
+
+    void animate(){
+
+        Animation rotation = AnimationUtils.loadAnimation(this, R.anim.rotate);
+        // Animation rotationback = AnimationUtils.loadAnimation(this, R.anim.rotateback);
+
+        AnimationSet s = new AnimationSet(true);//false means don't share interpolators
+        s.addAnimation(rotation);
+        // s.addAnimation(rotationback);
+        rotation.setRepeatCount(Animation.INFINITE);
+        v.startAnimation(s);
+
+        Button button = (Button)findViewById(R.id.button7);
+        button.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                // click handling code
+                if (tv.getText().equals("Collision"))
+                    tv.setText("");
+                else
+                    tv.setText("Collision");
+            }
+        });
+    }
+
+    void handleInput(String s){
+        int value = Integer.parseInt(s.substring(1));
+        switch (s.substring(0,1)){
+            case "c":
+                updateCollisionIndicator(value);
+                break;
+
+        }
+    }
+
+    void updateCollisionIndicator(int value){
+        TextView ccValue = (TextView) findViewById(R.id.ccValue);
+        ccValue.setText(value == 0 ? "+" : value + "");
+
     }
 
     /**
