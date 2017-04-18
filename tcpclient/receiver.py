@@ -52,7 +52,7 @@ class Receiver:
 
         # Reads and writes from the buffered socket forever.
         while 1:
-            print("Address: {}".format(self.address))
+            print("Address: {}".format(self.host))
             print("Port: {}".format(self.port))
             print("0. Awaiting connection.")
 
