@@ -12,6 +12,8 @@
     android:background="@android:color/black"
     tools:context="t.s.o.r.f.frost.MainActivity">
 
+
+    <!---Steer Right Button-->
     <Button
         android:text="Steer Right"
         android:layout_width="wrap_content"
@@ -23,6 +25,7 @@
         android:layout_marginEnd="36dp"
         android:id="@+id/button4"/>
 
+    <!---Forward Button-->
     <Button
         android:text="Forward"
         android:layout_width="wrap_content"
@@ -33,6 +36,7 @@
         android:layout_marginBottom="22dp"
         android:layout_above="@+id/button2" />
 
+    <!---Reverse Button-->
     <Button
         android:text="Reverse"
         android:layout_width="wrap_content"
@@ -44,6 +48,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/button"/>
 
+    <!---Steer left Button-->
     <Button
         android:text="Steer Left"
         android:layout_width="wrap_content"
@@ -56,6 +61,7 @@
         android:layout_alignBottom="@+id/button2"
         android:layout_toStartOf="@+id/button4" />
 
+    <!---Image View to be removed.-->
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,19 +70,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true" />
 
-    <Switch
-        android:text="Faster"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/imageView"
-        android:layout_alignParentStart="true"
-        android:textOff="Fast"
-        android:textOn="Faster"
-        android:background="@android:color/holo_green_dark"
-        android:textColor="@android:color/white"
-        android:layout_marginStart="25dp"
-        android:id="@+id/switch_1" />
-
+    <!---Invisible button for collision Button-->
     <Button
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -89,6 +83,7 @@
         android:layout_alignTop="@+id/view4"
         android:layout_alignStart="@+id/view4" />
 
+    <!---Steer Right Button-->
     <View android:layout_width="44dp"
         android:layout_height="55dp"
         android:background="@drawable/borderedcircle"
@@ -98,6 +93,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignEnd="@+id/collision_text" />
 
+    <!---Steer Right Button-->
     <View android:layout_width="44dp"
         android:layout_height="44dp"
         android:background="@drawable/circle2"
@@ -106,6 +102,7 @@
         android:layout_marginTop="5dp"
         android:layout_alignParentStart="true" />
 
+    <!---TextView for collision read()-->
     <TextView
         android:text="55"
         android:layout_width="wrap_content"
@@ -118,6 +115,7 @@
         android:layout_alignTop="@+id/button7"
         android:layout_toEndOf="@+id/button" />
 
+    <!---Do not know what this is for-->
     <TextView
         android:text=""
         android:layout_width="wrap_content"
@@ -127,7 +125,7 @@
         android:layout_alignTop="@+id/view2"
         android:layout_toEndOf="@+id/view2" />
 
-
+    <!---Reconnection Button-->
     <Button
         android:text="Reconnect"
         android:id="@+id/button5"

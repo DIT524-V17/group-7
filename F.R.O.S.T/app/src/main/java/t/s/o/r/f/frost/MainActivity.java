@@ -36,6 +36,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button forward = (Button) findViewById(R.id.button);
+       /* final threads new1 = new threads();
+        new1.execute();*/
         new threads().execute();
 
         tv = (TextView) findViewById(R.id.collision_text);
@@ -45,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
         //Transmitter r1 = threads.getR1();
         //final Transmitter r1 = initTransmitter(host, port);
         //final Transmitter r2 = initTransmitter(host, port2);
-
 
         //Sets the TouchListener to 'button' which in this case refers to the *FORWARD* button. (Check XML).
         forward.setOnTouchListener(new View.OnTouchListener() {
@@ -157,11 +158,11 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     //attempts to reconnect app to server
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        threads.closeConnection(); //can be commented out
+                        //threads.closeConnection(); //can be commented out
                         System.out.println("Reconnection if is  entered.");
-                        new threads().execute();
-                         /*new1.closeConnection()); //Another way to restart connection??
-                          new1.execute();*/
+                       // new threads().execute();
+                      //  new1.closeConnection(); //Another way to restart connection??
+                       //  new1.execute();
                     }
                 } catch (Exception e) {
                     System.out.println("Reconnect failed");
@@ -170,34 +171,9 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-
-
-
-        /**
-         * Temporary switch for setting a different speed.
-         * TODO:Remove when the joystick is to be implemented.
-         */
-        /*
-        Switch faster = (Switch) findViewById(R.id.switch_1);
-        faster.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
-            String readRes = threads.r1.read();
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked){
-                    workDammit = true;
-                    System.out.println(threads.r1.read());
-                }
-
-                else{
-                    workDammit = false;
-                    System.out.println(threads.r1.read());
-                }
-            }
-        });*/
     }
 
-
+    //Method for collision button animation.
     void animate(){
 
         Animation rotation = AnimationUtils.loadAnimation(this, R.anim.rotate);
@@ -222,19 +198,22 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    void handleInput(String s){
+    //Method for handling the received information from the Arduino sensors.
+    static void handleInput(){
+        String s = threads.r1.read();
+        if (s.length() < 2) return;
+        System.out.println("HandleInput: " + s);
         int value = Integer.parseInt(s.substring(1));
-        switch (s.substring(0,1)){
-            case "c":
-                updateCollisionIndicator(value);
+        switch (s.charAt(0)){
+            case 'c':
+                updateCollisionIndicator(ccValue,value);
                 break;
-
         }
     }
 
-    void updateCollisionIndicator(int value){
-        TextView ccValue = (TextView) findViewById(R.id.ccValue);
-        ccValue.setText(value == 0 ? "+" : value + "");
+    //Updates the collision indicator text.
+    static void updateCollisionIndicator(TextView view, int value){
+        view.setText(value == 0 ? "+" : value + "");
 
     }
 
@@ -252,7 +231,10 @@ public class MainActivity extends AppCompatActivity {
             try {
                 //Initializes the Transmitter 'r1' with the appropriate host and port.
                 r1 = init(host, port);
-                
+
+                while(true){
+                    handleInput();
+                }
 
             } catch (Exception e) {
                 System.out.println("Screw you");
@@ -260,6 +242,8 @@ public class MainActivity extends AppCompatActivity {
             }
             return null;
         }
+
+       //closeConnection method for reconnecting without restarting the app.
         //It should probably halt the current connection
         public static void closeConnection (){
             try {
