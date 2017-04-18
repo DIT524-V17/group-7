@@ -25,6 +25,7 @@ import static t.s.o.r.f.frost.Client.*;
 
 public class MainActivity extends AppCompatActivity {
 
+    //Views for collision animation.
     TextView tv;
     View v;
     static TextView ccValue;
@@ -41,21 +42,12 @@ public class MainActivity extends AppCompatActivity {
         v = findViewById(R.id.view4);
         ccValue = (TextView) findViewById(R.id.ccValue);
         animate();
-
-
-       // String recieved = threads.r1.read();
-       // TextView textView = (TextView) findViewById(R.id.textHere);
-
-        //if(recieved == "F001?") {
-       //     textView.setText(recieved);
-       // }
         //Transmitter r1 = threads.getR1();
-       // final Transmitter r1 = initTransmitter(host, port);
+        //final Transmitter r1 = initTransmitter(host, port);
         //final Transmitter r2 = initTransmitter(host, port2);
+
+
         //Sets the TouchListener to 'button' which in this case refers to the *FORWARD* button. (Check XML).
-
-
-
         forward.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -64,8 +56,6 @@ public class MainActivity extends AppCompatActivity {
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
                             System.out.println("Hello");
                                 threads.r1.write("d070?");
-
-
                             // System.out.println("Drive forward");
                         }
                         //Sends command to stop the current activity (to be integrated)
@@ -81,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            //TouchListener for reverse button.
             Button reverse = (Button) findViewById(R.id.button2);
             //Sets the TouchListener to 'button2' which in this case refers to the *Reverse* button. (Check XML).
             reverse.setOnTouchListener(new View.OnTouchListener() {
@@ -106,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            //TouchListener for rightSteer button.
             Button rightSteer = (Button) findViewById(R.id.button4);
             //Sets the TouchListener to 'button4' which in this case refers to the *Right Steer* button. (Check XML).
             rightSteer.setOnTouchListener(new View.OnTouchListener() {
@@ -130,6 +122,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            //TouchListener for leftSteer button.
             Button leftSteer = (Button) findViewById(R.id.button3);
             //Sets the TouchListener to 'button3' which in this case refers to the *Steer Left* button. (Check XML).
             leftSteer.setOnTouchListener(new View.OnTouchListener() {
@@ -165,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
                     //attempts to reconnect app to server
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         threads.closeConnection(); //can be commented out
+                        System.out.println("Reconnection if is  entered.");
                         new threads().execute();
                          /*new1.closeConnection()); //Another way to restart connection??
                           new1.execute();*/
@@ -256,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
         public Void doInBackground(String... params) {
 
             try {
-                //Initializes the Transmitter 'r1' with ethe appropriate host and port.
+                //Initializes the Transmitter 'r1' with the appropriate host and port.
                 r1 = init(host, port);
                 
 
@@ -268,8 +262,14 @@ public class MainActivity extends AppCompatActivity {
         }
         //It should probably halt the current connection
         public static void closeConnection (){
-            System.out.println("");
-            r1=null;
+            try {
+                System.out.println("Entered closeConnection");
+                r1 = null;
+            }
+            catch(Exception e){
+                System.out.println("MAH GOD WHY");
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -77,17 +77,6 @@
         android:layout_marginStart="25dp"
         android:id="@+id/switch_1" />
 
-    <TextView
-        android:id="@+id/textHere"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignEnd="@+id/button"
-        android:layout_below="@+id/switch_1"
-        android:textColor="@android:color/white"
-        android:layout_marginTop="20dp"
-        android:text="noFire" />
-
-
     <Button
         android:layout_width="40dp"
         android:layout_height="40dp"
@@ -126,9 +115,8 @@
 
         android:textSize="24sp"
         android:textColor="#ffff"
-        android:layout_alignBottom="@+id/button7"
-        android:layout_toEndOf="@+id/textHere"
-        android:layout_alignTop="@+id/button7" />
+        android:layout_alignTop="@+id/button7"
+        android:layout_toEndOf="@+id/button" />
 
     <TextView
         android:text=""
