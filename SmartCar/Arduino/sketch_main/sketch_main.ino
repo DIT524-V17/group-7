@@ -1,6 +1,9 @@
 #include <NewPing.h>
 #include <Servo.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
+#define ONE_WIRE_BUS 3 //for temperature sensor
 #define ECHO_PIN 2
 #define TRIG_PIN 4
 #define STEER_PIN 5
@@ -41,6 +44,14 @@ char data;
 
 NewPing sonar(TRIG_PIN, ECHO_PIN, MAX_DISTANCE_ULTRASONIC);
 
+//Setup a oneWire instance to communicate with any OneWire devices
+OneWire oneWire(ONE_WIRE_BUS);
+
+// Pass our oneWire reference to Dallas Temperature. 
+DallasTemperature sensors(&oneWire);
+
+// array to hold device readings
+DeviceAddress thermometer;
 
 void setup() {
     //Sets the motor and steering servos to the default positions
@@ -57,6 +68,36 @@ void setup() {
     pinMode(FLAME_SENSOR_PIN, INPUT);
     
     Serial.begin(9600);  
+
+    // Start the sensor
+    sensors.begin();
+    
+    if (!sensors.getAddress(thermometer, 0)) Serial.println("Unable to find address for Device 0"); 
+  
+  // set the resolution to 9 bit
+    sensors.setResolution(thermometer, 9);
+    sensors.getResolution(thermometer);
+
+}
+
+//Added by Isabelle Törnqvist 2017-04-18
+// function to print the temperature for a device
+void printTemperature(DeviceAddress deviceAddress)
+{  
+  int tempC = (int)sensors.getTempC(deviceAddress);
+  String tempString;
+
+//Check temperature 
+  if(tempC < 10){
+    tempString = "t00" + (String)tempC;
+  }else if (tempC >= 100){
+    tempString = "t" + (String)tempC;
+  }
+  else{
+    tempString = "t0" + (String)tempC;
+  }
+  
+  Serial.println(tempString);  
 }
 
 void loop() { 
@@ -136,6 +177,10 @@ void loop() {
             motor.write(START_POSITION_MOTOR_SERVO);
         }
     }
+
+    //for temperature sensor
+    sensors.requestTemperatures(); // Get temperatures
+    printTemperature(thermometer); //Call 
 }
 
 void serialEvent() {
