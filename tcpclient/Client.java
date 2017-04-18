@@ -1,3 +1,4 @@
+
 import java.net.*;
 import java.io.*;
 import java.util.*;
@@ -5,7 +6,7 @@ import java.util.*;
  * @author Pontus Laestadius
  * Date format: DD-MM-YYYY
  * @since 20-03-2017
- * Maintained since: 07-04-2017
+ * Maintained since: 17-04-2017
  */
 
 public class Client {
@@ -14,31 +15,16 @@ public class Client {
 	static String host = "192.168.0.120";
 	static Boolean c = false;
 
-	public static void main(String [] args) {
-		while (true){
-			if (!c){
-				init();
-				c = true;
-			}
-		}
-	}
-
-	public static void init(){
-		Transmitter r1 = init(host, port); // TODO: 06/04/2017 Use this for GUI reconnectability with some modifications
-	}
-
 	public static Transmitter init(String host, int port){
-		Transmitter R1 = new Transmitter(host, port);
-		R1.start();
-		return R1;
+		return new Transmitter(host, port);
 	}
 }
 
 class BaseSocket implements Runnable {
-	private Thread t;
 	private String host;
 	private int port;
 	DataOutputStream out;
+	BufferedReader in;
 
 	// A queue is used to handle all input commands so they go in the proper order and are not lost.
 	Queue<String> input = new PriorityQueue<>();
@@ -50,7 +36,8 @@ class BaseSocket implements Runnable {
 		// TODO: 06/03/2017 Add command vertification here. Preferably O(1).
 
 		try{
-			out.writeUTF(s);
+			if (System.currentTimeMillis() %30 != 0)
+				out.writeUTF(s + "\n");
 			out.flush();
 		} catch (Exception e){
 			e.printStackTrace();
@@ -63,36 +50,46 @@ class BaseSocket implements Runnable {
 	 * @return the first command in the queue.
 	 */
 	public String read(){
-		if (!output.isEmpty())
-			return output.poll();
-		else
+
+		String s;
+		try {
+			in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // I hate Java.
+			s = in.readLine();
 			return "";
+		} catch (IOException e){
+			e.printStackTrace();
+		}
+		return ""; // Only occurs if an exception is thrown.
 	}
 
 	/**
 	 *
 	 * @return all the queued up output as an array of strings.
 	 */
-	public String[] readAll(){
-		int i = 0;
-		String[] res = new String[output.size()];
-		while (!output.isEmpty())
-			res[i++] = read();
-		return res;
-	}
+
+    /*
+    public String[] readAll(){
+        int i = 0;
+        String[] res = new String[output.size()];
+        while (!output.isEmpty())
+            res[i++] = read();
+        return res;
+    }
+    */
 
 	/**
 	 *
 	 * @return a formated version of all queued up output received.
 	 */
-	public String readAllFormated(){
-		String[] format = readAll();
-		String formatted = "";
-		for (String f: format)
-			formatted += f + ", ";
-		return formatted.substring(0, formatted.length()-3);
-	}
-
+    /*
+    public String readAllFormated(){
+        String[] format = readAll();
+        String formatted = "";
+        for (String f: format)
+            formatted += f + ", ";
+        return formatted.substring(0, formatted.length()-3);
+    }
+*/
 	BaseSocket(String host, int port) {
 		this.host = host;
 		this.port = port;
@@ -103,17 +100,9 @@ class BaseSocket implements Runnable {
 	static void p(String s){
 		System.out.println(s);
 	}
-
-	void start () {
-		if (t == null) {
-			t = new Thread (this);
-			t.start ();
-		}
-	}
 }
 
 class Transmitter extends BaseSocket implements Runnable {
-	private Thread t;
 
 	Transmitter(String host, int port) {
 		super(host,port);
@@ -122,6 +111,7 @@ class Transmitter extends BaseSocket implements Runnable {
 		} catch (IOException e){
 			e.printStackTrace();
 		}
+		run();
 	}
 
 	@Override
@@ -130,35 +120,10 @@ class Transmitter extends BaseSocket implements Runnable {
 
 			// Out and input streams.
 			out = new DataOutputStream(socket.getOutputStream());
-			BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // I hate Java.
-
-			p(this.getClass().toString() + " online.");
-
-			try {
-				while (Client.c){
-					String fromServer = null;
-					/*
-					I like how java is like: 1 statement per line, Make it simple.
-					Then they have this in the tutorial to save a single line
-					https://docs.oracle.com/javase/tutorial/networking/sockets/clientServer.html
-					 */
-					while ((fromServer = in.readLine()) != null) {
-						output.add(fromServer);
-					}
-				}
-
-			} finally {
-				p("Abandon " + this.getClass().toString().substring(6) + ", It's going down!");
-				Client.c = false;
-			}
 
 		} catch (IOException e){
 			e.printStackTrace();
 			Client.c = false;
 		}
-	}
-
-	void start () {
-		super.start();
 	}
 }
