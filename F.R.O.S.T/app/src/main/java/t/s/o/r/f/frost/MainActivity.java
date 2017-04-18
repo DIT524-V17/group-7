@@ -17,7 +17,10 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
-
+import android.widget.ImageSwitcher;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.ViewSwitcher;
 import java.io.IOException;
 import java.util.Scanner;
 
@@ -29,6 +32,8 @@ public class MainActivity extends AppCompatActivity {
     TextView tv;
     View v;
     static TextView ccValue;
+    TextView textElement;
+    ImageSwitcher SwitchImageTemp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -171,7 +176,42 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
+
+        //Creating the text view where the temperature is show
+        textElement = (TextView) findViewById(R.id.textView);
+        int theOutputFromTheSensor = 15;
+        //Calling the method "displayTemp" which is defined bellow
+        displayTemp(theOutputFromTheSensor);
+
+        //Creating a ImageSwither, which allows for switching between different images
+        SwitchImageTemp = (ImageSwitcher) findViewById(R.id.imgsw);
+        SwitchImageTemp.setFactory(new ViewSwitcher.ViewFactory(){
+            public View makeView(){
+                ImageView imageView = new ImageView(getApplicationContext());
+                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                return imageView;
+            }
+        });
     }
+
+
+    //Setting the temperature in the text element
+    void displayTemp(int degrees){
+        String text = degrees + "\u2103";
+        textElement.setText(text) ;
+
+        //Changing the temp image depending on temperature
+        if(degrees > 50){
+            SwitchImageTemp.setImageResource(R.drawable.temphot);
+        }
+        else if(degrees < 20){
+         //   SwitchImageTemp.setImageResource(R.drawable.tempcold);
+        }
+        else{
+            SwitchImageTemp.setImageResource(R.drawable.tempmedium);
+        }
+    }
+
 
     //Method for collision button animation.
     void animate(){
@@ -230,12 +270,17 @@ public class MainActivity extends AppCompatActivity {
      */
    public static class threads extends AsyncTask<String, Void, Void> {
        static Transmitter r1;
+        int popo = 1;
         @Override
         public Void doInBackground(String... params) {
 
             try {
                 //Initializes the Transmitter 'r1' with the appropriate host and port.
                 r1 = init(host, port);
+
+                while(popo == 1) {
+                    handleInput();
+                }
 
             } catch (Exception e) {
                 System.out.println("Screw you");
@@ -244,21 +289,9 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
-      /*  @Override
-        protected void onProgressUpdate(Void... values) {
-            try {
-                while (true) {
-                    handleInput();
-                }
-            }catch(Exception e){
-                System.out.println("MAH GOD WHY");
-                e.printStackTrace();
-            }
-        }*/
-
         //closeConnection method for reconnecting without restarting the app.
         //It should probably halt the current connection
-      /*'  public static void closeConnection (){
+        public static void closeConnection (){
             try {
                 System.out.println("Entered closeConnection");
                 r1 = null;
@@ -267,6 +300,6 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("MAH GOD WHY");
                 e.printStackTrace();
             }
-        }*/
+        }
     }
 }
