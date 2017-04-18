@@ -200,21 +200,26 @@ public class MainActivity extends AppCompatActivity {
 
     //Method for handling the received information from the Arduino sensors.
     static void handleInput(){
-        String s = threads.r1.read();
-        if (s.length() < 2) return;
-        System.out.println("HandleInput: " + s);
-        int value = Integer.parseInt(s.substring(1));
-        switch (s.charAt(0)){
-            case 'c':
-                updateCollisionIndicator(ccValue,value);
-                break;
+        try {
+            String s = threads.r1.read();
+            System.out.print(threads.r1.read());
+            if (s.length() < 2) return;
+            System.out.println("HandleInput: " + s);
+            int value = Integer.parseInt(s.substring(1));
+            switch (s.charAt(0)) {
+                case 'c':
+                    updateCollisionIndicator(ccValue, value);
+                    break;
+            }
+        }catch(Exception e){
+            System.out.println("MAH GOD WHY");
+            e.printStackTrace();
         }
     }
 
     //Updates the collision indicator text.
     static void updateCollisionIndicator(TextView view, int value){
         view.setText(value == 0 ? "+" : value + "");
-
     }
 
 
@@ -232,10 +237,6 @@ public class MainActivity extends AppCompatActivity {
                 //Initializes the Transmitter 'r1' with the appropriate host and port.
                 r1 = init(host, port);
 
-                while(true){
-                    handleInput();
-                }
-
             } catch (Exception e) {
                 System.out.println("Screw you");
                 e.printStackTrace();
@@ -243,9 +244,21 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
-       //closeConnection method for reconnecting without restarting the app.
+      /*  @Override
+        protected void onProgressUpdate(Void... values) {
+            try {
+                while (true) {
+                    handleInput();
+                }
+            }catch(Exception e){
+                System.out.println("MAH GOD WHY");
+                e.printStackTrace();
+            }
+        }*/
+
+        //closeConnection method for reconnecting without restarting the app.
         //It should probably halt the current connection
-        public static void closeConnection (){
+      /*'  public static void closeConnection (){
             try {
                 System.out.println("Entered closeConnection");
                 r1 = null;
@@ -254,6 +267,6 @@ public class MainActivity extends AppCompatActivity {
                 System.out.println("MAH GOD WHY");
                 e.printStackTrace();
             }
-        }
+        }*/
     }
 }

@@ -56,7 +56,7 @@ class BaseSocket implements Runnable {
 		try {
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // I hate Java.
 			s = in.readLine();
-			return "";
+			return s;
 		} catch (IOException e){
 			e.printStackTrace();
 		}
