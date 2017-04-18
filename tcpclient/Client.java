@@ -51,15 +51,15 @@ class BaseSocket implements Runnable {
 	 */
 	public String read(){
 
-		String s;
 		try {
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // I hate Java.
-			s = in.readLine();
-			return "";
+			return in.readLine();
+			
 		} catch (IOException e){
 			e.printStackTrace();
+		} finally {
+			return ""; // Only occurs if an exception is thrown.
 		}
-		return ""; // Only occurs if an exception is thrown.
 	}
 
 	/**
