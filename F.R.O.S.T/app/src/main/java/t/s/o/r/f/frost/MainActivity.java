@@ -36,12 +36,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Button forward = (Button) findViewById(R.id.button);
         new threads().execute();
-       /*
+
         tv = (TextView) findViewById(R.id.collision_text);
         v = findViewById(R.id.view4);
         ccValue = (TextView) findViewById(R.id.ccValue);
         animate();
-        */
+
 
        // String recieved = threads.r1.read();
        // TextView textView = (TextView) findViewById(R.id.textHere);
@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
         });*/
     }
 
-/*
+
     void animate(){
 
         Animation rotation = AnimationUtils.loadAnimation(this, R.anim.rotate);
@@ -243,7 +243,7 @@ public class MainActivity extends AppCompatActivity {
         ccValue.setText(value == 0 ? "+" : value + "");
 
     }
-    */
+
 
     /**
      * AsyncTask used to allow sub-threading in the main application.
@@ -268,18 +268,8 @@ public class MainActivity extends AppCompatActivity {
         }
         //It should probably halt the current connection
         public static void closeConnection (){
+            System.out.println("");
             r1=null;
         }
     }
-
-    /*public void forwardTest(View view){
-        Button Forward = (Button) view;
-        ((Button) view).setText("Does this happen?");
-        System.out.println("OK");
-    } */
-   /* public void rightSteer(View view){
-        Button rightSteer = (Button) view;
-        ((Button) view).setText("Does this happen?");
-        System.out.println("OK");
-    } */
 }
