@@ -52,6 +52,8 @@ class Receiver:
 
         # Reads and writes from the buffered socket forever.
         while 1:
+            print("Address: {}".format(self.address))
+            print("Port: {}".format(self.port))
             print("0. Awaiting connection.")
 
             # Grabs the tuples for the socket and address of the client.
