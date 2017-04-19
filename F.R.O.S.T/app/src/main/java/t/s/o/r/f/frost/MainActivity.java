@@ -1,5 +1,6 @@
 package t.s.o.r.f.frost;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.NetworkOnMainThreadException;
 import android.provider.Settings;
@@ -26,6 +27,7 @@ import java.util.Scanner;
 
 import static t.s.o.r.f.frost.Client.*;
 
+
 public class MainActivity extends AppCompatActivity {
 
     //Views for collision animation.
@@ -44,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
        /* final threads new1 = new threads();
         new1.execute();*/
         new threads().execute();
+
 
         tv = (TextView) findViewById(R.id.collision_text);
         v = findViewById(R.id.view4);
@@ -165,9 +168,9 @@ public class MainActivity extends AppCompatActivity {
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         //threads.closeConnection(); //can be commented out
                         System.out.println("Reconnection if is  entered.");
-                       // new threads().execute();
-                      //  new1.closeConnection(); //Another way to restart connection??
-                       //  new1.execute();
+                        Intent rest = getIntent();
+                        rest.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(rest);
                     }
                 } catch (Exception e) {
                     System.out.println("Reconnect failed");
@@ -176,26 +179,11 @@ public class MainActivity extends AppCompatActivity {
                 return false;
             }
         });
-
-        //Creating the text view where the temperature is show
-        textElement = (TextView) findViewById(R.id.textView);
-        int theOutputFromTheSensor = 15;
-        //Calling the method "displayTemp" which is defined bellow
-        displayTemp(theOutputFromTheSensor);
-
-        //Creating a ImageSwither, which allows for switching between different images
-        SwitchImageTemp = (ImageSwitcher) findViewById(R.id.imgsw);
-        SwitchImageTemp.setFactory(new ViewSwitcher.ViewFactory(){
-            public View makeView(){
-                ImageView imageView = new ImageView(getApplicationContext());
-                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                return imageView;
-            }
-        });
     }
 
 
     //Setting the temperature in the text element
+    /*
     void displayTemp(int degrees){
         String text = degrees + "\u2103";
         textElement.setText(text) ;
@@ -205,13 +193,13 @@ public class MainActivity extends AppCompatActivity {
             SwitchImageTemp.setImageResource(R.drawable.temphot);
         }
         else if(degrees < 20){
+
             SwitchImageTemp.setImageResource(R.drawable.tempcold);
         }
         else{
             SwitchImageTemp.setImageResource(R.drawable.tempmedium);
         }
-    }
-
+    }*/
 
     //Method for collision button animation.
     void animate(){
@@ -242,13 +230,15 @@ public class MainActivity extends AppCompatActivity {
     static void handleInput(){
         try {
             String s = threads.r1.read();
-            System.out.print(threads.r1.read());
+            //System.out.print(threads.r1.read());
             if (s.length() < 2) return;
             System.out.println("HandleInput: " + s);
             int value = Integer.parseInt(s.substring(1));
             switch (s.charAt(0)) {
                 case 'c':
                     updateCollisionIndicator(ccValue, value);
+                    break;
+                case 'T':
                     break;
             }
         }catch(Exception e){
@@ -270,15 +260,17 @@ public class MainActivity extends AppCompatActivity {
      */
    public static class threads extends AsyncTask<String, Void, Void> {
        static Transmitter r1;
-        int popo = 1;
+       int yes = 1;
         @Override
         public Void doInBackground(String... params) {
 
             try {
                 //Initializes the Transmitter 'r1' with the appropriate host and port.
                 r1 = init(host, port);
+                System.out.println("In AsyncTask");
 
-                while(popo == 1) {
+                //Keeps infinitely looping to handle inputs from the sensors.
+               while(yes == 1) {
                     handleInput();
                 }
 
