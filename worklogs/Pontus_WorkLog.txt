@@ -127,8 +127,23 @@ Two way connection is being integrated.
 Pair programmed with Sebastian and Tim to test the car for the demo.
 
 
-Monday 11-04:
+Monday 11-04: 5 hours
+Title: Demo day
+Worked on showing off working features.
+Implemented 
 
+Tuesday-Thursday: Forgot to log them.
+Average around 15 hours.
+Working on Integration of existing features and resolving issues.
+
+--- Easter holidays.
+
+Tuesday 18-04: 3 hours 
+Title: Integration :/
+Helped Isabelle integrate her stuff in to the system and makes sure it works.
+'Trying' to help Sebastian with the asynctask issue.
+
+Wednesday 19-04: 
 
 
 
