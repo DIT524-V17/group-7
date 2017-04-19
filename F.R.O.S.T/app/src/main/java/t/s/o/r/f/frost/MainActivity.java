@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
             SwitchImageTemp.setImageResource(R.drawable.temphot);
         }
         else if(degrees < 20){
-         //   SwitchImageTemp.setImageResource(R.drawable.tempcold);
+            SwitchImageTemp.setImageResource(R.drawable.tempcold);
         }
         else{
             SwitchImageTemp.setImageResource(R.drawable.tempmedium);
