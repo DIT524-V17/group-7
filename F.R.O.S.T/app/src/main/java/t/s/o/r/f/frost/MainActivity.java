@@ -1,5 +1,8 @@
 package t.s.o.r.f.frost;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.NetworkOnMainThreadException;
@@ -27,35 +30,32 @@ import java.util.Scanner;
 
 import static t.s.o.r.f.frost.Client.*;
 
-
+/**
+ * Author: Sebastian Fransson
+ * Last Updated: 19-04-2017
+ */
 public class MainActivity extends AppCompatActivity {
 
     //Views for collision animation.
     TextView tv;
     View v;
     static TextView ccValue;
-    TextView textElement;
-    ImageSwitcher SwitchImageTemp;
+    static TextView textElement;
+    static ImageSwitcher SwitchImageTemp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button forward = (Button) findViewById(R.id.button);
-       /* final threads new1 = new threads();
-        new1.execute();*/
-        new threads().execute();
-
-
-        tv = (TextView) findViewById(R.id.collision_text);
+        new threads().execute(); //Executes the AsyncTask and establishes Client connection.
+        tv = (TextView) findViewById(R.id.collision_text); //TextView for collision text.
         v = findViewById(R.id.view4);
-        ccValue = (TextView) findViewById(R.id.ccValue);
+        ccValue = (TextView) findViewById(R.id.ccValue); //TextView for collision distance value.
         animate();
-        //Transmitter r1 = threads.getR1();
-        //final Transmitter r1 = initTransmitter(host, port);
-        //final Transmitter r2 = initTransmitter(host, port2);
+       final Context context = this;
 
+        Button forward = (Button) findViewById(R.id.button);
         //Sets the TouchListener to 'button' which in this case refers to the *FORWARD* button. (Check XML).
         forward.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -63,7 +63,6 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         //Sends a "forward" commmand to the Raspberry pi (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                            System.out.println("Hello");
                                 threads.r1.write("d070?");
                             // System.out.println("Drive forward");
                         }
@@ -156,7 +155,10 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
-
+        /**
+         * Created by Anthony Path
+         * Integration: Sebastian Fransson
+         */
         // Experimental reconnection button. Done blindly, as I did not have car, needs testing
         Button recon = (Button) findViewById(R.id.button5);
         //on touch listener for reconnect button
@@ -168,9 +170,13 @@ public class MainActivity extends AppCompatActivity {
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
                         //threads.closeConnection(); //can be commented out
                         System.out.println("Reconnection if is  entered.");
-                        Intent rest = getIntent();
-                        rest.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(rest);
+                        //Restarts the application to regain connection to the Client.
+                        Intent restart = new Intent(context, MainActivity.class);
+                        int pendingID= 123456;
+                        PendingIntent p1 = PendingIntent.getActivity(context, pendingID, restart, PendingIntent.FLAG_CANCEL_CURRENT);
+                        AlarmManager m1 = (AlarmManager)context.getSystemService(Context.ALARM_SERVICE);
+                        m1.set(AlarmManager.RTC, System.currentTimeMillis() + 10, p1);
+                        System.exit(0);
                     }
                 } catch (Exception e) {
                     System.out.println("Reconnect failed");
@@ -183,8 +189,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     //Setting the temperature in the text element
-    /*
-    void displayTemp(int degrees){
+
+    /**
+     * Created by: Isabelle Törnqvist
+     * Integrated by: Sebastian Fransson
+     * @param degrees
+     */
+    static void displayTemp(int degrees){
         String text = degrees + "\u2103";
         textElement.setText(text) ;
 
@@ -199,9 +210,14 @@ public class MainActivity extends AppCompatActivity {
         else{
             SwitchImageTemp.setImageResource(R.drawable.tempmedium);
         }
-    }*/
+    }
 
     //Method for collision button animation.
+
+    /**
+     * Created by: Pontus Laestadius
+     * Integrated by: Pontus Laestadius
+     */
     void animate(){
 
         Animation rotation = AnimationUtils.loadAnimation(this, R.anim.rotate);
@@ -212,7 +228,7 @@ public class MainActivity extends AppCompatActivity {
         // s.addAnimation(rotationback);
         rotation.setRepeatCount(Animation.INFINITE);
         v.startAnimation(s);
-
+        //Instantiates the hidden collision button.
         Button button = (Button)findViewById(R.id.button7);
         button.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -226,6 +242,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Created by: Pontus Laestadius
+     * Integrated by: Pontus Laestadius, Sebastian Fransson
+     * Updated by: Sebastian Fransson
+     */
     //Method for handling the received information from the Arduino sensors.
     static void handleInput(){
         try {
@@ -233,12 +254,15 @@ public class MainActivity extends AppCompatActivity {
             //System.out.print(threads.r1.read());
             if (s.length() < 2) return;
             System.out.println("HandleInput: " + s);
-            int value = Integer.parseInt(s.substring(1));
+            int value = Integer.parseInt(s.substring(1)); //Ignores the first character of the input.
             switch (s.charAt(0)) {
-                case 'c':
+                case 'c': //Collision sensor input.
                     updateCollisionIndicator(ccValue, value);
                     break;
-                case 'T':
+                case 't': //Temperature sensor input.
+                    displayTemp(value);
+                    break;
+                case 'f': //Flame sensor input
                     break;
             }
         }catch(Exception e){
@@ -254,6 +278,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
+     * Created by: Sebastian Fransson
      * AsyncTask used to allow sub-threading in the main application.
      * Initiates the Transmitter with the 'host' id and correct port.
      * TODO: Rewrite this to actually make sense. Override the two other methods if they are needed later.
@@ -261,6 +286,7 @@ public class MainActivity extends AppCompatActivity {
    public static class threads extends AsyncTask<String, Void, Void> {
        static Transmitter r1;
        int yes = 1;
+
         @Override
         public Void doInBackground(String... params) {
 
@@ -281,7 +307,7 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
 
-        //closeConnection method for reconnecting without restarting the app.
+        //closeConnection method for reconnecting without restarting the app. (Not working/used for now)
         //It should probably halt the current connection
         public static void closeConnection (){
             try {
