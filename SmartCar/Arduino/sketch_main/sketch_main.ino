@@ -39,10 +39,10 @@ boolean flame;
 //For turning modules on and off
 boolean flameActivation = true;
 boolean temperatureActivation = true;
-boolean ultrasonicActivation = true; //Needs to be added but I don't know about these three thigs
-boolean servoActivation = true;     //Needs to be added but I don't know about these three thigs
-boolean motorActivation = true;     //Needs to be added but I don't know about these three thigs
-boolean everythingActivation = true;
+boolean ultrasonicActivation = true; 
+boolean servoActivation = true;     
+boolean motorActivation = true;
+boolean RIP = true;
 
 Servo motor;
 Servo steer;
@@ -117,11 +117,14 @@ void printTemperature(DeviceAddress deviceAddress)
 void loop() { 
     //Is true when a command with a ? in the end is given or if the input reaches a length atleast 4
     if(completeCommand){
+      
         switch(input.charAt(0)){
       
         //Controls the steering
         case 'a':
-            steer.write(input.substring(1, 4).toInt());
+            if (servoActivation){
+                steer.write(input.substring(1, 4).toInt());
+            }
             break;
       
         //Controls the speed
@@ -133,59 +136,34 @@ void loop() {
             break;
 
         case 'F':
-         if(input.charAt(3) == '0' ){
-          flameActivation = false;
-         }
-         else {
-          flameActivation = true;
-         }
+         flameActivation = !flameActivation;
          break;
 
       case 'T':
-        if(input.charAt(3) == '0' ){
-          temperatureActivation = false;
-         }
-         else {
-          temperatureActivation = true;
-         }
-         break;
+        temperatureActivation = !temperatureActivation;
+        break;
 
       case 'U':
-        if(input.charAt(3) == '0' ){
-          ultrasonicActivation = false;
-         }
-         else {
-          ultrasonicActivation = true;
-         }
-         break;
+        ultrasonicActivation = !ultrasonicActivation;
+        break;
 
       case 'S':
-        if(input.charAt(3) == '0' ){
-          servoActivation = false;
-         }
-         else {
-          servoActivation = true;
-         }
-         break;
+       servoActivation =!servoActivation;
+       break;
 
       case 'M':
-        if(input.charAt(3) == '0' ){
-          motorActivation = false;
-         }
-         else {
-          motorActivation = true;
-         }
-         break;
+        motorActivation = !motorActivation; 
+        break;
 
+  //switch off all sensors
     case 'E':
-        if(input.charAt(3) == '0' ){
-          everythingActivation = false;
-         }
-         else {
-          everythingActivation = true;
-         }
-         break;
-         
+        RIP = !RIP;
+        motorActivation = RIP;
+        servoActivation = RIP;
+        ultrasonicActivation = RIP;
+        temperatureActivation = RIP;
+        flameActivation = RIP;        
+        break;       
       
         default:
             motor.write(START_POSITION_MOTOR_SERVO);
@@ -197,7 +175,6 @@ void loop() {
         completeCommand = false;
     }
 
-  if(everythingActivation){
     if(flameActivation){
       //Reads the value from the flame sensor
       flame_pin = digitalRead (FLAME_SENSOR_PIN) ;
@@ -233,7 +210,7 @@ void loop() {
   }
 
     //Allows the car to drive backwards if an obstacle is in from of the car
-    if (velocity < 90){
+    if (velocity < 90 && !motorActivation){
       //Is true if the range is less than 50 cm or if the flame sensor has set the flame variable to true
         if (((range != 0 && range <= 50) && ++collision_delay >= 250) || flame){
             if (range > 20){
@@ -254,12 +231,10 @@ void loop() {
     }
 
   if(temperatureActivation){
-  //for temperature sensor
+    //for temperature sensor
     sensors.requestTemperatures(); // Get temperatures
     printTemperature(thermometer); //Call 
     }   
-  
-  }
 }
 
 void serialEvent() {
