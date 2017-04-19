@@ -79,11 +79,9 @@ void setup() {
     
     Serial.begin(9600);  
 
-    // Start the sensor
-  //  sensors.begin();
-    
-  //  if (!sensors.getAddress(thermometer, 0)) Serial.println("Unable to find address for Device 0"); 
-  
+  // Start the sensor
+  //  sensors.begin();    
+  //  if (!sensors.getAddress(thermometer, 0)) Serial.println("Unable to find address for Device 0");  
   // set the resolution to 9 bit
   //  sensors.setResolution(thermometer, 9);
   //  sensors.getResolution(thermometer);
