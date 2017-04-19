@@ -1,7 +1,8 @@
-#include <NewPing.h>
+#include <NewPing.h> // https://bitbucket.org/teckel12/arduino-new-ping/downloads/
 #include <Servo.h>
 #include <OneWire.h>
 #include <DallasTemperature.h>
+
 
 #define ONE_WIRE_BUS 3 //for temperature sensor
 #define ECHO_PIN 2
