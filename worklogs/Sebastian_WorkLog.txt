@@ -17,10 +17,9 @@ Title: Integration and demo emergency fixes
 -Worked on two-way connection integration into application.
 -Helped with arduino sketch.
 
-Tuesday 11-04-2107:
-
-Wednesday 12-04-2017:
-
-Thursday 13-04-2017:
-
-Friday 14-04-2017:
+Easter Holiday including tuesday 18-04-2017: ~10 hours
+Title: Integration and Camera research/work.
+-Researched PiCamera and started working with a found Python library.
+-Integration for two-way connection
+-Integration of flame indicator App wise
+-Integration of semi-finished reconnect feature
