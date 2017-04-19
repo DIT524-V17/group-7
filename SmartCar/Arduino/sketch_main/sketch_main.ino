@@ -21,17 +21,27 @@
 int flame_pin;
 int velocity;
 int range;
+int tempC;
+int oldTemp;
 
 int collisionServoPosition = START_POSITION_STEER_SERVO;
 int collision_delay = 250;
 int flame_delay = 500;
 int lastDistance = 0;
 int distance_Delay = 0;
+int tempDelay = 0;
 
 boolean collisionDirection;
 boolean obstacle;
 boolean completeCommand;
 boolean flame;
+//For turning modules on and off
+boolean flameActivation = true;
+boolean temperatureActivation = true;
+boolean ultrasonicActivation = true; //Needs to be added but I don't know about these three thigs
+boolean servoActivation = true;     //Needs to be added but I don't know about these three thigs
+boolean motorActivation = true;     //Needs to be added but I don't know about these three thigs
+boolean everythingActivation = true;
 
 Servo motor;
 Servo steer;
@@ -70,13 +80,13 @@ void setup() {
     Serial.begin(9600);  
 
     // Start the sensor
-    sensors.begin();
+  //  sensors.begin();
     
-    if (!sensors.getAddress(thermometer, 0)) Serial.println("Unable to find address for Device 0"); 
+  //  if (!sensors.getAddress(thermometer, 0)) Serial.println("Unable to find address for Device 0"); 
   
   // set the resolution to 9 bit
-    sensors.setResolution(thermometer, 9);
-    sensors.getResolution(thermometer);
+  //  sensors.setResolution(thermometer, 9);
+  //  sensors.getResolution(thermometer);
 
 }
 
@@ -84,7 +94,8 @@ void setup() {
 // function to print the temperature for a device
 void printTemperature(DeviceAddress deviceAddress)
 {  
-  int tempC = (int)sensors.getTempC(deviceAddress);
+  oldTemp = tempC;
+  tempC = (int)sensors.getTempC(deviceAddress);
   String tempString;
 
 //Check temperature 
@@ -96,8 +107,12 @@ void printTemperature(DeviceAddress deviceAddress)
   else{
     tempString = "t0" + (String)tempC;
   }
-  
-  Serial.println(tempString);  
+
+//delay for sending the temperature: wait 300 incrementations, and if the temperature has changed, send the temperature 
+  if(++tempDelay >= 300 && oldTemp != tempC){
+      Serial.println(tempString); 
+      tempDelay = 0;  
+  }  
 }
 
 void loop() { 
@@ -117,7 +132,62 @@ void loop() {
                 motor.write(velocity);
             }
             break;
-     
+
+        case 'F':
+         if(input.charAt(3) == '0' ){
+          flameActivation = false;
+         }
+         else {
+          flameActivation = true;
+         }
+         break;
+
+      case 'T':
+        if(input.charAt(3) == '0' ){
+          temperatureActivation = false;
+         }
+         else {
+          temperatureActivation = true;
+         }
+         break;
+
+      case 'U':
+        if(input.charAt(3) == '0' ){
+          ultrasonicActivation = false;
+         }
+         else {
+          ultrasonicActivation = true;
+         }
+         break;
+
+      case 'S':
+        if(input.charAt(3) == '0' ){
+          servoActivation = false;
+         }
+         else {
+          servoActivation = true;
+         }
+         break;
+
+      case 'M':
+        if(input.charAt(3) == '0' ){
+          motorActivation = false;
+         }
+         else {
+          motorActivation = true;
+         }
+         break;
+
+    case 'E':
+        if(input.charAt(3) == '0' ){
+          everythingActivation = false;
+         }
+         else {
+          everythingActivation = true;
+         }
+         break;
+         
+      
         default:
             motor.write(START_POSITION_MOTOR_SERVO);
             steer.write(START_POSITION_STEER_SERVO);
@@ -128,25 +198,30 @@ void loop() {
         completeCommand = false;
     }
 
-    //Reads the value from the flame sensor
-    flame_pin = digitalRead (FLAME_SENSOR_PIN) ;
+  if(everythingActivation){
+    if(flameActivation){
+      //Reads the value from the flame sensor
+      flame_pin = digitalRead (FLAME_SENSOR_PIN) ;
 
-    //If the flame sensor sees a flame it writes a command that says it sees a flame
-    if (flame_pin == HIGH && !flame){
-      if (++flame_delay >= 500){
+      //If the flame sensor sees a flame it writes a command that says it sees a flame
+      if (flame_pin == HIGH && !flame){
+        if (++flame_delay >= 500){
           Serial.write("f001\n");
-      }
-      flame = true;
-      digitalWrite(LED_PIN, HIGH);
+        }
+        flame = true;
+        digitalWrite(LED_PIN, HIGH);
 
-    //when the flame disapears it sends a command that it stopped seing a flame
-    }else if(flame && flame_pin == LOW){
-      Serial.write("f000\n");
-      flame = false;
-      digitalWrite(LED_PIN, LOW);
-      flame_delay = 0;
-    }
-    //Pings the ultrasonic sensor
+       //when the flame disapears it sends a command that it stopped seing a flame
+      }else if(flame && flame_pin == LOW){
+        Serial.write("f000\n");
+        flame = false;
+        digitalWrite(LED_PIN, LOW);
+        flame_delay = 0;
+      }  
+  }
+
+  if(ultrasonicActivation){
+   //Pings the ultrasonic sensor
     range_string = sonar.ping_cm();
     range = range_string.toInt();
     range_string = "c" + range_string + '\n';
@@ -155,7 +230,8 @@ void loop() {
         Serial.print(range_string);
         lastDistance = range;
         distance_Delay = 0;
-    }
+    }   
+  }
 
     //Allows the car to drive backwards if an obstacle is in from of the car
     if (velocity < 90){
@@ -178,9 +254,13 @@ void loop() {
         }
     }
 
-    //for temperature sensor
+  if(temperatureActivation){
+  //for temperature sensor
     sensors.requestTemperatures(); // Get temperatures
     printTemperature(thermometer); //Call 
+    }   
+  
+  }
 }
 
 void serialEvent() {
