@@ -1,0 +1,29 @@
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android" >
+    <group android:checkableBehavior="all">
+        <item
+            android:id="@+id/flame"
+            android:title="Flame" />
+
+        <item
+            android:id="@+id/temperature"
+            android:title="Temperature" />
+
+        <item
+            android:id="@+id/ultrasonic"
+            android:title="Ultrasonic" />
+
+        <item
+            android:id="@+id/motor"
+            android:title="Motor"/>
+
+        <item
+            android:id="@+id/steering"
+            android:title="Steering"/>
+
+        <item
+            android:id="@+id/rip"
+            android:title="R.I.P."/>
+    </group>
+
+</menu>

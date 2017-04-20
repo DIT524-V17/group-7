@@ -10,6 +10,8 @@ import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.menu.ActionMenuItemView;
+import android.support.v7.widget.PopupMenu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -42,6 +44,13 @@ public class MainActivity extends AppCompatActivity {
     static TextView ccValue;
     static TextView textElement;
     static ImageSwitcher SwitchImageTemp;
+    public Button button6;
+    private Boolean item_flame_boolean = true;
+    private Boolean item_temperature_boolean = true;
+    private Boolean item_ultrasonic_boolean = true;
+    private Boolean item_motor_boolean = true;
+    private Boolean item_steering_boolean = true;
+    private Boolean item_rip_boolean = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +62,109 @@ public class MainActivity extends AppCompatActivity {
         v = findViewById(R.id.view4);
         ccValue = (TextView) findViewById(R.id.ccValue); //TextView for collision distance value.
         animate();
+        //Context used for the reconnect feature.
        final Context context = this;
+
+
+        /**
+         *  Menu for deactivating sensors either individually or in bulk.
+         */
+        button6 = (Button) findViewById(R.id.button6);
+        //Sets the listener for the menu button
+        button6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Creates the popup menu
+                PopupMenu popup = new PopupMenu(MainActivity.this, button6);
+
+                popup.getMenuInflater()
+                        .inflate(R.menu.popup_menu, popup.getMenu());
+
+                //Creates the items of the popup menu
+                final MenuItem item_flame = popup.getMenu().findItem(R.id.flame);
+                final MenuItem item_temperature = popup.getMenu().findItem(R.id.temperature);
+                final MenuItem item_ultrasonic = popup.getMenu().findItem(R.id.ultrasonic);
+                final MenuItem item_motor = popup.getMenu().findItem(R.id.motor);
+                final MenuItem item_steering = popup.getMenu().findItem(R.id.steering);
+                final MenuItem item_rip = popup.getMenu().findItem(R.id.rip);
+
+                //Adds listeners to all the buttons
+                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    public boolean onMenuItemClick(MenuItem item) {
+                        try {
+                            switch (item.getItemId()) {
+                                //The case for when flame checkbox is pressed
+                                case R.id.flame:
+                                    item_flame_boolean = !item_flame_boolean;
+                                    item.setChecked(item_flame_boolean);
+                                    threads.r1.write("F000?");
+                                    break;
+                                //The case for when the temperature checkbox is pressed
+                                case R.id.temperature:
+                                    item_temperature_boolean = !item_temperature_boolean;
+                                    item.setChecked(item_temperature_boolean);
+                                    threads.r1.write("T000?");
+                                    break;
+                                //The case for when the ultrasonic checkbox is pressed
+                                case R.id.ultrasonic:
+                                    item_ultrasonic_boolean = !item_ultrasonic_boolean;
+                                    item.setChecked(item_ultrasonic_boolean);
+                                    threads.r1.write("U000?");
+                                    break;
+                                //The case for when the motor checkbox is pressed
+                                case R.id.motor:
+                                    item_motor_boolean = !item_motor_boolean;
+                                    item.setChecked(item_motor_boolean);
+                                    threads.r1.write("M000?");
+                                    break;
+                                //The case for when the steer checkbox is pressed
+                                case R.id.steering:
+                                    item_steering_boolean = !item_steering_boolean;
+                                    item.setChecked(item_steering_boolean);
+                                    threads.r1.write("S000?");
+                                    break;
+                                //The case for when the RIP checkbox is pressed
+                                case R.id.rip:
+                                    item_rip_boolean = !item_rip_boolean;
+                                    item_flame_boolean = item_rip_boolean;
+                                    item_temperature_boolean = item_rip_boolean;
+                                    item_ultrasonic_boolean = item_rip_boolean;
+                                    item_motor_boolean = item_rip_boolean;
+                                    item_steering_boolean = item_rip_boolean;
+                                    item_flame.setChecked(item_rip_boolean);
+                                    item_temperature.setChecked(item_rip_boolean);
+                                    item_ultrasonic.setChecked(item_rip_boolean);
+                                    item_motor.setChecked(item_rip_boolean);
+                                    item_steering.setChecked(item_rip_boolean);
+                                    item.setChecked(item_rip_boolean);
+                                    threads.r1.write("E000?");
+                                    break;
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Error in popup menu");
+                            e.printStackTrace();
+                        }
+                        //Makes sure the menu stays open after you click in a checkbox
+                        item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+                        item.setActionView(new View(getApplicationContext()));
+                        return false;
+                    }
+                });
+
+                //Sets the status of the checkboxes to either checked or not checked
+                item_flame.setChecked(item_flame_boolean);
+                item_temperature.setChecked(item_temperature_boolean);
+                item_ultrasonic.setChecked(item_ultrasonic_boolean);
+                item_motor.setChecked(item_motor_boolean);
+                item_steering.setChecked(item_steering_boolean);
+                item_rip.setChecked(item_rip_boolean);
+
+                //Shows the popup menu
+                popup.show();
+            }
+        });
+
+
 
         Button forward = (Button) findViewById(R.id.button);
         //Sets the TouchListener to 'button' which in this case refers to the *FORWARD* button. (Check XML).
@@ -157,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
 
         /**
          * Created by Anthony Path
-         * Integration: Sebastian Fransson
+         * Integrated by: Sebastian Fransson
          */
         // Experimental reconnection button. Done blindly, as I did not have car, needs testing
         Button recon = (Button) findViewById(R.id.button5);
@@ -179,12 +290,28 @@ public class MainActivity extends AppCompatActivity {
                         System.exit(0);
                     }
                 } catch (Exception e) {
-                    System.out.println("Reconnect failed");
+                    System.out.println("Reconnect failed :(((");
                     e.printStackTrace();
                 }
                 return false;
             }
         });
+
+        //Creating the text view where the temperature is show
+        textElement = (TextView) findViewById(R.id.textView);
+       // int theOutputFromTheSensor = 60; //Test value for method input.
+        //Creating a ImageSwitcher, which allows for switching between different images
+        SwitchImageTemp = (ImageSwitcher) findViewById(R.id.imgsw);
+        SwitchImageTemp.setFactory(new ViewSwitcher.ViewFactory(){
+            public View makeView(){
+                ImageView imageView = new ImageView(getApplicationContext());
+                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                return imageView;
+            }
+        });
+        //Calling the method "displayTemp" which is defined below
+       // displayTemp(theOutputFromTheSensor); //Test method call.
+
     }
 
 
@@ -197,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
      */
     static void displayTemp(int degrees){
         String text = degrees + "\u2103";
-        textElement.setText(text) ;
+        textElement.setText(text);
 
         //Changing the temp image depending on temperature
         if(degrees > 50){
@@ -216,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Created by: Pontus Laestadius
-     * Integrated by: Pontus Laestadius
+     * Integrated by: Sebastian Fransson, Pontus Laestadius
      */
     void animate(){
 
@@ -266,7 +393,7 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
         }catch(Exception e){
-            System.out.println("MAH GOD WHY");
+            System.out.println("Inputs are coming in too fast, close the borders!");
             e.printStackTrace();
         }
     }
@@ -301,7 +428,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             } catch (Exception e) {
-                System.out.println("Screw you");
+                System.out.println("Yeah you are probably not connected. soo...... bad luck");
                 e.printStackTrace();
             }
             return null;
@@ -315,7 +442,7 @@ public class MainActivity extends AppCompatActivity {
                 r1 = null;
             }
             catch(Exception e){
-                System.out.println("MAH GOD WHY");
+                System.out.println("Close a connection? Pffffff....NO");
                 e.printStackTrace();
             }
         }
