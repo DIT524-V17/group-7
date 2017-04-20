@@ -1,6 +1,11 @@
 #include <Servo.h>
 
 Servo camera_servo_x; Servo camera_servo_y; 
+const int Y_MAX_ANGLE = 100;
+const int Y_MIN_ANGLE = 30;
+
+const int X_MAX_ANGLE = 180;
+const int X_MIN_ANGLE = 0;
 
 boolean input = false;
 
@@ -9,12 +14,11 @@ int cameraY = 90;
 
 void setup() {
 
-  pinMode(1,OUTPUT);
   camera_servo_x.attach(14); //analog pin 0
   camera_servo_y.attach(15); //analog pin 1
 
-  camera_servo_x.write(90);
-  camera_servo_x.write(90);
+  camera_servo_x.write(X_MAX_ANGLE/2);
+  camera_servo_y.write(Y_MAX_ANGLE/2);
 
   Serial.begin(9600);
 }
@@ -33,9 +37,11 @@ void serialEvent() {
 
     // Makes it so that ever other command is for the x angle and the y angle.
     if (input)
-    setCameraServo(camera_servo_x, ins);
+    setCameraServo(camera_servo_x, ins, 'x');
     else
-    setCameraServo(camera_servo_y, ins);
+    setCameraServo(camera_servo_y, ins, 'y');
+
+    input ? Serial.println("X"):Serial.println("Y");
 
     input = !input;
 }
@@ -44,13 +50,23 @@ void serialEvent() {
  * Author: Pontus Laestadius
  * Purpose: Handles the camera's servos. Do not call this method directly, Rather use setCameraServoRelative.
  */
-void setCameraServo(Servo servo, int degrees){
+void setCameraServo(Servo servo, int degrees, char dir){
+  int max, min;
+
+  // Declares the maximum and minimum based on which servo was entered.
+  if ((int) dir == (int) 'y'){
+    max = Y_MAX_ANGLE;
+    min = Y_MIN_ANGLE;
+  } else {
+    max = X_MAX_ANGLE;
+    min = X_MIN_ANGLE;
+  }
 
   // If the values exceed the angle the servo is able to turn.
-  if (degrees < 0 || degrees > 180){
+  if (degrees < min || degrees > max){
 
-    // Reset to center position.
-    servo.write(90);
+    // Reset to either the minimum or maximum depending on which one it exceeds.
+    servo.write(degrees < min ? min : max);
 
     // End the method.
     return;
@@ -62,6 +78,7 @@ void setCameraServo(Servo servo, int degrees){
 }
 
 /**
+ * Author: Pontus Laestadius
  * Moves the camera relative to the current position. Such as left, right, up and down.
  * Param: Servo to be moved. Coordinates either 1,0 or -1. Amplifier amplifies the input coordinates.
  */
@@ -77,7 +94,7 @@ void setCameraServoRelative(Servo servo, int x=0, int y=0, int amplifier=10){
     cameraX += x*amplifier;
 
     // Call the method to set the angle of the servo.
-    setCameraServo(servo, cameraX);
+    setCameraServo(servo, cameraX, 'x');
   }
 
   // If a y value has been given.
@@ -87,18 +104,11 @@ void setCameraServoRelative(Servo servo, int x=0, int y=0, int amplifier=10){
     cameraY += y*amplifier;
 
     // Call the method to set the angle of the servo.
-    setCameraServo(servo, cameraY);
+    setCameraServo(servo, cameraY, 'y');
     
   }
   
 }
-/*
-void setCameraReset(Servo servo,...){
-    for (int i = 0; i < servo.length(); i++){
-      servo[i].write(90);
-    }
-  }
-*/
 
   
   
