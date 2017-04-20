@@ -12,7 +12,10 @@ import java.util.*;
 public class Client {
 
 	static int port = 9005;
-	static String host = "192.168.0.120";
+	
+	// Ip address of the Raspberry pi running on the ARC network. 
+	// Change this IP if you change network, until the hotspot has been fixed.
+	static String host = "192.168.0.120"; 
 	static Boolean c = false;
 
 	public static Transmitter init(String host, int port){
@@ -52,7 +55,8 @@ class BaseSocket implements Runnable {
 	public String read(){
 
 		try {
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // I hate Java.
+			// Java's way of declaring input stream is odd. Please ignore this line.
+			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			return in.readLine();
 			
 		} catch (IOException e){
@@ -61,35 +65,7 @@ class BaseSocket implements Runnable {
 			return ""; // Only occurs if an exception is thrown.
 		}
 	}
-
-	/**
-	 *
-	 * @return all the queued up output as an array of strings.
-	 */
-
-    /*
-    public String[] readAll(){
-        int i = 0;
-        String[] res = new String[output.size()];
-        while (!output.isEmpty())
-            res[i++] = read();
-        return res;
-    }
-    */
-
-	/**
-	 *
-	 * @return a formated version of all queued up output received.
-	 */
-    /*
-    public String readAllFormated(){
-        String[] format = readAll();
-        String formatted = "";
-        for (String f: format)
-            formatted += f + ", ";
-        return formatted.substring(0, formatted.length()-3);
-    }
-*/
+    
 	BaseSocket(String host, int port) {
 		this.host = host;
 		this.port = port;
