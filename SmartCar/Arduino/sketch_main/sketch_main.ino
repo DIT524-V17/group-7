@@ -99,14 +99,14 @@ void loop() {
                 motor.write(velocity);
             }
             break;
-            /*
+            
         case 'x':
-          setCameraServo(camera_servo_x, input.substring(1, 4).toInt(), 'x');
+        setX(input.substring(1, 4).toInt());
         break;
         case 'y':
-        setCameraServo(camera_servo_y, input.substring(1, 4).toInt(), 'y');
+        setY(input.substring(1, 4).toInt());
         break;
-     */
+        
         default:
             motor.write(START_POSITION_MOTOR_SERVO);
             steer.write(START_POSITION_STEER_SERVO);
@@ -199,36 +199,85 @@ void setCameraServo(Servo servo, int degrees, char dir){
   
 }
 
+int setX(int degrees){
+  int max = X_MAX_ANGLE;
+  int min = X_MIN_ANGLE;
+
+  // If the values exceed the angle the servo is able to turn.
+  if (degrees < min || degrees > max){
+
+    // Reset to either the minimum or maximum depending on which one it exceeds.
+    camera_servo_x.write(degrees < min ? min : max);
+
+    // End the method.
+    return degrees < min ? min : max;
+  }
+
+  // Turn the servo to the indicated angle.
+  camera_servo_x.write(degrees);
+    return degrees;
+}
+
+int setY(int degrees){
+  int max = Y_MAX_ANGLE;
+  int min = Y_MIN_ANGLE;
+
+  // If the values exceed the angle the servo is able to turn.
+  if (degrees < min || degrees > max){
+
+    // Reset to either the minimum or maximum depending on which one it exceeds.
+    camera_servo_y.write(degrees < min ? min : max);
+
+    // End the method.
+    return degrees < min ? min : max;
+  }
+
+  // Turn the servo to the indicated angle.
+  camera_servo_y.write(degrees);
+  return degrees;
+}
+
 /**
  * Author: Pontus Laestadius
  * Moves the camera relative to the current position. Such as left, right, up and down.
  * Param: Servo to be moved. Coordinates either 1,0 or -1. Amplifier amplifies the input coordinates.
  */
-void setCameraServoRelative(Servo servo, int x=0, int y=0, int amplifier=10){
+void setCameraServoRelativeY(int y){
+  int amplifier = 10;
   
   // If the method is called without any changed values. End.
-  if (x == 0 && y == 0) return;
-
-  // If a x value has been given.
-  if (x != 0){
-
-    // Change the value for camera_x to keep track of it.
-    cameraX += x*amplifier;
-
-    // Call the method to set the angle of the servo.
-    setCameraServo(servo, cameraX, 'x');
+  if (y != 1 || y != 2) return;
+   if (y == 1){
+    y = -y;
+  } else {
+    y -=1;
   }
 
-  // If a y value has been given.
-  if (y != 0){
-
-    // Change the value for cameraY to keep track of it.
+  // Change the value for cameraY to keep track of it.
     cameraY += y*amplifier;
 
     // Call the method to set the angle of the servo.
-    setCameraServo(servo, cameraY, 'y');
-    
+    cameraY = setY(cameraY);
+  
+}
+
+void setCameraServoRelativeX(int x){
+    int amplifier = 10;
+  
+  // If the method is called without any changed values. End.
+  if (x != 1 || x != 2) return;
+  if (x == 1){
+    x = -x;
+  } else {
+    x -=1;
   }
+
+  // Change the value for cameraY to keep track of it.
+    cameraX += x*amplifier;
+
+    // Call the method to set the angle of the servo.
+    cameraX = setX(cameraX);
+    
   
 }
 
