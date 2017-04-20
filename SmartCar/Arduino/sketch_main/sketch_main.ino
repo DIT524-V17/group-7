@@ -55,6 +55,9 @@ const int X_MIN_ANGLE = 0;
 int cameraX = 90;
 int cameraY = 90;
 
+const int analog0 = 54; // Analog pin 0
+const int analog1 = 55; // Analog pin 1
+
 
 void setup() {
     //Sets the motor and steering servos to the default positions
@@ -67,9 +70,9 @@ void setup() {
     collisionServo.attach(COLLISION_SERVO_PIN);
     collisionServo.write(START_POSITION_COLLISION_SERVO);
 
-    camera_servo_x.attach(14); //analog pin 0
-    camera_servo_y.attach(15); //analog pin 1
-
+    camera_servo_x.attach(analog0); //analog pin 0
+    camera_servo_y.attach(analog1);  //analog pin 1
+ 
     camera_servo_x.write(X_MAX_ANGLE/2);
     camera_servo_y.write(Y_MAX_ANGLE/2);
     
@@ -96,13 +99,14 @@ void loop() {
                 motor.write(velocity);
             }
             break;
+            /*
         case 'x':
           setCameraServo(camera_servo_x, input.substring(1, 4).toInt(), 'x');
         break;
         case 'y':
         setCameraServo(camera_servo_y, input.substring(1, 4).toInt(), 'y');
         break;
-     
+     */
         default:
             motor.write(START_POSITION_MOTOR_SERVO);
             steer.write(START_POSITION_STEER_SERVO);
@@ -163,24 +167,6 @@ void loop() {
         }
     }
 }
-
-void serialEvent() {
-    //Records one command at a time when availible
-    while(Serial.available()){
-        data = Serial.read();
-      
-        //Makes sure no artifacts are in the command
-        if(data != '?' && isAlphaNumeric(data)){
-            input += data;
-        }else if (input.length() >= 4){
-        
-            //Makes the loop do the command when the input is the end character ?
-            completeCommand = true;
-            break;
-        }
-    }
-}
-
 
 /**
  * Author: Pontus Laestadius
@@ -245,3 +231,21 @@ void setCameraServoRelative(Servo servo, int x=0, int y=0, int amplifier=10){
   }
   
 }
+
+void serialEvent() {
+    //Records one command at a time when availible
+    while(Serial.available()){
+        data = Serial.read();
+      
+        //Makes sure no artifacts are in the command
+        if(data != '?' && isAlphaNumeric(data)){
+            input += data;
+        }else if (input.length() >= 4){
+        
+            //Makes the loop do the command when the input is the end character ?
+            completeCommand = true;
+            break;
+        }
+    }
+}
+
