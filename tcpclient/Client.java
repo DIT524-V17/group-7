@@ -31,14 +31,14 @@ class BaseSocket implements Runnable {
 
 	// A queue is used to handle all input commands so they go in the proper order and are not lost.
 	Queue<String> input = new PriorityQueue<>();
-	Queue<String> output = new PriorityQueue<>(); // TODO: 06/04/2017 make a read function for this.
+	Queue<String> output = new PriorityQueue<>();
 	Socket socket;
 
 	// Macro for add.
 	public void write(String s){
-		// TODO: 06/03/2017 Add command vertification here. Preferably O(1).
 
 		try{
+			// Will only send a command if it is send in increments of 30 miliseconds.
 			if (System.currentTimeMillis() %30 != 0)
 				out.writeUTF(s + "\n");
 			out.flush();
