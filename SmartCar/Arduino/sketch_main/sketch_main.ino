@@ -1,7 +1,7 @@
 #include <NewPing.h> // https://bitbucket.org/teckel12/arduino-new-ping/downloads/
 #include <Servo.h>
-#include <OneWire.h>
-#include <DallasTemperature.h>
+#include <OneWire.h> //https://github.com/PaulStoffregen/OneWire
+#include <DallasTemperature.h> //https://github.com/milesburton/Arduino-Temperature-Control-Library
 
 
 #define ONE_WIRE_BUS 3 //for temperature sensor
@@ -83,6 +83,8 @@ void setup() {
   // Start the sensor
     sensors.begin();    
     if (!sensors.getAddress(thermometer, 0)) Serial.println("Unable to find address for Device 0");  
+
+    
 }
 
 //Added by Isabelle Törnqvist 2017-04-18
