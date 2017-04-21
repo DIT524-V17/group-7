@@ -60,7 +60,8 @@ int cameraY = 90;
 // http://pighixxx.com/megapdf.pdf
 const int analog0 = 54; // Analog pin 0
 const int analog1 = 55; // Analog pin 1
-
+int cameraX_value = 0;
+int cameraY_value = 0;
 
 void setup() {
     //Sets the motor and steering servos to the default positions
@@ -87,6 +88,9 @@ void setup() {
 }
 
 void loop() { 
+  
+
+  
     //Is true when a command with a ? in the end is given or if the input reaches a length atleast 4
     if(completeCommand){
 
@@ -108,16 +112,14 @@ void loop() {
             }
             break;
 
-
             // Camera servos,
             // Their input should fit this expression: (x||y)(0001||0002)
-        case 'x': // Bottom servo, the horizontal one.
-        setCameraServoRelative(camera_servo_x, X_MAX_ANGLE, X_MIN_ANGLE, value, cameraX);
+        case 'x': // Sets the command to be used in the update function.
+        cameraX_value = value;
         break;
-        case 'y': // Top servo, the vertical one.
-        setCameraServoRelative(camera_servo_y, Y_MAX_ANGLE, Y_MIN_ANGLE, value, cameraY);
-        // moveCamera(camera_servo_y, Y_MAX_ANGLE, Y_MIN_ANGLE, value);
-        break;      
+        case 'y': 
+        cameraY_value = value;
+        break;     
         
         default:
             motor.write(START_POSITION_MOTOR_SERVO);
@@ -128,6 +130,9 @@ void loop() {
         input = "";
         completeCommand = false;
     }
+
+    // Updates the camera servos angle.
+    cameraUpdate(cameraX_value, cameraY_value);
 
     //Reads the value from the flame sensor
     flame_pin = digitalRead (FLAME_SENSOR_PIN) ;
@@ -200,6 +205,20 @@ void serialEvent() {
 }
 
 /**
+ * Updates the camera servos on each iteration until a value of 0 is given.
+ */
+void cameraUpdate(int &x, int &y){
+
+  if (x != 0){
+    setCameraServoRelative(camera_servo_x, X_MAX_ANGLE, X_MIN_ANGLE, x, cameraX);
+  } 
+  if (y != 0){
+    setCameraServoRelative(camera_servo_y, Y_MAX_ANGLE, Y_MIN_ANGLE, y, cameraY);
+  }
+             
+}
+
+/**
  * Author: Pontus Laestadius
  * Purpose: Handles the camera's servos with constraits. 
  * Do not call this method directly, Rather use setCameraServoRelative.
@@ -244,8 +263,8 @@ int setCameraConverter(int v){
  */
 
 void setCameraServoRelative(Servo &servo, const int &max, const int &min, int value, int &currentAngle){
-    // The servo will move in 10 degree increments.
-    int amplifier = 10;
+    // The servo will move in 1 degree increments.
+    int amplifier = 1;
 
     // Change the value for cameraY to keep track of it.
     currentAngle += setCameraConverter(value)*amplifier;
