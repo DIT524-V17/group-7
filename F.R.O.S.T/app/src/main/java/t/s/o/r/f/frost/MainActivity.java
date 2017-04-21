@@ -98,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
                                     item_flame_boolean = !item_flame_boolean;
                                     item.setChecked(item_flame_boolean);
                                     threads.r1.write("F000?");
+                                    System.out.println("Flame");
                                     break;
                                 //The case for when the temperature checkbox is pressed
                                 case R.id.temperature:
@@ -140,6 +141,10 @@ public class MainActivity extends AppCompatActivity {
                                     threads.r1.write("E000?");
                                     break;
                             }
+                            /*Just a random command to make sure that the car doesnt get spammed with the
+                            command for turning a sensor on/off*/
+                            threads.r1.write("0000?");
+                            
                         } catch (Exception e) {
                             System.out.println("Error in popup menu");
                             e.printStackTrace();
