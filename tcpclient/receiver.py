@@ -15,11 +15,11 @@ usb = serial.Serial('/dev/ttyACM0', 9600, timeout=.1)
 class Receiver:
 
     receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    host = None
-    port = None
-    connection = False
-    address = None
-    msg = None
+    host = None // host, an adress.
+    port = None // port, integer please.
+    connection = False // Connection, a boolean.
+    address = None // address, the clients address.
+    msg = None // msg, The message to be sent.
 
     # Constructor
     def __init__(self, host, port):
