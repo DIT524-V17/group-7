@@ -264,7 +264,7 @@ int setCameraConverter(int v) {
 */
 
 void setCameraServoRelative(Servo &servo, const int &max, const int &min, int value, int &currentAngle) {
-  // The servo will move in 1 degree increments.
+  // The servo will move in 2 degree increments.
   int amplifier = 2;
 
   // Change the value for cameraY to keep track of it.
