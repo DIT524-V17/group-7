@@ -1,7 +1,8 @@
 #include <NewPing.h> // https://bitbucket.org/teckel12/arduino-new-ping/downloads/
 #include <Servo.h>
-#include <OneWire.h> //https://github.com/PaulStoffregen/OneWire
-#include <DallasTemperature.h> //https://github.com/milesburton/Arduino-Temperature-Control-Library
+#include <OneWire.h> //https://github.com/PaulStoffregen/OneWire Library. Callibrates digital temperature readings. 
+//Library derived from OneWire. Used to do calculations regarding the temperature sensor. 
+#include <DallasTemperature.h> //https://github.com/milesburton/Arduino-Temperature-Control-Library 
 
 
 #define ONE_WIRE_BUS 3 //for temperature sensor
@@ -20,8 +21,10 @@
 #define MAX_DISTANCE_ULTRASONIC 400
 
 int flame_pin;
+
 int velocity;
 int range;
+//Temperature variables
 int tempC;
 int oldTemp;
 
@@ -36,13 +39,14 @@ boolean collisionDirection;
 boolean obstacle;
 boolean completeCommand;
 boolean flame;
+
 //For turning modules on and off
 boolean flameActivation = true;
 boolean temperatureActivation = true;
 boolean ultrasonicActivation = true; 
 boolean servoActivation = true;     
 boolean motorActivation = true;
-boolean RIP = true;
+boolean allActivation = true; //Used for de-activation of all sensors/modules 
 
 Servo motor;
 Servo steer;
@@ -80,10 +84,9 @@ void setup() {
     
     Serial.begin(9600);  
 
-  // Start the sensor
+  // Starting up <DallasTemperature.h>
     sensors.begin();    
-    if (!sensors.getAddress(thermometer, 0)) Serial.println("Unable to find address for Device 0");  
-
+    if (!sensors.getAddress(thermometer, 0));  
     
 }
 
@@ -95,7 +98,7 @@ void printTemperature(DeviceAddress deviceAddress)
   tempC = (int)sensors.getTempC(deviceAddress);
   String tempString;
 
-//Check temperature 
+//Handling temperature: turning into a string of the appropriate length for sending to the Android app 
   if(tempC < 10){
     tempString = "t00" + (String)tempC;
   }else if (tempC >= 100){
@@ -131,7 +134,8 @@ void loop() {
                 motor.write(velocity);
             }
             break;
-
+        //case: '*' - switching sensors on or off, by setting bool variables to true or false. 
+        //input is sent from Android app. Checks first character - cases for all sensors/modules.   
         case 'F':
          flameActivation = !flameActivation;
          break;
@@ -154,12 +158,12 @@ void loop() {
 
         //switch off all sensors
         case 'E':
-          RIP = !RIP;
-          motorActivation = RIP;
-          servoActivation = RIP;
-          ultrasonicActivation = RIP;
-          temperatureActivation = RIP;
-          flameActivation = RIP;        
+          allActivation = !allActivation;
+          motorActivation = allActivation;
+          servoActivation = allActivation;
+          ultrasonicActivation = allActivation;
+          temperatureActivation = allActivation;
+          flameActivation = allActivation;        
           break;       
       
         default:
