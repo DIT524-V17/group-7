@@ -45,7 +45,8 @@ NewPing sonar(TRIG_PIN, ECHO_PIN, MAX_DISTANCE_ULTRASONIC);
 
 // Camera servos and all related code.
 // Author: Pontus Laestadius.
-Servo camera_servo_x; Servo camera_servo_y; 
+Servo camera_servo_x; 
+Servo camera_servo_y; 
 const int Y_MAX_ANGLE = 100;
 const int Y_MIN_ANGLE = 30;
 
@@ -55,6 +56,8 @@ const int X_MIN_ANGLE = 0;
 int cameraX = 90;
 int cameraY = 90;
 
+// See this picture as to why they are numbered this way:
+// http://pighixxx.com/megapdf.pdf
 const int analog0 = 54; // Analog pin 0
 const int analog1 = 55; // Analog pin 1
 
@@ -72,7 +75,8 @@ void setup() {
 
     camera_servo_x.attach(analog0); //analog pin 0
     camera_servo_y.attach(analog1);  //analog pin 1
- 
+
+    // Resets the camera to a stationary position.
     camera_servo_x.write(X_MAX_ANGLE/2);
     camera_servo_y.write(Y_MAX_ANGLE/2);
     
@@ -85,27 +89,35 @@ void setup() {
 void loop() { 
     //Is true when a command with a ? in the end is given or if the input reaches a length atleast 4
     if(completeCommand){
+
+      // Improves readability.
+      int value = input.substring(1, 4).toInt();
+      
         switch(input.charAt(0)){
       
         //Controls the steering
         case 'a':
-            steer.write(input.substring(1, 4).toInt());
+            steer.write(value);
             break;
       
         //Controls the speed
         case 'd':
-            velocity = input.substring(1, 4).toInt();
+            velocity = value;
             if ((!flame && !obstacle) || velocity >= 90){
                 motor.write(velocity);
             }
             break;
-            
-        case 'x':
-        setX(input.substring(1, 4).toInt());
+
+
+            // Camera servos,
+            // Their input should fit this expression: (x||y)(0001||0002)
+        case 'x': // Bottom servo, the horizontal one.
+        setCameraServoRelative(camera_servo_x, X_MAX_ANGLE, X_MIN_ANGLE, value, cameraX);
         break;
-        case 'y':
-        setY(input.substring(1, 4).toInt());
-        break;
+        case 'y': // Top servo, the vertical one.
+        setCameraServoRelative(camera_servo_y, Y_MAX_ANGLE, Y_MIN_ANGLE, value, cameraY);
+        // moveCamera(camera_servo_y, Y_MAX_ANGLE, Y_MIN_ANGLE, value);
+        break;      
         
         default:
             motor.write(START_POSITION_MOTOR_SERVO);
@@ -168,118 +180,7 @@ void loop() {
     }
 }
 
-/**
- * Author: Pontus Laestadius
- * Purpose: Handles the camera's servos. Do not call this method directly, Rather use setCameraServoRelative.
- */
-void setCameraServo(Servo servo, int degrees, char dir){
-  int max, min;
 
-  // Declares the maximum and minimum based on which servo was entered.
-  if ((int) dir == (int) 'y'){
-    max = Y_MAX_ANGLE;
-    min = Y_MIN_ANGLE;
-  } else {
-    max = X_MAX_ANGLE;
-    min = X_MIN_ANGLE;
-  }
-
-  // If the values exceed the angle the servo is able to turn.
-  if (degrees < min || degrees > max){
-
-    // Reset to either the minimum or maximum depending on which one it exceeds.
-    servo.write(degrees < min ? min : max);
-
-    // End the method.
-    return;
-  }
-
-  // Turn the servo to the indicated angle.
-  servo.write(degrees);
-  
-}
-
-int setX(int degrees){
-  int max = X_MAX_ANGLE;
-  int min = X_MIN_ANGLE;
-
-  // If the values exceed the angle the servo is able to turn.
-  if (degrees < min || degrees > max){
-
-    // Reset to either the minimum or maximum depending on which one it exceeds.
-    camera_servo_x.write(degrees < min ? min : max);
-
-    // End the method.
-    return degrees < min ? min : max;
-  }
-
-  // Turn the servo to the indicated angle.
-  camera_servo_x.write(degrees);
-    return degrees;
-}
-
-int setY(int degrees){
-  int max = Y_MAX_ANGLE;
-  int min = Y_MIN_ANGLE;
-
-  // If the values exceed the angle the servo is able to turn.
-  if (degrees < min || degrees > max){
-
-    // Reset to either the minimum or maximum depending on which one it exceeds.
-    camera_servo_y.write(degrees < min ? min : max);
-
-    // End the method.
-    return degrees < min ? min : max;
-  }
-
-  // Turn the servo to the indicated angle.
-  camera_servo_y.write(degrees);
-  return degrees;
-}
-
-/**
- * Author: Pontus Laestadius
- * Moves the camera relative to the current position. Such as left, right, up and down.
- * Param: Servo to be moved. Coordinates either 1,0 or -1. Amplifier amplifies the input coordinates.
- */
-void setCameraServoRelativeY(int y){
-  int amplifier = 10;
-  
-  // If the method is called without any changed values. End.
-  if (y != 1 || y != 2) return;
-   if (y == 1){
-    y = -y;
-  } else {
-    y -=1;
-  }
-
-  // Change the value for cameraY to keep track of it.
-    cameraY += y*amplifier;
-
-    // Call the method to set the angle of the servo.
-    cameraY = setY(cameraY);
-  
-}
-
-void setCameraServoRelativeX(int x){
-    int amplifier = 10;
-  
-  // If the method is called without any changed values. End.
-  if (x != 1 || x != 2) return;
-  if (x == 1){
-    x = -x;
-  } else {
-    x -=1;
-  }
-
-  // Change the value for cameraY to keep track of it.
-    cameraX += x*amplifier;
-
-    // Call the method to set the angle of the servo.
-    cameraX = setX(cameraX);
-    
-  
-}
 
 void serialEvent() {
     //Records one command at a time when availible
@@ -296,5 +197,60 @@ void serialEvent() {
             break;
         }
     }
+}
+
+/**
+ * Author: Pontus Laestadius
+ * Purpose: Handles the camera's servos with constraits. 
+ * Do not call this method directly, Rather use setCameraServoRelative.
+ */
+int moveCamera(Servo &servo, const int &max, const int &min, int degrees){
+
+  // If the values exceed the angle the servo is able to turn.
+  if (degrees < min || degrees > max){
+
+    // Reset to either the minimum or maximum depending on which one it exceeds.
+    servo.write(degrees < min ? min : max);
+
+    // End the method. And return the value the camera angle is now set to.
+    return degrees < min ? min : max;
+  }
+
+  // Turn the servo to the indicated angle.
+  servo.write(degrees);
+    return degrees;
+}
+
+/**
+ * Author: Pontus Laestadius
+ * Converts a value for the servo relative method.
+ * Param: v is an integer. either 1 or 2 (everything else returns 0), that gets converted to -1 or 1. 
+ */
+int setCameraConverter(int v){
+  // If the method is called without any changed values. End.
+   if (v == 1){
+    return -v;
+  } else if (v == 2) {
+    return  --v;
+  }
+  return 0;
+}
+
+/**
+ * Author: Pontus Laestadius
+ * Moves the camera relative to the current position. Such as left, right, up and down.
+ * Param: Servo to be moved, max and min angles the servo can move. Value, either 1 for lowing the angle and 2 for increasing it. 
+ * Amplifier amplifies the input coordinates. Add functionality so this value can be changed remotely to change speed.
+ */
+
+void setCameraServoRelative(Servo &servo, const int &max, const int &min, int value, int &currentAngle){
+    // The servo will move in 10 degree increments.
+    int amplifier = 10;
+
+    // Change the value for cameraY to keep track of it.
+    currentAngle += setCameraConverter(value)*amplifier;
+
+    // Call the method to set the angle of the servo.
+    currentAngle = moveCamera(servo, max, min, cameraX);
 }
 
