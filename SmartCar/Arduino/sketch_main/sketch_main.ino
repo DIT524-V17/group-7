@@ -55,10 +55,10 @@ char data;
 
 NewPing sonar(TRIG_PIN, ECHO_PIN, MAX_DISTANCE_ULTRASONIC);
 
-//Setup a oneWire instance to communicate with any OneWire devices
+//Setup a oneWire, used for temperature sensor
 OneWire oneWire(ONE_WIRE_BUS);
 
-// Pass our oneWire reference to Dallas Temperature. 
+//Library used for temperature sensor 
 DallasTemperature sensors(&oneWire);
 
 // array to hold device readings
@@ -81,12 +81,8 @@ void setup() {
     Serial.begin(9600);  
 
   // Start the sensor
-  //  sensors.begin();    
-  //  if (!sensors.getAddress(thermometer, 0)) Serial.println("Unable to find address for Device 0");  
-  // set the resolution to 9 bit
-  //  sensors.setResolution(thermometer, 9);
-  //  sensors.getResolution(thermometer);
-
+    sensors.begin();    
+    if (!sensors.getAddress(thermometer, 0)) Serial.println("Unable to find address for Device 0");  
 }
 
 //Added by Isabelle Törnqvist 2017-04-18
@@ -107,10 +103,9 @@ void printTemperature(DeviceAddress deviceAddress)
     tempString = "t0" + (String)tempC;
   }
 
-//delay for sending the temperature: wait 300 incrementations, and if the temperature has changed, send the temperature 
-  if(++tempDelay >= 300 && oldTemp != tempC){
-      Serial.println(tempString); 
-      tempDelay = 0;  
+//delay for sending the temperature: if the temperature has changed, send the temperature 
+  if(oldTemp != tempC){
+      Serial.println(tempString);   
   }  
 }
 
@@ -139,31 +134,31 @@ void loop() {
          flameActivation = !flameActivation;
          break;
 
-      case 'T':
-        temperatureActivation = !temperatureActivation;
-        break;
+        case 'T':
+          temperatureActivation = !temperatureActivation;
+          break;
 
-      case 'U':
-        ultrasonicActivation = !ultrasonicActivation;
-        break;
+        case 'U':
+          ultrasonicActivation = !ultrasonicActivation;
+          break;
 
-      case 'S':
-       servoActivation =!servoActivation;
-       break;
+        case 'S':
+          servoActivation =!servoActivation;
+          break;
 
-      case 'M':
-        motorActivation = !motorActivation; 
-        break;
+        case 'M':
+          motorActivation = !motorActivation; 
+          break;
 
-  //switch off all sensors
-    case 'E':
-        RIP = !RIP;
-        motorActivation = RIP;
-        servoActivation = RIP;
-        ultrasonicActivation = RIP;
-        temperatureActivation = RIP;
-        flameActivation = RIP;        
-        break;       
+        //switch off all sensors
+        case 'E':
+          RIP = !RIP;
+          motorActivation = RIP;
+          servoActivation = RIP;
+          ultrasonicActivation = RIP;
+          temperatureActivation = RIP;
+          flameActivation = RIP;        
+          break;       
       
         default:
             motor.write(START_POSITION_MOTOR_SERVO);
