@@ -21,5 +21,19 @@ Easter Holiday including tuesday 18-04-2017: ~10 hours
 Title: Integration and Camera research/work.
 -Researched PiCamera and started working with a found Python library.
 -Integration for two-way connection
--Integration of flame indicator App wise
+-Integration of temp indicator App wise
 -Integration of semi-finished reconnect feature
+
+Wednesday & Thursday 19-04-2017 & 20-04-2017: 13 hours
+Title: Integration and camera work.
+-Read up on camera python library
+-Worked with Camera feed establishment
+-Integrated Menu into App
+-Integrated Temperature and fixed issues.
+-Established semi-working two-way connection
+-Modified the handling of recieved inputs.
+
+Friday 21-04-2017: hours
+Title: Camera Feed Establishment
+-
+-
