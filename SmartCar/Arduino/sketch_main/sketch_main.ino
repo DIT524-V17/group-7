@@ -215,7 +215,7 @@ void loop() {
 
 //Activation of motor
 //Allows the car to drive backwards if an obstacle is in from of the car
-if (velocity < motorActivation && 90 ){
+if (motorActivation && velocity < 90 ){
       //Is true if the range is less than 50 cm or if the flame sensor has set the flame variable to true
         if (((range != 0 && range <= 50) && ++collision_delay >= 250) || flame){
             if (range > 20){
