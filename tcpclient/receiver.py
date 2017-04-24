@@ -34,9 +34,9 @@ class Receiver:
         self.bind()
 
     # Binds the socket to the dedicated TCP port.
-    # If the port is in use
     def bind(self):
 
+        # If the port is in use
         # Makes sure the port is not in use by clearing it in the terminal.
         # In previous iterations this was located in the Shell script.
         # But it was moved here so that reconnections or manual launches of
