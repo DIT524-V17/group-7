@@ -1,6 +1,10 @@
-#include <NewPing.h>
+#include <NewPing.h> // https://bitbucket.org/teckel12/arduino-new-ping/downloads/
 #include <Servo.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
 
+
+#define ONE_WIRE_BUS 3 //for temperature sensor
 #define ECHO_PIN 2
 #define TRIG_PIN 4
 #define STEER_PIN 5
@@ -18,17 +22,27 @@
 int flame_pin;
 int velocity;
 int range;
+int tempC;
+int oldTemp;
 
 int collisionServoPosition = START_POSITION_STEER_SERVO;
 int collision_delay = 250;
 int flame_delay = 500;
 int lastDistance = 0;
 int distance_Delay = 0;
+int tempDelay = 0;
 
 boolean collisionDirection;
 boolean obstacle;
 boolean completeCommand;
 boolean flame;
+//For turning modules on and off
+boolean flameActivation = true;
+boolean temperatureActivation = true;
+boolean ultrasonicActivation = true; 
+boolean servoActivation = true;     
+boolean motorActivation = true;
+boolean RIP = true;
 
 Servo motor;
 Servo steer;
@@ -41,6 +55,14 @@ char data;
 
 NewPing sonar(TRIG_PIN, ECHO_PIN, MAX_DISTANCE_ULTRASONIC);
 
+//Setup a oneWire instance to communicate with any OneWire devices
+OneWire oneWire(ONE_WIRE_BUS);
+
+// Pass our oneWire reference to Dallas Temperature. 
+DallasTemperature sensors(&oneWire);
+
+// array to hold device readings
+DeviceAddress thermometer;
 
 void setup() {
     //Sets the motor and steering servos to the default positions
@@ -57,16 +79,52 @@ void setup() {
     pinMode(FLAME_SENSOR_PIN, INPUT);
     
     Serial.begin(9600);  
+
+  // Start the sensor
+  //  sensors.begin();    
+  //  if (!sensors.getAddress(thermometer, 0)) Serial.println("Unable to find address for Device 0");  
+  // set the resolution to 9 bit
+  //  sensors.setResolution(thermometer, 9);
+  //  sensors.getResolution(thermometer);
+
+}
+
+//Added by Isabelle Törnqvist 2017-04-18
+// function to print the temperature for a device
+void printTemperature(DeviceAddress deviceAddress)
+{  
+  oldTemp = tempC;
+  tempC = (int)sensors.getTempC(deviceAddress);
+  String tempString;
+
+//Check temperature 
+  if(tempC < 10){
+    tempString = "t00" + (String)tempC;
+  }else if (tempC >= 100){
+    tempString = "t" + (String)tempC;
+  }
+  else{
+    tempString = "t0" + (String)tempC;
+  }
+
+//delay for sending the temperature: wait 300 incrementations, and if the temperature has changed, send the temperature 
+  if(++tempDelay >= 300 && oldTemp != tempC){
+      Serial.println(tempString); 
+      tempDelay = 0;  
+  }  
 }
 
 void loop() { 
     //Is true when a command with a ? in the end is given or if the input reaches a length atleast 4
     if(completeCommand){
+      
         switch(input.charAt(0)){
       
         //Controls the steering
         case 'a':
-            steer.write(input.substring(1, 4).toInt());
+            if (servoActivation){
+                steer.write(input.substring(1, 4).toInt());
+            }
             break;
       
         //Controls the speed
@@ -76,7 +134,37 @@ void loop() {
                 motor.write(velocity);
             }
             break;
-     
+
+        case 'F':
+         flameActivation = !flameActivation;
+         break;
+
+      case 'T':
+        temperatureActivation = !temperatureActivation;
+        break;
+
+      case 'U':
+        ultrasonicActivation = !ultrasonicActivation;
+        break;
+
+      case 'S':
+       servoActivation =!servoActivation;
+       break;
+
+      case 'M':
+        motorActivation = !motorActivation; 
+        break;
+
+  //switch off all sensors
+    case 'E':
+        RIP = !RIP;
+        motorActivation = RIP;
+        servoActivation = RIP;
+        ultrasonicActivation = RIP;
+        temperatureActivation = RIP;
+        flameActivation = RIP;        
+        break;       
+      
         default:
             motor.write(START_POSITION_MOTOR_SERVO);
             steer.write(START_POSITION_STEER_SERVO);
@@ -87,25 +175,29 @@ void loop() {
         completeCommand = false;
     }
 
-    //Reads the value from the flame sensor
-    flame_pin = digitalRead (FLAME_SENSOR_PIN) ;
+    if(flameActivation){
+      //Reads the value from the flame sensor
+      flame_pin = digitalRead (FLAME_SENSOR_PIN) ;
 
-    //If the flame sensor sees a flame it writes a command that says it sees a flame
-    if (flame_pin == HIGH && !flame){
-      if (++flame_delay >= 500){
+      //If the flame sensor sees a flame it writes a command that says it sees a flame
+      if (flame_pin == HIGH && !flame){
+        if (++flame_delay >= 500){
           Serial.write("f001\n");
-      }
-      flame = true;
-      digitalWrite(LED_PIN, HIGH);
+        }
+        flame = true;
+        digitalWrite(LED_PIN, HIGH);
 
-    //when the flame disapears it sends a command that it stopped seing a flame
-    }else if(flame && flame_pin == LOW){
-      Serial.write("f000\n");
-      flame = false;
-      digitalWrite(LED_PIN, LOW);
-      flame_delay = 0;
-    }
-    //Pings the ultrasonic sensor
+       //when the flame disapears it sends a command that it stopped seing a flame
+      }else if(flame && flame_pin == LOW){
+        Serial.write("f000\n");
+        flame = false;
+        digitalWrite(LED_PIN, LOW);
+        flame_delay = 0;
+      }  
+  }
+
+  if(ultrasonicActivation){
+   //Pings the ultrasonic sensor
     range_string = sonar.ping_cm();
     range = range_string.toInt();
     range_string = "c" + range_string + '\n';
@@ -114,10 +206,11 @@ void loop() {
         Serial.print(range_string);
         lastDistance = range;
         distance_Delay = 0;
-    }
+    }   
+  }
 
     //Allows the car to drive backwards if an obstacle is in from of the car
-    if (velocity < 90){
+    if (velocity < 90 && !motorActivation){
       //Is true if the range is less than 50 cm or if the flame sensor has set the flame variable to true
         if (((range != 0 && range <= 50) && ++collision_delay >= 250) || flame){
             if (range > 20){
@@ -136,6 +229,12 @@ void loop() {
             motor.write(START_POSITION_MOTOR_SERVO);
         }
     }
+
+  if(temperatureActivation){
+    //for temperature sensor
+    sensors.requestTemperatures(); // Get temperatures
+    printTemperature(thermometer); //Call 
+    }   
 }
 
 void serialEvent() {
