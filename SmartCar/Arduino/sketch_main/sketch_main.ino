@@ -83,8 +83,8 @@ int cameraY = 90; // Angle of the camera Y
 
 // See this picture as to why they are numbered this way:
 // http://pighixxx.com/megapdf.pdf
-const int analog0 = 54; // Analog pin 0
-const int analog1 = 55; // Analog pin 1
+const int CAMERA_PIN_X = 54; // Analog pin 0
+const int CAMERA_PIN_Y = 55; // Analog pin 1
 int cameraX_value = 0; // Last X input.
 int cameraY_value = 0; // Last Y input.
 
@@ -102,8 +102,8 @@ void setup() {
     pinMode(LED_PIN, OUTPUT);
     pinMode(FLAME_SENSOR_PIN, INPUT);
 
-    camera_servo_x.attach(analog0); //analog pin 0
-    camera_servo_y.attach(analog1);  //analog pin 1
+    camera_servo_x.attach(CAMERA_PIN_X); //analog pin 0
+    camera_servo_y.attach(CAMERA_PIN_Y);  //analog pin 1
 
     // Resets the camera to a stationary position.
     camera_servo_x.write(X_MAX_ANGLE/2);
