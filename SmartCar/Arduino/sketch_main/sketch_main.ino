@@ -1,9 +1,9 @@
 #include <NewPing.h> // https://bitbucket.org/teckel12/arduino-new-ping/downloads/
 #include <Servo.h>
-#include <OneWire.h> //https://github.com/PaulStoffregen/OneWire Library. Callibrates digital temperature readings. 
+//Library. Callibrates digital temperature readings.
+#include <OneWire.h> //https://github.com/PaulStoffregen/OneWire  
 //Library derived from OneWire. Used to do calculations regarding the temperature sensor. 
 #include <DallasTemperature.h> //https://github.com/milesburton/Arduino-Temperature-Control-Library 
-
 
 #define ONE_WIRE_BUS 3 //for temperature sensor
 #define ECHO_PIN 2
@@ -176,6 +176,8 @@ void loop() {
         completeCommand = false;
     }
 
+//Activation of the flame-sensor: if flameActivation is false, this if-statement won't be executed. 
+//This is were the detection of flame is done
     if(flameActivation){
       //Reads the value from the flame sensor
       flame_pin = digitalRead (FLAME_SENSOR_PIN) ;
@@ -197,6 +199,7 @@ void loop() {
       }  
   }
 
+//Activation of ultrasonic sensor
   if(ultrasonicActivation){
    //Pings the ultrasonic sensor
     range_string = sonar.ping_cm();
@@ -210,8 +213,9 @@ void loop() {
     }   
   }
 
-    //Allows the car to drive backwards if an obstacle is in from of the car
-    if (velocity < 90 && !motorActivation){
+//Activation of motor
+//Allows the car to drive backwards if an obstacle is in from of the car
+if (velocity < motorActivation && 90 ){
       //Is true if the range is less than 50 cm or if the flame sensor has set the flame variable to true
         if (((range != 0 && range <= 50) && ++collision_delay >= 250) || flame){
             if (range > 20){
@@ -231,8 +235,8 @@ void loop() {
         }
     }
 
-  if(temperatureActivation){
-    //for temperature sensor
+//Activation for temperature sensor
+if(temperatureActivation){
     sensors.requestTemperatures(); // Get temperatures
     printTemperature(thermometer); //Call 
     }   
