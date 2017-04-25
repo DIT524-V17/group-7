@@ -1,47 +1,51 @@
 
+import org.omg.CosNaming.NamingContextExtPackage.InvalidAddressHolder;
+
 import java.net.*;
 import java.io.*;
-import java.util.*;
 /**
  * @author Pontus Laestadius
  * Date format: DD-MM-YYYY
  * @since 20-03-2017
- * Maintained since: 17-04-2017
+ * Maintained since: 24-04-2017
  */
 
 public class Client {
 
-	static int port = 9005;
-	
-	// Ip address of the Raspberry pi running on the ARC network. 
-	// Change this IP if you change network, until the hotspot has been fixed.
-	static String host = "192.168.0.120"; 
-	static Boolean c = false;
 
-	public static Transmitter init(String host, int port){
-		return new Transmitter(host, port);
-	}
+	// Don't change the port. As it is the same as on the raspberry pi.
+	static int port = 9005;
+
+	// Ip address of the Raspberry pi running on the ARC network.
+	// Change this IP if you change network, until the hotspot has been fixed.
+	static String host = "192.168.0.120";
+
+	static Boolean c = false;
 }
 
-class BaseSocket implements Runnable {
-	private String host;
-	private int port;
+class TCP {
 	DataOutputStream out;
 	BufferedReader in;
 
-	// A queue is used to handle all input commands so they go in the proper order and are not lost.
-	Queue<String> input = new PriorityQueue<>();
-	Queue<String> output = new PriorityQueue<>();
 	Socket socket;
 
-	// Macro for add.
+	/**
+	 * Writes the given input to the socket.
+	 * @param s the string to be written on to the socket.
+	 */
 	public void write(String s){
 
 		try{
-			// Will only send a command if it is send in increments of 30 miliseconds.
-			if (System.currentTimeMillis() %30 != 0)
-				out.writeUTF(s + "\n");
+			char ch = s.charAt(0);
+
+			// Eats the input from drive and turning commands to avoid over crowding.
+			// Will only send a command if it is send in increments of 20 miliseconds.
+			if ((ch == 'd' || ch == 'a') && (System.currentTimeMillis() %20 != 0))
+				return;
+
+			out.writeUTF(s + "\n");
 			out.flush();
+
 		} catch (Exception e){
 			e.printStackTrace();
 		}
@@ -49,8 +53,8 @@ class BaseSocket implements Runnable {
 	}
 
 	/**
-	 *
-	 * @return the first command in the queue.
+	 * Reads a single line from the socket.
+	 * @return the first command in the buffered input stream.
 	 */
 	public String read(){
 
@@ -58,30 +62,21 @@ class BaseSocket implements Runnable {
 			// Java's way of declaring input stream is odd. Please ignore this line.
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			return in.readLine();
-			
+
 		} catch (IOException e){
 			e.printStackTrace();
-		} finally {
-			return ""; // Only occurs if an exception is thrown.
 		}
-	}
-    
-	BaseSocket(String host, int port) {
-		this.host = host;
-		this.port = port;
+
+		// Only occurs if an exception is thrown.
+		return "";
 	}
 
-	public void run() {}
-
-	static void p(String s){
-		System.out.println(s);
-	}
-}
-
-class Transmitter extends BaseSocket implements Runnable {
-
-	Transmitter(String host, int port) {
-		super(host,port);
+	/**
+	 *
+	 * @param host where is the socket located, ip address.
+	 * @param port on what port is it located, number over 9000.
+	 */
+	TCP(String host, int port) {
 		try {
 			socket = new Socket(host, port);
 		} catch (IOException e){
@@ -90,11 +85,10 @@ class Transmitter extends BaseSocket implements Runnable {
 		run();
 	}
 
-	@Override
-	public void run() {
+	private void run() {
 		try { // Catches IO exceptions
 
-			// Out and input streams.
+			// Output stream.
 			out = new DataOutputStream(socket.getOutputStream());
 
 		} catch (IOException e){
