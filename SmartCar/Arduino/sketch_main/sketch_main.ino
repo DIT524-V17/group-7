@@ -68,8 +68,11 @@ DallasTemperature sensors(&oneWire);
 // array to hold device readings
 DeviceAddress thermometer;
 
-// Camera servos and all related code.
-// Author: Pontus Laestadius.
+/*
+ * Camera servos and all related code. 
+ * Author: Pontus Laestadius.
+ * Since: 25th of April 2017
+*/
 Servo camera_servo_x;
 Servo camera_servo_y;
 const int Y_MAX_ANGLE = 100;
@@ -85,8 +88,8 @@ int cameraY = 90; // Angle of the camera Y
 // http://pighixxx.com/megapdf.pdf
 const int CAMERA_PIN_X = 54; // Analog pin 0
 const int CAMERA_PIN_Y = 55; // Analog pin 1
-int cameraX_value = 0; // Last X input.
-int cameraY_value = 0; // Last Y input.
+int cameraX_valueReceivedFromTheRaspberry = 0; // Last X input.
+int cameraY_valueReceivedFromTheRaspberry = 0; // Last Y input.
 
 void setup() {
     //Sets the motor and steering servos to the default positions
@@ -146,7 +149,7 @@ void loop() {
     if(completeCommand){
 
       // Improves readability.
-      int value = input.substring(1, 4).toInt();
+      int valueReceivedFromTheRaspberry = input.substring(1, 4).toInt();
       
         switch(input.charAt(0)){
       
@@ -199,10 +202,10 @@ void loop() {
            // Camera servos,
       // Their input should fit this expression: (x||y)(0001||0002)
       case 'x': // Sets the command to be used in the update function.
-        cameraX_value = value;
+        cameraX_valueReceivedFromTheRaspberry = valueReceivedFromTheRaspberry;
         break;
       case 'y':
-        cameraY_value = value;
+        cameraY_valueReceivedFromTheRaspberry = valueReceivedFromTheRaspberry;
         break;
       
         default:
@@ -216,12 +219,12 @@ void loop() {
     }
 
     // Updates the camera servos angle.
-  cameraUpdate(cameraX_value, cameraY_value);
+  cameraUpdate(cameraX_valueReceivedFromTheRaspberry, cameraY_valueReceivedFromTheRaspberry);
 
 //Activation of the flame-sensor: if flameActivation is false, this if-statement won't be executed. 
 //This is were the detection of flame is done
     if(flameActivation){
-      //Reads the value from the flame sensor
+      //Reads the valueReceivedFromTheRaspberry from the flame sensor
       flame_pin = digitalRead (FLAME_SENSOR_PIN) ;
 
       //If the flame sensor sees a flame it writes a command that says it sees a flame
@@ -284,10 +287,11 @@ if(temperatureActivation){
     }   
 }
 
-
-/**
-   Updates the camera servos on each iteration, until a 0 is given.
-   Checks both x and y individually so that they both can be moved at once.
+/*
+ * Updates the camera servos on each iteration, until a 0 is given.
+ * Checks both x and y individually so that they both can be moved at once.
+ * Author: Pontus Laestadius.
+ * Since: 25th of April 2017
 */
 void cameraUpdate(int &x, int &y) {
 
@@ -300,20 +304,21 @@ void cameraUpdate(int &x, int &y) {
 
 }
 
-/**
+/*
    Author: Pontus Laestadius
+   Since: 25th of April 2017
    Purpose: Handles the camera's servos with constraits.
    Do not call this method directly, Rather use setCameraServoRelative.
 */
 int moveCamera(Servo &servo, const int &max, const int &min, int degrees) {
 
-  // If the values exceed the angle the servo is able to turn.
+  // If the valueReceivedFromTheRaspberrys exceed the angle the servo is able to turn.
   if (degrees < min || degrees > max) {
 
     // Reset to either the minimum or maximum depending on which one it exceeds.
     servo.write(degrees < min ? min : max);
 
-    // End the method. And return the value the camera angle is now set to.
+    // End the method. And return the valueReceivedFromTheRaspberry the camera angle is now set to.
     return degrees < min ? min : max;
   }
 
@@ -324,11 +329,12 @@ int moveCamera(Servo &servo, const int &max, const int &min, int degrees) {
 
 /**
    Author: Pontus Laestadius
-   Converts a value for the servo relative method.
+   Since: 25th of April 2017
+   Converts a valueReceivedFromTheRaspberry for the servo relative method.
    Param: v is an integer. either 1 or 2 (everything else returns 0), that gets converted to -1 or 1.
 */
 int setCameraConverter(int v) {
-  // If the method is called without any changed values. End.
+  // If the method is called without any changed valueReceivedFromTheRaspberrys. End.
   if (v == 1) {
     return -v;
   } else if (v == 2) {
@@ -339,17 +345,18 @@ int setCameraConverter(int v) {
 
 /**
    Author: Pontus Laestadius
+   Since: 25th of April 2017
    Moves the camera relative to the current position. Such as left, right, up and down.
-   Param: Servo to be moved, max and min angles the servo can move. Value, either 1 for lowing the angle and 2 for increasing it.
-   Amplifier amplifies the input coordinates. Add functionality so this value can be changed remotely to change speed.
+   Param: Servo to be moved, max and min angles the servo can move. valueReceivedFromTheRaspberry, either 1 for lowing the angle and 2 for increasing it.
+   Amplifier amplifies the input coordinates. Add functionality so this valueReceivedFromTheRaspberry can be changed remotely to change speed.
 */
 
-void setCameraServoRelative(Servo &servo, const int &max, const int &min, int value, int &currentAngle) {
+void setCameraServoRelative(Servo &servo, const int &max, const int &min, int valueReceivedFromTheRaspberry, int &currentAngle) {
   // The servo will move in 2 degree increments.
   int amplifier = 2;
 
-  // Change the value for cameraY to keep track of it.
-  currentAngle += setCameraConverter(value) * amplifier;
+  // Change the valueReceivedFromTheRaspberry for cameraY to keep track of it.
+  currentAngle += setCameraConverter(valueReceivedFromTheRaspberry) * amplifier;
 
   // Call the method to set the angle of the servo.
   currentAngle = moveCamera(servo, max, min, cameraX);
