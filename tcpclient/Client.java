@@ -18,7 +18,7 @@ public class Client {
 
 	// Ip address of the Raspberry pi running on the ARC network.
 	// Change this IP if you change network, until the hotspot has been fixed.
-	static String host = "192.168.0.120";
+	static String host = "172.24.1.255";
 
 	static Boolean c = false;
 }
