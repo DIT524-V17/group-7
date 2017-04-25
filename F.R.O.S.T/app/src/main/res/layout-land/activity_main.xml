@@ -27,14 +27,14 @@
 
     <!---Forward Button-->
     <Button
-        android:text="Forward"
+        android:id="@+id/button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button"
-        android:background="@android:color/holo_green_dark"
-        android:textColor="@android:color/white"
+        android:layout_above="@+id/button2"
         android:layout_marginBottom="22dp"
-        android:layout_above="@+id/button2" />
+        android:background="@android:color/holo_green_dark"
+        android:text="Forward"
+        android:textColor="@android:color/white" />
 
     <!---Reverse Button-->
     <Button

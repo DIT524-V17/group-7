@@ -24,6 +24,14 @@
         <item
             android:id="@+id/rip"
             android:title="R.I.P."/>
+
+        <item
+            android:id="@+id/camera_vertical"
+            android:title="Camera vertical"/>
+
+        <item
+            android:id="@+id/camera_horizontal"
+            android:title="Camera horizontal"/>
     </group>
 
 </menu>

@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private Boolean item_motor_boolean = true;
     private Boolean item_steering_boolean = true;
     private Boolean item_rip_boolean = true;
+    private Boolean item_camera_horizontal_boolean = true;
+    private Boolean item_camera_vertical_boolean = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +89,8 @@ public class MainActivity extends AppCompatActivity {
                 final MenuItem item_motor = popup.getMenu().findItem(R.id.motor);
                 final MenuItem item_steering = popup.getMenu().findItem(R.id.steering);
                 final MenuItem item_rip = popup.getMenu().findItem(R.id.rip);
+                final MenuItem item_camera_vertical = popup.getMenu().findItem(R.id.camera_vertical);
+                final MenuItem item_camera_horizontal = popup.getMenu().findItem(R.id.camera_horizontal);
 
                 //Adds listeners to all the buttons
                 popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -124,6 +128,17 @@ public class MainActivity extends AppCompatActivity {
                                     item.setChecked(item_steering_boolean);
                                     threads.r1.write("S000?");
                                     break;
+                                //The case for when the "camera vertical" checkbox is pressed
+                                case R.id.camera_vertical:
+                                    item_camera_vertical_boolean = !item_camera_vertical_boolean;
+                                    item.setChecked(item_camera_vertical_boolean);
+                                    threads.r1.write("Y000");
+                                    break;
+                                //The case for when the "camera horizontal" checkbox is pressed
+                                case R.id.camera_horizontal:
+                                    item_camera_horizontal_boolean = !item_camera_horizontal_boolean;
+                                    item.setChecked(item_camera_horizontal_boolean);
+                                    threads.r1.write("X000");
                                 //The case for when the RIP checkbox is pressed
                                 case R.id.rip:
                                     item_rip_boolean = !item_rip_boolean;
@@ -132,19 +147,23 @@ public class MainActivity extends AppCompatActivity {
                                     item_ultrasonic_boolean = item_rip_boolean;
                                     item_motor_boolean = item_rip_boolean;
                                     item_steering_boolean = item_rip_boolean;
+                                    item_camera_horizontal_boolean = item_rip_boolean;
+                                    item_camera_vertical_boolean = item_rip_boolean;
                                     item_flame.setChecked(item_rip_boolean);
                                     item_temperature.setChecked(item_rip_boolean);
                                     item_ultrasonic.setChecked(item_rip_boolean);
                                     item_motor.setChecked(item_rip_boolean);
                                     item_steering.setChecked(item_rip_boolean);
                                     item.setChecked(item_rip_boolean);
+                                    item_camera_horizontal.setChecked(item_rip_boolean);
+                                    item_camera_vertical.setChecked(item_rip_boolean);
                                     threads.r1.write("E000?");
                                     break;
                             }
                             /*Just a random command to make sure that the car doesnt get spammed with the
                             command for turning a sensor on/off*/
                             threads.r1.write("0000?");
-                            
+
                         } catch (Exception e) {
                             System.out.println("Error in popup menu");
                             e.printStackTrace();
@@ -163,6 +182,8 @@ public class MainActivity extends AppCompatActivity {
                 item_motor.setChecked(item_motor_boolean);
                 item_steering.setChecked(item_steering_boolean);
                 item_rip.setChecked(item_rip_boolean);
+                item_camera_horizontal.setChecked(item_camera_horizontal_boolean);
+                item_camera_vertical.setChecked(item_camera_vertical_boolean);
 
                 //Shows the popup menu
                 popup.show();
