@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
                                     item_camera_horizontal_boolean = !item_camera_horizontal_boolean;
                                     item.setChecked(item_camera_horizontal_boolean);
                                     threads.r1.write("X000");
+                                    break;
                                 //The case for when the RIP checkbox is pressed
                                 case R.id.rip:
                                     item_rip_boolean = !item_rip_boolean;
