@@ -201,18 +201,18 @@ namespace camera {
      Since: 25th of April 2017
      Moves the camera relative to the current position. Such as left, right, up and down.
      Param: Servo to be moved, max and min angles the servo can move. valueReceivedFromTheRaspberry, either 1 for lowing the angle and 2 for increasing it.
-     Amplifier amplifies the input coordinates. Add functionality for changing  can be changed remotely to change speed.
+     Amplifier amplifies the input coordinates.
   */
   
   void setServoRelative(Servo &servo, const int &max, const int &min, int valueReceivedFromTheRaspberry, int &currentAngle) {
     // The servo will move in 2 degree increments.
     int amplifier = 2;
   
-    // Change the valueReceivedFromTheRaspberry for cameraY to keep track of it.
+    // Change the valueReceivedFromTheRaspberry for the camera angle to keep track of it.
     currentAngle += valueConverter(valueReceivedFromTheRaspberry) * amplifier;
   
     // Call the method to set the angle of the servo.
-    currentAngle = moveCamera(servo, max, min, cameraX);
+    currentAngle = moveCamera(servo, max, min, currentAngle);
   } 
 
   /*
