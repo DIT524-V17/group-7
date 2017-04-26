@@ -41,7 +41,7 @@ int collision_delay = 250;
 int flame_delay = 500;
 int last_distance_read = 0;
 int distance_delay = 0;
-//int temp_delay = 0;
+int temp_delay = 0;
 
 boolean obstacle_detected;
 boolean complete_command;
@@ -103,10 +103,7 @@ void setup() {
     
     steer.attach(STEER_PIN);
     steer.write(START_POSITION_STEER_SERVO);
-    
-    collisionServo.attach(COLLISION_SERVO_PIN);
-    collisionServo.write(START_POSITION_COLLISION_SERVO);
-    
+
     pinMode(LED_PIN, OUTPUT);
     pinMode(FLAME_SENSOR_PIN, INPUT);
 
@@ -141,8 +138,7 @@ void printTemperature(DeviceAddress deviceAddress){
     tempString = "t00" + temperature;
   }else if (temperature >= 100){
     tempString = "t" + temperature;
-  }
-  else{
+  }else{
     tempString = "t0" + temperature;
   }
 
@@ -325,7 +321,7 @@ void readFlame(){
 
 }
 
-void readTemperature(){
+void readTemp(){
     temperature_sensor.requestTemperatures(); // Get temperatures
     printTemperature(thermometer); //Call  
 }
@@ -347,7 +343,7 @@ void loop() {
 //_activation of ultrasonic sensor
   if(ultrasonic_activation){
    //Pings the ultrasonic sensor
-    ultrasonic_distance_string = sonar.ping_cm();
+    ultrasonic_distance_string = (String)sonar.ping_cm();
     ultrasonic_range = ultrasonic_distance_string.toInt();
     ultrasonic_distance_string = "c" + ultrasonic_distance_string + '\n';
     if (last_distance_read != ultrasonic_range && ++distance_delay >= 100){
@@ -381,10 +377,11 @@ if (motor_activation && velocity < 90 ){
     }
 
 //_activation for temperature sensor
-if(temperature_activation){
-    readTemperature();   
+if(temperature_activation && ++temp_delay >= 1000){
+    readTemp();   
+    temp_delay = 0;
 }
-
+}
 
 
 void serialEvent() {
