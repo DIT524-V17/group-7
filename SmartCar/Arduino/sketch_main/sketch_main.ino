@@ -293,7 +293,7 @@ void command() {
             steer.write(START_POSITION_STEER_SERVO);
             break;
         }
-        //Resets the it so the next command can be recorded
+        //Resets the it so the next command can be recorded 
         input = "";
         complete_command = false;
     
