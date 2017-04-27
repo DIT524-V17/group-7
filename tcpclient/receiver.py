@@ -1,7 +1,7 @@
 # @author Pontus Laestadius
-# Date format: DD-MM-YYYY
 # @since 20-03-2017
-# Maintained since: 23-04-2017
+# Maintained since: 26-04-2017
+# @version 1.0
 
 import socket
 import select
@@ -71,7 +71,6 @@ class Receiver:
             # Used to decide if the client is able to reconnect or not.
             self.connection = True
 
-
             # Only breaks when/if the client disconnects from the server.
             while self.connection:
 
@@ -80,6 +79,7 @@ class Receiver:
                     # This follows this example of how to use select in python:
                     # http://stackoverflow.com/questions/2719017/how-to-set-timeout-on-pythons-socket-recv-method
                     # This will give me a none blocking message receiver.
+                    # with a 1 second timeout flag.
                     ready = select.select([client], [], [], 1)
 
                     # Times out according to previous declaration.
@@ -115,13 +115,10 @@ class Receiver:
                         client.send(info.encode(coding))
 
                 # Due to socket issues or if the client disconnects.
-                except socket.error:
+                # All errors thrown by the socket are sub exceptions of OSError.
+                except OSError:
 
                     # If a client disconnects. This will end the while self.connection loop.
+                    client.shutdown()
                     self.connection = False
-                    print("4. Client disconnected ")
-
-    # Used for logs. Can be extended to support more features but is not important.
-    @staticmethod
-    def disconnected(s):
-        print("Disconnected at: %s" % s)
+                    print("4. Client disconnected")
