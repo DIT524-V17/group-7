@@ -14,6 +14,7 @@ import android.support.v7.widget.PopupMenu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.Button;
 import android.view.View.OnTouchListener;
 import android.widget.CompoundButton;
@@ -39,8 +40,9 @@ import static t.s.o.r.f.frost.Client.*;
 public class MainActivity extends AppCompatActivity {
 
     //Views for collision animation.
-    TextView tv;
     View v;
+    TextView tv;
+    View tvbg;
     static TextView ccValue;
     static TextView textElement;
     static ImageSwitcher SwitchImageTemp;
@@ -61,7 +63,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         new threads().execute(); //Executes the AsyncTask and establishes Client connection.
         tv = (TextView) findViewById(R.id.collision_text); //TextView for collision text.
-        v = findViewById(R.id.view4);
+        v = findViewById(R.id.cc_view4);
+        tvbg = findViewById(R.id.text_background);
+
         ccValue = (TextView) findViewById(R.id.ccValue); //TextView for collision distance value.
         animate();
         //Context used for the reconnect feature.
@@ -368,8 +372,8 @@ public class MainActivity extends AppCompatActivity {
     //Method for collision button animation.
 
     /**
-     * Created by: Pontus Laestadius
-     * Integrated by: Sebastian Fransson, Pontus Laestadius
+     * Author: Pontus Laestadius
+     * Content: Collision control GUI and Input interface.
      */
     void animate(){
 
@@ -378,19 +382,34 @@ public class MainActivity extends AppCompatActivity {
 
         AnimationSet s = new AnimationSet(true);//false means don't share interpolators
         s.addAnimation(rotation);
+        s.setDuration(3000);
         // s.addAnimation(rotationback);
         rotation.setRepeatCount(Animation.INFINITE);
         v.startAnimation(s);
-        //Instantiates the hidden collision button.
-        Button button = (Button)findViewById(R.id.button7);
+        tvbg.setVisibility(View.INVISIBLE);
+
+        Button button = (Button)findViewById(R.id.buttonCC);
         button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
+
+                AlphaAnimation animation1 = new AlphaAnimation(0.0f, 1.0f);
+                animation1.setDuration(200);
+                animation1.setStartOffset(20);
+                animation1.setFillAfter(true);
+                tv.startAnimation(animation1);
+
+                // displayTemp((int)(Math.random()*70));
+
                 // click handling code
-                if (tv.getText().equals("Collision"))
+                if (tv.getText().equals("Collision")){
                     tv.setText("");
-                else
+                    tvbg.setVisibility(View.INVISIBLE);
+                } else {
+                    tvbg.setVisibility(View.VISIBLE);
                     tv.setText("Collision");
+                }
+
             }
         });
     }
