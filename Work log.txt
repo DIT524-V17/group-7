@@ -34,5 +34,5 @@ Modifying the main sketch so that it will support additional ultrasonic sensors,
 testing updated system.
 25/04 - Project planning meeting. Testing battery level measurement on separate Arduino (3 hours).
 26/04 - Code review planning meeting, additional testing of updated collision control system. Doing research on battery level feature including usage of virtual circuit simulators. (6 hours).
-27/04 - Updating 3D model, additional research on battery level.
+27/04 - Updating 3D model, additional research on battery level, fixing battery's connection to motor (as it was damaged), continuing collision control testing.
 
