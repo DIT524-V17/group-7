@@ -2,11 +2,11 @@
 #include <Servo.h>
 
 //Multiple ultrasonics
-#define ECHO_PIN 2
+#define ECHO_PIN 2 //front
 #define TRIG_PIN 4
-#define ECHO_PIN2 A8
+#define ECHO_PIN2 A8 // front right
 #define TRIG_PIN2 A9
-#define ECHO_PIN3 A10
+#define ECHO_PIN3 A10 // front left
 #define TRIG_PIN3 A11
 #define ULTRASONIC_SENSOR_COUNT 3 //Update if more sensors are added
 
@@ -25,6 +25,7 @@
 int flame_pin;
 int velocity;
 int range;
+int steer_angle;
 
 int collisionServoPosition = START_POSITION_STEER_SERVO;
 int collision_delay = 250;
@@ -72,11 +73,12 @@ void setup() {
 
 void loop() { 
     //Is true when a command with a ? in the end is given or if the input reaches a length atleast 4
-    if(!completeCommand){
+    if(completeCommand){
         switch(input.charAt(0)){
-      
+     
         //Controls the steering
         case 'a':
+        steer_angle=input.substring(1, 4).toInt();
             steer.write(input.substring(1, 4).toInt());
             break;
       
@@ -137,12 +139,17 @@ void loop() {
 
         
     //Allows the car to drive backwards if an obstacle is in from of the car
-    if (true){ //velocity<90
+    if (velocity<90){ //velocity<90
       //Is true if the range is less than 50 cm or if the flame sensor has set the flame variable to true
-        if (((range != 0 && range <= 50) ) || ((range2 != 0 && range2 <= 50))
-        ||((range3 != 0 && range3 <= 50) )|| flame)
+        if (((range != 0 && range <= 50) ) || ((range2 != 0 && range2 <= 30))
+        ||((range3 != 0 && range3 <= 30) )) //|| flame
         
-        {
+        {if (range >= 30 && range2!=0 && range2 <= 20 && steer_angle == 0){
+          obstacle=false;
+        } 
+        else if (range >=30 && range3!=0 && range3 <= 20 && steer_angle == 90){
+          obstacle=false;
+        }
  {
                 obstacle = true;
                 collision_delay = 0;
