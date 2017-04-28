@@ -96,7 +96,7 @@ class Receiver:
                         # Flush the stream to force it to write to the buffer.
                     #    usb.flush()
 
-                    client.send("Test".encode(coding))
+                    client.send("Test \n".encode(coding))
                     # Found this clever solution here:
                     # http://stackoverflow.com/questions/38645060/what-is-the-equivalent-of-serial-available-in-pyserial
 

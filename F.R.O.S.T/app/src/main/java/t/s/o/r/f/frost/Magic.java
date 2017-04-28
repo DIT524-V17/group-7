@@ -73,7 +73,6 @@ public class Magic extends AsyncTask<String, Void, Void> {
                     e.printStackTrace();
                 }
             }
-            /*
 
             // Read
             String s = "";
@@ -86,7 +85,7 @@ public class Magic extends AsyncTask<String, Void, Void> {
             } catch (IOException e){
                 e.printStackTrace();
             }
-            */
+
         }
 
 
