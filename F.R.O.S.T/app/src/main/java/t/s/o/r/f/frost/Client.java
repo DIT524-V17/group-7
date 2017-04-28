@@ -13,7 +13,7 @@ import java.util.*;
 public class Client {
 
 	static int port = 9005;
-	static String host = "172.24.1.1";
+	static String host;
 	static Boolean c = false;
 
 	public static Transmitter init(String host, int port){
@@ -22,23 +22,18 @@ public class Client {
 }
 
 class BaseSocket implements Runnable {
-	private String host;
-	private int port;
 	DataOutputStream out;
 	BufferedReader in;
+	Object host;
+	int port;
 
-	// A queue is used to handle all input commands so they go in the proper order and are not lost.
-	Queue<String> input = new PriorityQueue<>();
-	Queue<String> output = new PriorityQueue<>(); // TODO: 06/04/2017 make a read function for this.
 	Socket socket;
 
-	// Macro for add.
-	public void write(String s){
+	void write(String s){
 		// TODO: 06/03/2017 Add command vertification here. Preferably O(1).
 
 		try{
-			if (System.currentTimeMillis() %30 != 0)
-				out.writeUTF(s + "\n");
+			out.writeUTF(s + "\n");
 			out.flush();
 		} catch (Exception e){
 			e.printStackTrace();
@@ -63,34 +58,6 @@ class BaseSocket implements Runnable {
 		return ""; // Only occurs if an exception is thrown.
 	}
 
-	/**
-	 *
-	 * @return all the queued up output as an array of strings.
-	 */
-
-    /*
-    public String[] readAll(){
-        int i = 0;
-        String[] res = new String[output.size()];
-        while (!output.isEmpty())
-            res[i++] = read();
-        return res;
-    }
-    */
-
-	/**
-	 *
-	 * @return a formated version of all queued up output received.
-	 */
-    /*
-    public String readAllFormated(){
-        String[] format = readAll();
-        String formatted = "";
-        for (String f: format)
-            formatted += f + ", ";
-        return formatted.substring(0, formatted.length()-3);
-    }
-*/
 	BaseSocket(String host, int port) {
 		this.host = host;
 		this.port = port;
@@ -108,7 +75,15 @@ class Transmitter extends BaseSocket implements Runnable {
 	Transmitter(String host, int port) {
 		super(host,port);
 		try {
-			socket = new Socket(host, port);
+			try {
+				//socket = new Socket("192.168.10.231", port);
+				//socket = new Socket("DESKTOP-KMQH395", port);
+				//socket = new Socket(InetAddress.getLocalHost(), port);
+				// socket = new Socket("localhost", port);
+				socket = new Socket("10.0.2.2", port);
+			} catch (UnknownHostException e){
+				e.printStackTrace();
+			}
 		} catch (IOException e){
 			e.printStackTrace();
 		}
