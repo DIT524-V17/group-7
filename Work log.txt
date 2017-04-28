@@ -24,11 +24,12 @@ mount on the back side of the car. Task finished
 29/03-31/03 - researching ways to determine car's position for mapping
 03/04-04/04 - working on 3d model of the car
 05/04-07/04 - helping to prepare the car for the demo (modifying, testing it)
+//Sprint 4
 10/04-12/04 - finishing 3D model
 13/04-14/04 - working on reconnect function for the controller app
 18/04-finishing reconnection function, starting collision control system modification
 19/04-21/04 - modifying collision control
-
+//Sprint 5
 24/04 - modifying collision control (4 hours)
 Modifying the main sketch so that it will support additional ultrasonic sensors,
 testing updated system.
