@@ -16,12 +16,12 @@ public class Client {
 	static String host;
 	static Boolean c = false;
 
-	public static Transmitter init(String host, int port){
+	static Transmitter init(String host, int port){
 		return new Transmitter(host, port);
 	}
 }
 
-class BaseSocket implements Runnable {
+class BaseSocket {
 	DataOutputStream out;
 	BufferedReader in;
 	Object host;
@@ -30,27 +30,26 @@ class BaseSocket implements Runnable {
 	Socket socket;
 
 	void write(String s){
-		// TODO: 06/03/2017 Add command vertification here. Preferably O(1).
-
 		try{
-			out.writeUTF(s + "\n");
+			System.out.println("write: " + s);
+			out.writeUTF("hello \n");
 			out.flush();
 		} catch (Exception e){
 			e.printStackTrace();
 		}
-
 	}
 
 	/**
 	 *
 	 * @return the first command in the queue.
 	 */
-	public String read(){
+	String read(){
 
 		String s;
 		try {
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // I hate Java.
 			s = in.readLine();
+			System.out.println("read: " + s);
 			return s;
 		} catch (IOException e){
 			e.printStackTrace();
@@ -63,14 +62,12 @@ class BaseSocket implements Runnable {
 		this.port = port;
 	}
 
-	public void run() {}
-
 	static void p(String s){
 		System.out.println(s);
 	}
 }
 
-class Transmitter extends BaseSocket implements Runnable {
+class Transmitter extends BaseSocket {
 
 	Transmitter(String host, int port) {
 		super(host,port);
@@ -87,11 +84,6 @@ class Transmitter extends BaseSocket implements Runnable {
 		} catch (IOException e){
 			e.printStackTrace();
 		}
-		run();
-	}
-
-	@Override
-	public void run() {
 		try { // Catches IO exceptions
 
 			// Out and input streams.
@@ -102,4 +94,5 @@ class Transmitter extends BaseSocket implements Runnable {
 			Client.c = false;
 		}
 	}
+
 }

@@ -87,8 +87,8 @@ class Receiver:
                     if self.msg:
 
                         # Decodes the message received from bytes to text using either utf or ascii.
-                        self.msg = self.msg.decode(coding)
-                        print("2. To Arduino: " + self.msg)
+                        # self.msg = self.msg.decode(coding)
+                        print("2. To Arduino: " + self.msg.decode(coding))
 
                         # Writes the message to the serial port on the Arduino.
                     #    usb.write(self.msg.encode())
@@ -96,8 +96,10 @@ class Receiver:
                         # Flush the stream to force it to write to the buffer.
                     #    usb.flush()
 
+                    client.send("Test".encode(coding))
                     # Found this clever solution here:
                     # http://stackoverflow.com/questions/38645060/what-is-the-equivalent-of-serial-available-in-pyserial
+
 
                     # If the serial is waiting to send a message through the socket.
                     # while usb.inWaiting():
