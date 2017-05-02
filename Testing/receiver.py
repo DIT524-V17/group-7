@@ -88,7 +88,16 @@ class Receiver:
 
                         # Decodes the message received from bytes to text using either utf or ascii.
                         # self.msg = self.msg.decode(coding)
-                        print("2. To Arduino: " + self.msg.decode(coding))
+                        # print("2. To Arduino: " + self.msg.decode(coding))
+                        self.msg = self.msg.decode(coding)
+                        # print(self.msg)
+
+                        self.msg = self.msg[2:6]
+
+                        print(self.msg)
+
+                        if not self.msg == "":
+                            self.eval()
 
                         # Writes the message to the serial port on the Arduino.
                     #    usb.write(self.msg.encode())
@@ -122,3 +131,15 @@ class Receiver:
     @staticmethod
     def disconnected(s):
         print("Disconnected at: %s" % s)
+
+    def eval(self):
+        v = self.msg[0:1:]
+        a = self.msg[1::]
+        if v == "a":
+            self.testcase("Angle set to: {}".format(a))
+        self.msg = None
+
+    def testcase(self, str):
+        pass
+
+
