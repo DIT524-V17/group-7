@@ -54,6 +54,8 @@ boolean ultrasonic_activation = true;
 boolean servo_activation = true;     
 boolean motor_activation = true;
 boolean all_activation = true; //Used for de-_activation of all sensors/modules 
+boolean camera_servo_activation_horizontal = true; //X is horizontal  
+boolean camera_servo_activation_vertical = true; //Y vertical
 
 Servo motor;
 Servo steer;
@@ -217,10 +219,10 @@ namespace camera {
   */
   void updateServo(int &x, int &y) {
   
-    if (x != 0) { 
+    if (x != 0 && camera_servo_activation_horizontal ) { 
       setServoRelative(camera_servo_x_axis, X_AXIS_MAX_ANGLE, X_MIN_MAX_ANGLE, x, camera_x);
     }
-    if (y != 0) {
+    if (y != 0 && camera_servo_activation_vertical) {
       setServoRelative(camera_servo_y_axis, Y_AXIS_MAX_ANGLE, Y_MIN_MAX_ANGLE, y, camera_y);
     }
   
@@ -277,9 +279,17 @@ void command() {
           ultrasonic_activation = all_activation;
           temperature_activation = all_activation;
           flame_activation = all_activation;        
-          break;      
+          break;     
 
-           // Camera servos,
+       case 'X':
+          camera_servo_activation_horizontal = !camera_servo_activation_horizontal;
+          break;
+
+      case 'Y':
+          camera_servo_activation_vertical = !camera_servo_activation_vertical;
+          break;   
+
+      // Camera servos,
       // Their input should fit this expression: (x||y)(0001||0002)
       case 'x': // Sets the command to be used in the update function for the camera.
         camera_x_value_received_from_the_raspberry = value_received_from_the_raspberry;
@@ -318,7 +328,6 @@ void readFlame(){
         digitalWrite(LED_PIN, LOW);
         flame_delay = 0;
       }  
-
 }
 
 void readTemp(){
