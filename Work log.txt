@@ -36,5 +36,8 @@ testing updated system.
 25/04 - Project planning meeting. Testing battery level measurement on separate Arduino (3 hours).
 26/04 - Code review planning meeting, additional testing of updated collision control system. Doing research on battery level feature including usage of virtual circuit simulators. (6 hours).
 27/04 - Updating 3D model, additional research on battery level, fixing battery's connection to motor (as it was damaged), continuing collision control testing. (3 hours).
-28/04 - 
+28/04 - Replacing sharp sensor on car's back with ultrasonic, testing the updated system. Testing battery level measurement system on separate arduino. (3 hours).
+02/05 - Updating 3D model. (2 hours).
+03/05 - 
+
 
