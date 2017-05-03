@@ -55,7 +55,7 @@ boolean servo_activation = true;
 boolean motor_activation = true;
 boolean all_activation = true; //Used for de-_activation of all sensors/modules 
 boolean camera_servo_activation_horizontal = true; //X is horizontal  
-boolean camera_servo_activation_vertical = true; //Y vertical
+boolean camera_servo_activation_vertical = true; //Y is vertical
 
 Servo motor;
 Servo steer;
@@ -219,10 +219,10 @@ namespace camera {
   */
   void updateServo(int &x, int &y) {
   
-    if (x != 0 && camera_servo_activation_horizontal ) { 
+    if (camera_servo_activation_horizontal && x != 0) { 
       setServoRelative(camera_servo_x_axis, X_AXIS_MAX_ANGLE, X_MIN_MAX_ANGLE, x, camera_x);
     }
-    if (y != 0 && camera_servo_activation_vertical) {
+    if (camera_servo_activation_vertical && y != 0) {
       setServoRelative(camera_servo_y_axis, Y_AXIS_MAX_ANGLE, Y_MIN_MAX_ANGLE, y, camera_y);
     }
   
