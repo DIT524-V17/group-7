@@ -5,4 +5,6 @@
 from receiver import Receiver
 import socket
 
+file = open('testcase_generated.txt', 'w')
+file.close()
 Receiver("localhost", 9005)

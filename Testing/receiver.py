@@ -1,7 +1,5 @@
 import socket
 import select
-import os
-
 # This import will throw a syntax error if the module is not installed.
 # import serial
 
@@ -66,7 +64,6 @@ class Receiver:
             # Used to decide if the client is able to reconnect or not.
             self.connection = True
 
-
             # Only breaks when/if the client disconnects from the server.
             while self.connection:
 
@@ -94,8 +91,6 @@ class Receiver:
 
                         self.msg = self.msg[2:6]
 
-                        print(self.msg)
-
                         if not self.msg == "":
                             self.eval()
 
@@ -108,17 +103,6 @@ class Receiver:
                     client.send("Test \n".encode(coding))
                     # Found this clever solution here:
                     # http://stackoverflow.com/questions/38645060/what-is-the-equivalent-of-serial-available-in-pyserial
-
-
-                    # If the serial is waiting to send a message through the socket.
-                    # while usb.inWaiting():
-
-                        # Grabs an entire line (until a newline character exists). And decode in to readable text.
-                    #    info = usb.readline().decode()
-                    #    print("3. To Android: " + info)
-
-                        # Send the message to the client.
-                    #    client.send(info.encode(coding))
 
                 # Due to socket issues or if the client disconnects.
                 except socket.error:
@@ -134,12 +118,26 @@ class Receiver:
 
     def eval(self):
         v = self.msg[0:1:]
-        a = self.msg[1::]
+        a = int(self.msg[1::])
+        self.testcase(self.msg)
         if v == "a":
-            self.testcase("Angle set to: {}".format(a))
+            straight = 45
+            t = ""
+            if a < straight:
+                t = "left"
+            elif a == straight:
+                t = "straight"
+            else:
+                t = "right"
+
+            print("Turning {}° {}".format(a -straight, t))
+
+        if v == "d":
+            pass
         self.msg = None
 
-    def testcase(self, str):
-        pass
 
-
+    def testcase(self, value):
+        file = open('testcase_generated.txt','a')
+        file.write(value + "\n")
+        file.close()

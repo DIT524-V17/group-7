@@ -1,0 +1,24 @@
+2017-05-04 08:17:50 - success
+2017-05-04 08:19:41 - success
+2017-05-04 08:26:59 - success
+2017-05-04 08:41:14 - success
+2017-05-04 09:47:10 - failed
+2017-05-04 09:47:24 - failed
+2017-05-04 09:47:29 - failed
+2017-05-04 09:47:42 - failed
+2017-05-04 09:47:49 - failed
+2017-05-04 09:48:55 - failed
+2017-05-04 09:52:55 - failed
+2017-05-04 09:54:33 - failed
+2017-05-04 09:56:02 - failed
+2017-05-04 09:58:12Failed on row 22017-05-04 09:59:24Failed on row 22017-05-04 10:02:25success
+2017-05-04 10:02:37success
+2017-05-04 10:04:22success
+2017-05-04 10:09:44 - success
+2017-05-04 10:09:53 - success
+2017-05-04 10:10:01 - Failed on row 21
+2017-05-04 10:10:57 - Failed on row 21. Expected: a045 | Received a000
+2017-05-04 10:11:09 - Failed on row 21. Expected: a045 | Received a000
+2017-05-04 10:36:54 - Failed on row 21. Expected: a045 | Received a000
+2017-05-04 10:39:35 - Failed on row 21. Expected: a045 | Received a000
+2017-05-04 10:40:00 - Failed on row 21. Expected: a045 | Received a000
