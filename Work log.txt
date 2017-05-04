@@ -38,6 +38,7 @@ testing updated system.
 27/04 - Updating 3D model, additional research on battery level, fixing battery's connection to motor (as it was damaged), continuing collision control testing. (3 hours).
 28/04 - Replacing IR (sharp) sensor on car's back with ultrasonic, testing the updated system. Testing battery level measurement system on separate arduino. (3 hours).
 02/05 - Updating 3D model. (2 hours).
-03/05 - 
+03/05 - Further work with battery level and collision control (2,5 hours).
+04/05 - 
 
 
