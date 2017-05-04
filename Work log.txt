@@ -39,6 +39,6 @@ testing updated system.
 28/04 - Replacing IR (sharp) sensor on car's back with ultrasonic, testing the updated system. Testing battery level measurement system on separate arduino. (3 hours).
 02/05 - Updating 3D model. (2 hours).
 03/05 - Further work with battery level and collision control (2,5 hours).
-04/05 - 
+04/05 - Working with battery level feature (3 hours).
 
 
