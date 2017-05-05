@@ -42,5 +42,7 @@ testing updated system.
 02/05 - Updating 3D model. (2 hours).
 03/05 - Further work with battery level and collision control (2,5 hours).
 04/05 - Working with battery level feature (3 hours).
-
+05/05 - Working with battery level. 
+EUREKA!!! Finally built functional voltage divider using 47 and 100 K Ohm resistors to prevent Arduino from frying during voltage measurement of 10.5 V battery. It's pretty accurate, and gives values almost identical to multimeter's. GUI and app part still
+need to be implemented. 
 
