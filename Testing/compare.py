@@ -21,7 +21,7 @@ def main():
 
         print("---- Matching lengths ----")
         print("Expected: {} | Received: {}".
-              format(len(list_generated), len(list_expected)))
+              format(len(list_expected), len(list_generated)))
         # Matches their length before iterating over them.
         if len(list_generated) != len(list_expected):
             failed("invalid number of arguments")

@@ -1,7 +1,9 @@
 package t.s.o.r.f.frost;
 
 import android.os.AsyncTask;
-
+import android.widget.ImageSwitcher;
+import android.widget.TextView;
+import android.view.View;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -11,35 +13,36 @@ import java.net.Socket;
 import static t.s.o.r.f.frost.Client.port;
 
 /**
- * Created by: Sebastian Fransson
- * AsyncTask used to allow sub-threading in the main application.
- * Initiates the Transmitter with the 'host' id and correct port.
- * TODO: Rewrite this to actually make sense. Override the two other methods if they are needed later.
+ * @author Pontus Laestadius
+ * @since 05-05-2017
  */
 public class Magic extends AsyncTask<String, Void, Void> {
-    /**
-     * @author Pontus Laestadius
-     * Date format: DD-MM-YYYY
-     * @since 20-03-2017
-     * Maintained since: 07-04-2017
-     */
+
     DataOutputStream out;
     BufferedReader in;
     Socket socket;
     boolean stupid = false;
+    String last = "";
+    long looptime = 0;
+
 
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-
-
     }
+
 
     @Override
     public Void doInBackground(String... params) {
+
+        long this_loop = looptime - System.currentTimeMillis();
+        looptime = System.currentTimeMillis();
+
+        System.out.println("Loop time: " + this_loop);
+
+
         if (!stupid){
             try {
-                System.out.println("SOCKET");
                 socket = new Socket("10.0.2.2", port);
             } catch (Exception e){
                 e.printStackTrace();
@@ -47,12 +50,9 @@ public class Magic extends AsyncTask<String, Void, Void> {
             stupid = true;
         }
 
-
-
         boolean bullshit = true;
 
         while (bullshit){
-            System.out.println("BACKGROUND");
 
             try { // Catches IO exceptions
 
@@ -62,11 +62,13 @@ public class Magic extends AsyncTask<String, Void, Void> {
             } catch (IOException e){
                 e.printStackTrace();
             }
-
             // Write
-            if (!MainActivity.sendMe.equals("")){
+            String command = MainActivity.sendMe;
+            if (!command.equals("") && !command.equals(last)){
+                last = command;
                 try{
-                    out.writeUTF(MainActivity.sendMe + "\n");
+                    System.out.println("Sending:" + command + " L: " + last);
+                    out.writeUTF(command + "\n");
                     out.flush();
                     MainActivity.sendMe = "";
                 } catch (Exception e){
@@ -78,10 +80,17 @@ public class Magic extends AsyncTask<String, Void, Void> {
             String s = "";
             try {
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                s = in.readLine();
-                System.out.println("read: " + s);
-                if (!s.equals("") && s.length() < 2);
-                MainActivity.stupidVariable = s;
+                while (in.ready())
+                    s += in.read();
+
+                // in.close();
+
+
+                if (!s.equals("") && s.length() < 2){
+                    MainActivity.stupidVariable = s;
+                    MainActivity.handleInput();
+                }
+
             } catch (IOException e){
                 e.printStackTrace();
             }

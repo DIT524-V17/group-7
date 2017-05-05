@@ -29,29 +29,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.Scanner;
-
-import static t.s.o.r.f.frost.Client.*;
-
 /**
  * Author: Sebastian Fransson
  * Last Updated: 19-04-2017
  */
 public class MainActivity extends AppCompatActivity {
 
-    //Views for collision animation.
-    View v;
-    TextView tv;
-    View tvbg;
-    static TextView ccValue;
-    static TextView textElement;
-    static ImageSwitcher SwitchImageTemp;
     public Button button6;
     private Boolean item_flame_boolean = true;
     private Boolean item_temperature_boolean = true;
@@ -64,6 +47,13 @@ public class MainActivity extends AppCompatActivity {
     public static String stupidVariable = "";
     Magic task = new Magic();
     public static String sendMe = "";
+
+    static TextView ccValue;
+    static TextView textElement;
+    static ImageSwitcher SwitchImageTemp;
+    View v;
+    TextView tv;
+    View tvbg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

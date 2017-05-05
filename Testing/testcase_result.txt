@@ -21,4 +21,19 @@
 2017-05-04 10:11:09 - Failed on row 21. Expected: a045 | Received a000
 2017-05-04 10:36:54 - Failed on row 21. Expected: a045 | Received a000
 2017-05-04 10:39:35 - Failed on row 21. Expected: a045 | Received a000
-2017-05-04 10:40:00 - Failed on row 21. Expected: a045 | Received a000
+2017-05-04 11:22:26 - Failed invalid number of arguments
+2017-05-04 11:26:36 - Failed invalid number of arguments
+2017-05-04 12:08:26 - Failed invalid number of arguments
+2017-05-04 13:23:34 - Failed invalid number of arguments
+2017-05-04 13:29:06 - Failed invalid number of arguments
+2017-05-04 13:31:51 - Failed invalid number of arguments
+2017-05-04 13:35:47 - Failed invalid number of arguments
+2017-05-04 13:36:01 - Failed invalid number of arguments
+2017-05-04 13:40:01 - Failed invalid number of arguments
+2017-05-04 20:08:34 - Failed invalid number of arguments
+2017-05-04 20:09:31 - Failed invalid number of arguments
+2017-05-05 07:17:29 - Failed invalid number of arguments
+2017-05-05 08:58:18 - Failed invalid number of arguments
+2017-05-05 09:00:38 - Failed invalid number of arguments
+2017-05-05 10:48:04 - Failed invalid number of arguments
+2017-05-05 10:55:16 - Failed invalid number of arguments

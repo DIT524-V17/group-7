@@ -8,7 +8,7 @@ import webbrowser
 import os
 
 mypath = "C:/EyeAutomate/reports/"
-startswith = "defaultTest"
+startswith = "generated.txt"
 stuff = os.listdir(mypath)
 
 # Lists all the reports in the directory with the requirements set.

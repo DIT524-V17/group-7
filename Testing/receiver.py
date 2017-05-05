@@ -1,5 +1,7 @@
 import socket
 import select
+import time
+
 # This import will throw a syntax error if the module is not installed.
 # import serial
 
@@ -64,8 +66,42 @@ class Receiver:
             # Used to decide if the client is able to reconnect or not.
             self.connection = True
 
+            read = [lines for lines in open("testcase_read.txt", "r")]
+            read_index = 0
+            start_time = time.time()
+            read_time = int(read[read_index][0:read[read_index].find(" ")])
+            read_stop = True
+
+            looptime = time.time()
+
             # Only breaks when/if the client disconnects from the server.
             while self.connection:
+
+                this_loop = (time.time() - looptime)
+                if this_loop > 0.3:
+                    print("Slow loop: {}".format((time.time() - looptime)))
+                looptime = time.time()
+
+
+                try:
+
+                     if not read_stop:
+                        if read_time < (time.time() - start_time):
+                            print(read[read_index])
+                            command = "{}\n".format(
+                                read[read_index][read[read_index].find(" ")+1::])
+                            print("Reading:{}".format(command))
+
+                            client.send(command.encode(coding))
+
+                            read_index += 1
+                            if len(read) <= read_index:
+                                read_stop = True
+                                print("Finished reading")
+                            else:
+                               read_time = int(read[read_index][0:read[read_index].find(" ")])
+                except socket.error:
+                    self.connection = False
 
                 try:
 
@@ -100,7 +136,6 @@ class Receiver:
                         # Flush the stream to force it to write to the buffer.
                     #    usb.flush()
 
-                    client.send("Test \n".encode(coding))
                     # Found this clever solution here:
                     # http://stackoverflow.com/questions/38645060/what-is-the-equivalent-of-serial-available-in-pyserial
 
@@ -119,7 +154,7 @@ class Receiver:
     def eval(self):
         v = self.msg[0:1:]
         a = int(self.msg[1::])
-        self.testcase(self.msg)
+        testcase(self.msg)
         if v == "a":
             straight = 45
             t = ""
@@ -134,10 +169,11 @@ class Receiver:
 
         if v == "d":
             pass
+
         self.msg = None
 
 
-    def testcase(self, value):
-        file = open('testcase_generated.txt','a')
-        file.write(value + "\n")
-        file.close()
+def testcase(value):
+    file = open('testcase_generated.txt','a')
+    file.write(value + "\n")
+    file.close()
