@@ -133,20 +133,20 @@ void setup() {
 void printTemperature(DeviceAddress deviceAddress){  
   temperature_old = temperature;
   temperature = (int)temperature_sensor.getTempC(deviceAddress);
-  String tempString;
+  String tempString = "t";
 
 //Handling temperature: turning into a string of the appropriate length for sending to the Android app 
   if(temperature < 10){
-    tempString = "t00" + temperature;
-  }else if (temperature >= 100){
-    tempString = "t" + temperature;
-  }else{
-    tempString = "t0" + temperature;
+    tempString += "00";
+  }else if( temperature < 100){
+    tempString += "0";
   }
+  tempString += temperature; 
 
 //delay for sending the temperature: if the temperature has changed, send the temperature 
   if(temperature_old != temperature){
-      Serial.println(tempString);   
+      Serial.println(tempString);
+      //Serial.println("t");   
   }  
 }
 
