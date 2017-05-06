@@ -1,3 +1,7 @@
+@echo off
+rem @Author: Pontus Laestadius
+rem @Since: 06-05-2017
+
 cd c:\EyeAutomate
 java -Xmx512m -jar EyeAutomate.jar scripts\generated.txt
 cd C:\Users\pontu\IdeaProjects\group-7\Testing

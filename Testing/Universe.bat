@@ -1,3 +1,7 @@
+@echo off
+rem @Author: Pontus Laestadius
+rem @Since: 06-05-2017
+
 start runDefaultTest.bat
 cd ../
 # git fetch
