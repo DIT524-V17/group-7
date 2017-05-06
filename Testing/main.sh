@@ -11,7 +11,18 @@ git checkout AutomatedTesting
 while true; do
 # This might aswell be magic. 
 # http://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
-	[ $(git rev-parse HEAD) = $(git ls-remote $(git rev-parse --abbrev-ref @{u} | \
-	sed 's/\// /g') | cut -f1) ] && echo up to date || echo start Universe.bat
-	sleep 10m
+[ $(git rev-parse HEAD) = $(git ls-remote $(git rev-parse --abbrev-ref @{u} | \
+	sed 's/\// /g') | cut -f1) ] && echo "0" || echo "5"
+	
+	if [ $? -eq '5' ];
+		then
+			echo running test
+			start Universe.bat
+		fi
+	if [ $? -eq '0' ];
+		then
+			echo up to date
+		fi
+	
+	sleep 5s
 done
