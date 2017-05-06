@@ -38,10 +38,3 @@
 2017-05-05 10:48:04 - Failed invalid number of arguments
 2017-05-05 10:55:16 - Failed invalid number of arguments
 2017-05-05 12:56:02 - Failed invalid number of arguments
-2017-05-05 12:56:29 - Failed invalid number of arguments
-2017-05-05 12:59:19 - success
-2017-05-05 13:04:59 - success
-2017-05-05 13:13:29 - success
-2017-05-05 21:36:33 - success
-2017-05-05 21:45:58 - success
-2017-05-05 21:51:37 - success
