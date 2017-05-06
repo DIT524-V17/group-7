@@ -1,6 +1,7 @@
 import socket
 import select
 import time
+import traceback
 
 # This import will throw a syntax error if the module is not installed.
 # import serial
@@ -66,11 +67,15 @@ class Receiver:
             # Used to decide if the client is able to reconnect or not.
             self.connection = True
 
-            read = [lines for lines in open("testcase_read.txt", "r")]
-            read_index = 0
-            start_time = time.time()
-            read_time = int(read[read_index][0:read[read_index].find(" ")])
             read_stop = True
+            try:
+                read = [lines for lines in open("testcase_read.txt", "r")]
+                read_index = 0
+                start_time = time.time()
+                read_time = int(read[read_index][0:read[read_index].find(" ")])
+                read_stop = False
+            except:
+                traceback.print_exc()
 
             looptime = time.time()
 
@@ -82,10 +87,8 @@ class Receiver:
                     print("Slow loop: {}".format((time.time() - looptime)))
                 looptime = time.time()
 
-
                 try:
-
-                     if not read_stop:
+                    if not read_stop:
                         if read_time < (time.time() - start_time):
                             print(read[read_index])
                             command = "{}\n".format(
@@ -100,11 +103,11 @@ class Receiver:
                                 print("Finished reading")
                             else:
                                read_time = int(read[read_index][0:read[read_index].find(" ")])
-                except socket.error:
+                except:
+                    traceback.print_exc()
                     self.connection = False
 
                 try:
-
                     # This follows this example of how to use select in python:
                     # http://stackoverflow.com/questions/2719017/how-to-set-timeout-on-pythons-socket-recv-method
                     # This will give me a none blocking message receiver.
