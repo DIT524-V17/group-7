@@ -16,7 +16,7 @@ while true; do
 	
 	if [ $? -eq '5' ];
 		then
-			echo running test
+			echo Running test
 			start Universe.bat
 		fi
 	if [ $? -eq '0' ];

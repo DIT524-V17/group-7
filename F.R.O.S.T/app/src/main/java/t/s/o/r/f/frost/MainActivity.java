@@ -104,44 +104,44 @@ public class MainActivity extends AppCompatActivity {
                                 case R.id.flame:
                                     item_flame_boolean = !item_flame_boolean;
                                     item.setChecked(item_flame_boolean);
-                                    sendMe = ("F000?");
+                                    handleInput(); sendMe = ("F000?");
                                     System.out.println("Flame");
                                     break;
                                 //The case for when the temperature checkbox is pressed
                                 case R.id.temperature:
                                     item_temperature_boolean = !item_temperature_boolean;
                                     item.setChecked(item_temperature_boolean);
-                                    sendMe = ("T000?");
+                                    handleInput(); sendMe = ("T000?");
                                     break;
                                 //The case for when the ultrasonic checkbox is pressed
                                 case R.id.ultrasonic:
                                     item_ultrasonic_boolean = !item_ultrasonic_boolean;
                                     item.setChecked(item_ultrasonic_boolean);
-                                    sendMe = ("U000?");
+                                    handleInput(); sendMe = ("U000?");
                                     break;
                                 //The case for when the motor checkbox is pressed
                                 case R.id.motor:
                                     item_motor_boolean = !item_motor_boolean;
                                     item.setChecked(item_motor_boolean);
-                                    sendMe = ("M000?");
+                                    handleInput(); sendMe = ("M000?");
                                     break;
                                 //The case for when the steer checkbox is pressed
                                 case R.id.steering:
                                     item_steering_boolean = !item_steering_boolean;
                                     item.setChecked(item_steering_boolean);
-                                    sendMe = ("S000?");
+                                    handleInput(); sendMe = ("S000?");
                                     break;
                                 //The case for when the "camera vertical" checkbox is pressed
                                 case R.id.camera_vertical:
                                     item_camera_vertical_boolean = !item_camera_vertical_boolean;
                                     item.setChecked(item_camera_vertical_boolean);
-                                    sendMe = ("Y000");
+                                    handleInput(); sendMe = ("Y000");
                                     break;
                                 //The case for when the "camera horizontal" checkbox is pressed
                                 case R.id.camera_horizontal:
                                     item_camera_horizontal_boolean = !item_camera_horizontal_boolean;
                                     item.setChecked(item_camera_horizontal_boolean);
-                                    sendMe = ("X000");
+                                    handleInput(); sendMe = ("X000");
                                     break;
                                 //The case for when the RIP checkbox is pressed
                                 case R.id.rip:
@@ -161,12 +161,12 @@ public class MainActivity extends AppCompatActivity {
                                     item.setChecked(item_rip_boolean);
                                     item_camera_horizontal.setChecked(item_rip_boolean);
                                     item_camera_vertical.setChecked(item_rip_boolean);
-                                    sendMe = ("E000?");
+                                    handleInput(); sendMe = ("E000?");
                                     break;
                             }
                             /*Just a random command to make sure that the car doesnt get spammed with the
                             command for turning a sensor on/off*/
-                            sendMe = ("0000?");
+                            handleInput(); sendMe = ("0000?");
 
                         } catch (Exception e) {
                             System.out.println("Error in popup menu");
@@ -203,12 +203,12 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     //Sends a "forward" commmand to the Raspberry pi (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        sendMe = ("d070?");
+                        handleInput(); sendMe = ("d070?");
                         // System.out.println("Drive forward");
                     }
                     //Sends command to stop the current activity (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_UP) {
-                        sendMe = ("d090?");
+                        handleInput(); sendMe = ("d090?");
                         //System.out.println("stop driving");
                     }
                 } catch (Exception e) {
@@ -229,15 +229,12 @@ public class MainActivity extends AppCompatActivity {
                     //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
-                        // TODO: 28/04/2017 fix this
-                        sendMe = ("d090?");
-
-                        sendMe = ("d110?");
+                        handleInput(); sendMe = ("d110?");
                         // System.out.println("Reversing");
                     }
                     //Sends command to stop reversing (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_UP) {
-                        sendMe = ("d090?");
+                        handleInput(); sendMe = ("d090?");
                         //  System.out.println("Stop reversing");
                     }
                 } catch (Exception e) {
@@ -257,12 +254,12 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     //Sends a "go right" commmand to the Raspberry pi (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        sendMe = ("a090?");
+                        handleInput(); sendMe = ("a090?");
                         // System.out.println("Steer Right");
                     }
                     //Sends command to stop steering right (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_UP) {
-                        sendMe = ("a045?");
+                        handleInput(); sendMe = ("a045?");
                         // System.out.println("Stop steering right");
                     }
                 } catch (Exception e) {
@@ -282,12 +279,12 @@ public class MainActivity extends AppCompatActivity {
                 try {
                     //Sends a "go left" commmand to the Raspberry pi (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                        sendMe = ("a000?");
+                        handleInput(); sendMe = ("a000?");
                         //  System.out.println("Steering Left");
                     }
                     //Sends command to stop steering left (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_UP) {
-                        sendMe = ("a045?");
+                        handleInput(); sendMe = ("a045?");
                         // System.out.println("Stop steering left");
                     }
                 } catch (Exception e) {
@@ -423,7 +420,6 @@ public class MainActivity extends AppCompatActivity {
     static void handleInput() {
         try {
             String s = MainActivity.stupidVariable;
-            System.out.print(s);
             if (s.length() < 2) return;
             System.out.println("HandleInput: " + s);
             int value = Integer.parseInt(s.substring(1)); //Ignores the first character of the input.

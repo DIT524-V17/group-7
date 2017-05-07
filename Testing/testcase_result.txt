@@ -11,12 +11,8 @@
 2017-05-04 09:52:55 - failed
 2017-05-04 09:54:33 - failed
 2017-05-04 09:56:02 - failed
-2017-05-04 09:58:12Failed on row 22017-05-04 09:59:24Failed on row 22017-05-04 10:02:25success
-2017-05-04 10:02:37success
-2017-05-04 10:04:22success
 2017-05-04 10:09:44 - success
 2017-05-04 10:09:53 - success
-2017-05-04 10:10:01 - Failed on row 21
 2017-05-04 10:10:57 - Failed on row 21. Expected: a045 | Received a000
 2017-05-04 10:11:09 - Failed on row 21. Expected: a045 | Received a000
 2017-05-04 10:36:54 - Failed on row 21. Expected: a045 | Received a000
@@ -41,3 +37,14 @@
 2017-05-06 18:34:30 - success
 2017-05-06 18:36:48 - success
 2017-05-06 18:39:57 - success
+2017-05-07 08:09:34 - Failed invalid number of arguments
+2017-05-07 09:26:02 - Failed invalid number of arguments
+2017-05-07 09:30:19 - Failed invalid number of arguments
+2017-05-07 09:32:11 - Failed invalid number of arguments
+2017-05-07 09:40:06 - Failed invalid number of arguments
+2017-05-07 11:17:03 - Failed invalid number of arguments
+2017-05-07 11:19:55 - success
+2017-05-07 11:34:15 - Failed invalid number of arguments
+2017-05-07 11:38:40 - Failed invalid number of arguments
+2017-05-07 11:40:02 - Failed invalid number of arguments
+2017-05-07 11:46:04 - success

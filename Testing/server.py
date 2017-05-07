@@ -29,9 +29,14 @@ def main():
                     file.write(call("release.txt"))
                 elif lines == "a000\n":
                     file.write(call("steerleft.txt"))
-                    pass
                 elif lines == "a090\n":
                     file.write(call("steerright.txt"))
+                elif lines == "d090\n":
+                    file.write(call("release.txt"))
+                elif lines == "d110\n":
+                    file.write(call("drivebackward.txt"))
+                elif lines == "d070\n":
+                    file.write(call("driveforward.txt"))
 
             file.close()
 

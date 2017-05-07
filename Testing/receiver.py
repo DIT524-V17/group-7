@@ -69,7 +69,7 @@ class Receiver:
 
             read_stop = True
             try:
-                read = [lines for lines in open("testcase_read.txt", "r")]
+                read = [lines for lines in open("C:/Users/pontu/IdeaProjects/group-7/Testing/testcase_read.txt", "r")]
                 read_index = 0
                 start_time = time.time()
                 read_time = int(read[read_index][0:read[read_index].find(" ")])
@@ -78,6 +78,7 @@ class Receiver:
                 traceback.print_exc()
 
             looptime = time.time()
+            oldloop = time.time()
 
             # Only breaks when/if the client disconnects from the server.
             while self.connection:
@@ -90,11 +91,9 @@ class Receiver:
                 try:
                     if not read_stop:
                         if read_time < (time.time() - start_time):
-                            print(read[read_index])
                             command = "{}\n".format(
                                 read[read_index][read[read_index].find(" ")+1::])
-                            print("Reading:{}".format(command))
-
+                            print("Reading: {}".format(command))
                             client.send(command.encode(coding))
 
                             read_index += 1
@@ -108,6 +107,11 @@ class Receiver:
                     self.connection = False
 
                 try:
+                    if (oldloop + 0.3) < time.time():
+                        client.send("\n".encode(coding))
+                        oldloop = time.time()
+
+
                     # This follows this example of how to use select in python:
                     # http://stackoverflow.com/questions/2719017/how-to-set-timeout-on-pythons-socket-recv-method
                     # This will give me a none blocking message receiver.
@@ -170,13 +174,16 @@ class Receiver:
 
             print("Turning {}° {}".format(a -straight, t))
 
-        if v == "d":
+        elif v == "d":
+            default = 90
+            t = a
+            print("Driving {}".format(t))
             pass
 
         self.msg = None
 
 
 def testcase(value):
-    file = open('testcase_generated.txt','a')
+    file = open('C:/Users/pontu/IdeaProjects/group-7/Testing/testcase_generated.txt','a')
     file.write(value + "\n")
     file.close()

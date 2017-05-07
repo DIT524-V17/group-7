@@ -77,19 +77,14 @@ public class Magic extends AsyncTask<String, Void, Void> {
             }
 
             // Read
-            String s = "";
             try {
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                while (in.ready())
-                    s += in.read();
+                String s = in.readLine();
 
-                // in.close();
-
-
-                if (!s.equals("") && s.length() < 2){
+                if (s != null){
                     MainActivity.stupidVariable = s;
-                    MainActivity.handleInput();
                 }
+
 
             } catch (IOException e){
                 e.printStackTrace();
