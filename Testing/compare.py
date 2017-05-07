@@ -15,6 +15,11 @@ def main():
             list_generated = f.read().splitlines()
         f.close()
 
+        # Opens the file in reverse.
+        matchee = [lines for lines in open("testcase_generated.txt", "r")][::-1]
+        if matchee[0].startswith("@"):
+            failed("Previously matched")
+
         with open("testcase_expected.txt", "r") as f:
             list_expected = f.read().splitlines()
         f.close()
@@ -31,12 +36,16 @@ def main():
         i = 1
         for a in list_expected:
             b = list_generated[i -1]
+
             if a != b:
                 failed("on row {}. Expected: {} | Received {}".format(i, a, b))
             print("{}. {} and {}".format(i, a, b))
 
             i += 1
         print("---------- Done ----------")
+
+        file = open("testcase_generated.txt", "a")
+        file.write("@Success\n")
 
         success()
 

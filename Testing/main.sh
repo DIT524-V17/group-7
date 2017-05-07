@@ -13,5 +13,5 @@ while true; do
 # http://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
 [ $(git rev-parse HEAD) = $(git ls-remote $(git rev-parse --abbrev-ref @{u} | \
 	sed 's/\// /g') | cut -f1) ] && echo up to date  || start Universe.bat
-	sleep 5s
+	sleep 600s
 done

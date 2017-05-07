@@ -7,8 +7,7 @@ import traceback
 
 def main():
     # Clears the generated file.
-    file = open('testcase_generated.txt', 'w')
-    file.close()
+    open('C:/Users/pontu/IdeaProjects/group-7/Testing/testcase_generated.txt', 'w').close()
 
     try:
         write_file = [lines for lines in
