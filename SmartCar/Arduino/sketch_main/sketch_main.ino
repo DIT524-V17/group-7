@@ -145,8 +145,7 @@ void printTemperature(DeviceAddress deviceAddress){
 
 //delay for sending the temperature: if the temperature has changed, send the temperature 
   if(temperature_old != temperature){
-      Serial.println(tempString);
-      //Serial.println("t");   
+      Serial.println(tempString);  
   }  
 }
 
@@ -269,7 +268,15 @@ void command() {
 
         case 'M':
           motor_activation = !motor_activation; 
+          break; 
+
+        case 'X':
+          camera_servo_activation_horizontal = !camera_servo_activation_horizontal;
           break;
+
+        case 'Y':
+          camera_servo_activation_vertical = !camera_servo_activation_vertical;
+          break; 
 
         //switch off all sensors
         case 'E':
@@ -280,14 +287,6 @@ void command() {
           temperature_activation = all_activation;
           flame_activation = all_activation;        
           break;     
-
-        case 'X':
-          camera_servo_activation_horizontal = !camera_servo_activation_horizontal;
-          break;
-
-        case 'Y':
-          camera_servo_activation_vertical = !camera_servo_activation_vertical;
-          break;   
 
       // Camera servos,
       // Their input should fit this expression: (x||y)(0001||0002)
