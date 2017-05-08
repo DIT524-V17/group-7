@@ -328,6 +328,110 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //TouchListener for camera down button.
+        Button camDown = (Button) findViewById(R.id.button10);
+        //Sets the TouchListener to 'button10' which in this case refers to the *Reverse* button. (Check XML).
+        camDown.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                try {
+                    //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+                        threads.r1.write("y001?");
+                        // System.out.println("Reversing");
+                    }
+                    //Sends command to stop reversing (to be integrated)
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        threads.r1.write("y000?");
+                        //  System.out.println("Stop reversing");
+                    }
+                } catch (Exception e) {
+                    System.out.println("MAH GOD WHY");
+                    e.printStackTrace();
+                }
+                return false;
+            }
+        });
+
+        //TouchListener for camera up button.
+        Button camUp = (Button) findViewById(R.id.button9);
+        //Sets the TouchListener to 'button9' which in this case refers to the *Reverse* button. (Check XML).
+        camUp.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                try {
+                    //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+                        threads.r1.write("y002?");
+                        // System.out.println("Reversing");
+                    }
+                    //Sends command to stop reversing (to be integrated)
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        threads.r1.write("y000?");
+                        //  System.out.println("Stop reversing");
+                    }
+                } catch (Exception e) {
+                    System.out.println("MAH GOD WHY");
+                    e.printStackTrace();
+                }
+                return false;
+            }
+        });
+
+        //TouchListener for camera left button.
+        Button cameraLeft = (Button) findViewById(R.id.button8);
+        //Sets the TouchListener to 'button8' which in this case refers to the *Reverse* button. (Check XML).
+        cameraLeft.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                try {
+                    //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+                        threads.r1.write("x001?");
+                        // System.out.println("Reversing");
+                    }
+                    //Sends command to stop reversing (to be integrated)
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        threads.r1.write("x000?");
+                        //  System.out.println("Stop reversing");
+                    }
+                } catch (Exception e) {
+                    System.out.println("MAH GOD WHY");
+                    e.printStackTrace();
+                }
+                return false;
+            }
+        });
+
+        //TouchListener for camera right button.
+        Button cameraRight = (Button) findViewById(R.id.button7);
+        //Sets the TouchListener to 'button7' which in this case refers to the *Reverse* button. (Check XML).
+        cameraRight.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                try {
+                    //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+
+                        threads.r1.write("x002?");
+                        // System.out.println("Reversing");
+                    }
+                    //Sends command to stop reversing (to be integrated)
+                    if (event.getAction() == MotionEvent.ACTION_UP) {
+                        threads.r1.write("x000?");
+                        //  System.out.println("Stop reversing");
+                    }
+                } catch (Exception e) {
+                    System.out.println("MAH GOD WHY");
+                    e.printStackTrace();
+                }
+                return false;
+            }
+        });
+
         //Creating the text view where the temperature is show
         textElement = (TextView) findViewById(R.id.textView);
        // int theOutputFromTheSensor = 60; //Test value for method input.

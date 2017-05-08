@@ -61,7 +61,16 @@
         android:layout_alignBottom="@+id/button2"
         android:layout_toStartOf="@+id/button4" />
 
-    <!---Image View to be removed.-->
+    <!---Image View to be Video View.
+    <ImageView
+        style= "@style/BackGroundImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="42dp"
+        tools:ignore="ContentDescription"
+        /> -->
 
 
     <!-- Collision Control GUI-->
@@ -164,5 +173,53 @@
         android:text="Menu"
         android:textColor="@android:color/white" />
 
+    <Button
+        android:id="@+id/button7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_green_dark"
+        android:textColor="@android:color/white"
+        android:layout_below="@+id/imgsw"
+        android:layout_toEndOf="@+id/button3"
+        android:text="Camera Right" />
+
+    <Button
+        android:id="@+id/button8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_green_dark"
+        android:textColor="@android:color/white"
+        android:layout_alignBottom="@+id/button7"
+        android:layout_alignEnd="@+id/button3"
+        android:text="Camera Left" />
+
+    <Button
+        android:id="@+id/button9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Camera Up"
+        android:background="@android:color/holo_green_dark"
+        android:textColor="@android:color/white"
+        android:layout_alignBaseline="@+id/button"
+        android:layout_alignBottom="@+id/button"
+        android:layout_alignStart="@+id/button10"
+        android:layout_alignEnd="@+id/button10" />
+
+    <Button
+        android:id="@+id/button10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@android:color/holo_green_dark"
+        android:textColor="@android:color/white"
+        android:layout_alignBottom="@+id/button2"
+        android:layout_toEndOf="@+id/cc_view4"
+        android:text="Camera Down" />
+
+    <!---Custom Style
+    <style android:name="BackGroundImageView">
+        <item android:name = "android:alpha">0.5</item>
+        <item android:name="android:scaleType">fitXY</item>
+        <item android:name="android:src">@drawable/img_background</item>
+    </style>-->
 
 </RelativeLayout>
