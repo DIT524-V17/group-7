@@ -5,8 +5,8 @@ const int FLAME_SENSOR_3_PIN = 16;
 const int FLAME_SENSOR_4_PIN = 17;
 const int FLAME_SENSOR_5_PIN = 18;
 
-const int MAX_READING = 800;
-const int DONT_READ_ABOVE = 450;
+const int MAX_READING = 680;
+const int FLAME_SENSITIVITY = 200;
 
 boolean flame_1_sun = false;
 boolean flame_2_sun = false;
@@ -52,21 +52,10 @@ void loop() {
              temp_name = 1; 
     
     }
-    /*Serial.println(temp_name);
-    Serial.print(analogValue_1);   
-    
-             Serial.print(", ");
-             Serial.print(analogValue_2);
-             Serial.print(", ");
-             Serial.print(analogValue_3);
-             Serial.print(", ");
-             Serial.print(analogValue_4);
-             Serial.print(", ");
-             Serial.println(analogValue_5);*/
 }
 
 void readFlame(int reading, boolean &flame_sun){
-    if (reading >= 700){
+    if (reading >= MAX_READING){
          flame_sun = true; 
     } else {
          flame_sun = false; 
@@ -74,8 +63,8 @@ void readFlame(int reading, boolean &flame_sun){
           
     if (!flame_sun){
          int medelvarde = analogValue_1 + analogValue_2 + analogValue_3 + analogValue_4 + analogValue_5;
-         medelvarde = (medelvarde - reading) / 5;
-         if (reading > medelvarde + 200){
+         medelvarde = (medelvarde - reading) / 4;
+         if (reading > medelvarde + FLAME_SENSITIVITY){
              Serial.print(temp_name);
              Serial.println(" Flame");
              Serial.print(analogValue_1);   
