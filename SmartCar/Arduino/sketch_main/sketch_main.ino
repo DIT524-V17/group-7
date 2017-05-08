@@ -58,8 +58,8 @@ boolean ultrasonic_activation = true;
 boolean servo_activation = true;     
 boolean motor_activation = true;
 boolean all_activation = true; //Used for de-_activation of all sensors/modules 
-boolean camera_servo_activation_horizontal = true; //X is horizontal  
-boolean camera_servo_activation_vertical = true; //Y is vertical
+boolean camera_servo_horizontal_activation = true; //X is horizontal  
+boolean camera_servo_vertical_activation = true; //Y is vertical
 
 Servo motor;
 Servo steer;
@@ -77,7 +77,6 @@ DallasTemperature temperature_sensor(&oneWire);
 
 // array to hold device readings
 DeviceAddress thermometer;
-
 
 /*
   * Camera servos.
@@ -222,10 +221,10 @@ namespace camera {
   */
   void updateServo(int &x, int &y) {
   
-    if (camera_servo_activation_horizontal && x != 0) { 
+    if (camera_servo_horizontal_activation && x != 0) { 
       setServoRelative(camera_servo_x_axis, X_AXIS_MAX_ANGLE, X_MIN_MAX_ANGLE, x, camera_x);
     }
-    if (camera_servo_activation_vertical && y != 0) {
+    if (camera_servo_vertical_activation && y != 0) {
       setServoRelative(camera_servo_y_axis, Y_AXIS_MAX_ANGLE, Y_MIN_MAX_ANGLE, y, camera_y);
     }
   
@@ -275,11 +274,11 @@ void command() {
           break; 
 
         case 'X':
-          camera_servo_activation_horizontal = !camera_servo_activation_horizontal;
+          camera_servo_horizontal_activation = !camera_servo_horizontal_activation;
           break;
 
         case 'Y':
-          camera_servo_activation_vertical = !camera_servo_activation_vertical;
+          camera_servo_vertical_activation = !camera_servo_vertical_activation;
           break; 
 
         //switch off all sensors
@@ -289,7 +288,9 @@ void command() {
           servo_activation = all_activation;
           ultrasonic_activation = all_activation;
           temperature_activation = all_activation;
-          flame_activation = all_activation;        
+          flame_activation = all_activation; 
+          camera_servo_horizontal_activation = all_activation; 
+          camera_servo_vertical_activation = all_activation;      
           break;     
 
       // Camera servos,
@@ -394,7 +395,6 @@ if(temperature_activation && ++temp_delay >= 1000){
     temp_delay = 0;
 }
 }
-
 
 void serialEvent() {
     //Records one command at a time when availible
