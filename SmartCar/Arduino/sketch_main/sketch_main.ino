@@ -252,8 +252,8 @@ void command() {
         //case: '*' - switching sensors on or off, by setting bool variables to true or false. 
         //input is sent from Android app. Checks first character - cases for all sensors/modules.   
         case 'F':
-         flame_activation = !flame_activation;
-         break;
+          flame_activation = !flame_activation;
+          break;
 
         case 'T':
           temperature_activation = !temperature_activation;
@@ -281,11 +281,11 @@ void command() {
           flame_activation = all_activation;        
           break;     
 
-       case 'X':
+        case 'X':
           camera_servo_activation_horizontal = !camera_servo_activation_horizontal;
           break;
 
-      case 'Y':
+        case 'Y':
           camera_servo_activation_vertical = !camera_servo_activation_vertical;
           break;   
 
