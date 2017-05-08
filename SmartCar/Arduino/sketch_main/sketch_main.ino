@@ -12,6 +12,10 @@ Isabelle Tornqvist
 Tim Jonasson
 Pontus Laestadius
 Anthony Path
+
+@Version 1.1 
+2017-05-08
+Isabelle Törnqvist: Added code to allow for deactivation of camera servos, X and Y. Refined temperature code. 
 */
 
 const int ONE_WIRE_BUS_PIN = 3; //for temperature sensor
