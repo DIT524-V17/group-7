@@ -12,6 +12,10 @@ Isabelle Tornqvist
 Tim Jonasson
 Pontus Laestadius
 Anthony Path
+
+@Version 1.1 
+2017-05-08
+Isabelle Törnqvist: Added code to allow for deactivation of camera servos, X and Y. Refined temperature code. 
 */
 
 const int ONE_WIRE_BUS_PIN = 3; //for temperature sensor
@@ -54,6 +58,8 @@ boolean ultrasonic_activation = true;
 boolean servo_activation = true;     
 boolean motor_activation = true;
 boolean all_activation = true; //Used for de-_activation of all sensors/modules 
+boolean camera_servo_horizontal_activation = true; //X is horizontal  
+boolean camera_servo_vertical_activation = true; //Y is vertical
 
 Servo motor;
 Servo steer;
@@ -71,7 +77,6 @@ DallasTemperature temperature_sensor(&oneWire);
 
 // array to hold device readings
 DeviceAddress thermometer;
-
 
 /*
   * Camera servos.
@@ -127,24 +132,23 @@ void setup() {
   * Since: 18th of April 2017
   */
 
-//function to print the temperature for a device
+//function to print the temperature 
 void printTemperature(DeviceAddress deviceAddress){  
   temperature_old = temperature;
   temperature = (int)temperature_sensor.getTempC(deviceAddress);
-  String tempString;
+  String temp_string = "t";
 
 //Handling temperature: turning into a string of the appropriate length for sending to the Android app 
   if(temperature < 10){
-    tempString = "t00" + temperature;
-  }else if (temperature >= 100){
-    tempString = "t" + temperature;
-  }else{
-    tempString = "t0" + temperature;
+    temp_string += "00";
+  }else if( temperature < 100){
+    temp_string += "0";
   }
+  temp_string += temperature; 
 
 //delay for sending the temperature: if the temperature has changed, send the temperature 
   if(temperature_old != temperature){
-      Serial.println(tempString);   
+      Serial.println(temp_string);  
   }  
 }
 
@@ -217,10 +221,10 @@ namespace camera {
   */
   void updateServo(int &x, int &y) {
   
-    if (x != 0) { 
+    if (camera_servo_horizontal_activation && x != 0) { 
       setServoRelative(camera_servo_x_axis, X_AXIS_MAX_ANGLE, X_MIN_MAX_ANGLE, x, camera_x);
     }
-    if (y != 0) {
+    if (camera_servo_vertical_activation && y != 0) {
       setServoRelative(camera_servo_y_axis, Y_AXIS_MAX_ANGLE, Y_MIN_MAX_ANGLE, y, camera_y);
     }
   
@@ -250,8 +254,8 @@ void command() {
         //case: '*' - switching sensors on or off, by setting bool variables to true or false. 
         //input is sent from Android app. Checks first character - cases for all sensors/modules.   
         case 'F':
-         flame_activation = !flame_activation;
-         break;
+          flame_activation = !flame_activation;
+          break;
 
         case 'T':
           temperature_activation = !temperature_activation;
@@ -267,7 +271,15 @@ void command() {
 
         case 'M':
           motor_activation = !motor_activation; 
+          break; 
+
+        case 'X':
+          camera_servo_horizontal_activation = !camera_servo_horizontal_activation;
           break;
+
+        case 'Y':
+          camera_servo_vertical_activation = !camera_servo_vertical_activation;
+          break; 
 
         //switch off all sensors
         case 'E':
@@ -276,10 +288,12 @@ void command() {
           servo_activation = all_activation;
           ultrasonic_activation = all_activation;
           temperature_activation = all_activation;
-          flame_activation = all_activation;        
-          break;      
+          flame_activation = all_activation; 
+          camera_servo_horizontal_activation = all_activation; 
+          camera_servo_vertical_activation = all_activation;      
+          break;     
 
-           // Camera servos,
+      // Camera servos,
       // Their input should fit this expression: (x||y)(0001||0002)
       case 'x': // Sets the command to be used in the update function for the camera.
         camera_x_value_received_from_the_raspberry = value_received_from_the_raspberry;
@@ -318,7 +332,6 @@ void readFlame(){
         digitalWrite(LED_PIN, LOW);
         flame_delay = 0;
       }  
-
 }
 
 void readTemp(){
@@ -382,7 +395,6 @@ if(temperature_activation && ++temp_delay >= 1000){
     temp_delay = 0;
 }
 }
-
 
 void serialEvent() {
     //Records one command at a time when availible
