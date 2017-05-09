@@ -5,7 +5,7 @@ const int FLAME_SENSOR_3_PIN = 16;
 const int FLAME_SENSOR_4_PIN = 17;
 const int FLAME_SENSOR_5_PIN = 18;
 
-const int MAX_READING = 680;
+const int MAX_READING = 600;
 const int FLAME_SENSITIVITY = 200;
 
 boolean flame_1_sun = false;
