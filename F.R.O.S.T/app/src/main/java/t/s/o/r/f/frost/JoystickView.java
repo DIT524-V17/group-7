@@ -16,20 +16,22 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 
+import static android.R.color.holo_green_dark;
+
 public class JoystickView extends SurfaceView implements SurfaceHolder.Callback, View.OnTouchListener{
 
     private static JoystickListener joystickCallback;
-    private float centerX;
-    private float centerY;
-    private float baseRadius;
-    private float hatRadius;
+    private double centerX;
+    private double centerY;
+    private double baseRadius;
+    private double hatRadius;
 
     private void setupDimensions(){
 
         centerX = getWidth() /2;
         centerY = getHeight() / 2;
-        baseRadius = Math.min(getWidth(), getHeight()) / (float) 2.4;
-        hatRadius = Math.min(getWidth(), getHeight()) / (float)5.5;
+        baseRadius = Math.min(getWidth(), getHeight()) / (float) 3;
+        hatRadius = Math.min(getWidth(), getHeight()) / (float)6.4;
 
     }
 
@@ -64,7 +66,7 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
 
     }
 
-    private void drawJoystick(float newX, float newY){
+    private void drawJoystick(double newX, double newY){
 
         if(getHolder().getSurface().isValid()){
 
@@ -72,9 +74,9 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
             Paint colors = new Paint();
             myCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); //Clear the BG
             colors.setARGB(55,50,50,50); //Color of joystick base
-            myCanvas.drawCircle(centerX, centerY, baseRadius, colors); //Draw the joystick base
-            colors.setARGB(255,0,0,255); // Color of joystick itself
-            myCanvas.drawCircle(newX, newY, hatRadius, colors); //Draw the joystick hat
+            myCanvas.drawCircle((float)centerX, (float)centerY, (float)baseRadius, colors); //Draw the joystick base
+            colors.setColor(getResources().getColor(holo_green_dark));//ARGB(255,0,0,255); // Color of joystick itself
+            myCanvas.drawCircle((float)newX, (float)newY, (float)hatRadius, colors); //Draw the joystick hat
             getHolder().unlockCanvasAndPost(myCanvas); //Write the new drawing to the SurfaceView
 
         }
@@ -103,15 +105,22 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
         if(view.equals(this)){
 
             if(e.getAction() != e.ACTION_UP) {
-                float displacement = (float) Math.sqrt(Math.pow(e.getX() - centerX, 2) + Math.pow(e.getY() - centerY, 2));
-                float speed = displacement;
-                float angle = (float) Math.toDegrees(Math.sin((displacement/e.getY() - centerY)));
+                double displacement = Math.sqrt(Math.pow((e.getX() - centerX), 2) + Math.pow(e.getY() - centerY, 2));
+                double speed = displacement;
+
+                double hypotenuse = Math.sqrt(Math.pow(e.getX() - centerX, 2) + Math.pow(e.getY() - centerY, 2));
+
+
+                //float cos = (e.getX() - centerX) / hypotenuse; //cos = a/h
+
+                //float angle = (float) Math.toDegrees(sin);
                 //if(e.getY() - centerY < 0)
 
-                //Log.e("X", "" + e.getX());
+                Log.e("X", "" + e.getX());
                 Log.e("Y", "" + (e.getY()-centerY));
                 if (displacement < baseRadius) {
-
+                    double sin = (e.getY() - centerY) / hypotenuse; //sin = o/h
+                    double angle = 360.0 - (Math.toDegrees( Math.atan2(e.getY() - centerY, e.getX() - centerX)) + 360.0) % 360.0;//(float) Math.toDegrees(sin);
                     if(e.getY() - centerY > 0)
                         speed = -speed;
 
@@ -121,29 +130,30 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
 
                 }
                 else {
-
-                    float ratio = baseRadius / displacement;
-                    float constrainedX = centerX + (e.getX() - centerX) * ratio;
-                    float constrainedY = centerY + (e.getY() - centerY) * ratio;
-
+                    double sin = (e.getY() - centerY) / hypotenuse; //sin = o/h
+                    //double angle = (Math.toDegrees( Math.atan2(e.getY() - centerY, e.getX() - centerX)));//(float) Math.toDegrees(sin);
+                    double ratio = baseRadius / displacement;
+                    double constrainedX = centerX + (e.getX() - centerX) * ratio;
+                    double constrainedY = centerY + (e.getY() - centerY) * ratio;
+                    double angle = 360.0 - (Math.toDegrees( Math.atan2(constrainedY - centerY, constrainedX - centerX)) + 360.0) % 360.0;
                     speed = 100;
                     if(e.getY() - centerY > 0)
                         speed = -speed;
-
+                    Log.e("X", "" + e.getX());
                     drawJoystick(constrainedX, constrainedY);
                     joystickCallback.onJoystickMoved(speed, angle, getId());//(constrainedX - centerX) / baseRadius, (constrainedY - centerY) / baseRadius, getId());
                 }
             }
             else{
                 drawJoystick(centerX, centerY);
-                joystickCallback.onJoystickMoved(0,0,getId());
+                joystickCallback.onJoystickMoved(0,90,getId());
             }
         }
         return true;
     }
 
     public interface JoystickListener{
-        void onJoystickMoved(float speed, float angle, int id);//float xPrecent, float yPercent, int id);
+        void onJoystickMoved(double speed, double angle, int id);//float xPrecent, float yPercent, int id);
     }
 }
 

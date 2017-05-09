@@ -22,12 +22,16 @@ import java.util.Scanner;
 import static t.s.o.r.f.frost.Client.*;
 
 
-public class MainActivity extends AppCompatActivity implements JoystickView.JoystickListener{
+public class MainActivity extends AppCompatActivity implements JoystickView.JoystickListener {
 
-
+    static boolean DEBUG = true;
     TextView tv;
     View v;
     static TextView ccValue;
+    private static int speedPause;
+    private static double oldCarSpeed;
+    private static double oldCarAngle;
+    private static double oldCameraAngle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,76 +47,109 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
     }
 
     @Override
-    public void onJoystickMoved(float speed, float angle, int id) {
+    public void onJoystickMoved(double speed, double angle, int id) {
 
-        String speedCommand = "";
-        String steerCommand = "";
-        int speedPause = 0;
-        int anglePause = 0;
-        switch (id){
+        switch (id) {
             case R.id.joystickCamera:
-
-                speedCommand = "" + 0;
-                steerCommand = "" + 0;
-
-                // Sets the speed
-                // threads.r1.write("d" + speedCommand + "?");
-
-
-                // Sets the angle
-               // threads.r1.write("a" + steerCommand + "?");
-                // hreads.r1.write("a070?");
-
-                //Log.d("Camera Joystick", "X percent: " + xPercent + " Y percent: " + yPercent);
+                sendCameraCommand(angle);
                 break;
             case R.id.joystickCar:
-
-
-                speedPause++;
-                anglePause++;
-                // min 29
-                // max 52
-                // Translating input from joystick according to protocol
-                speedCommand = "" + (int)-(speed/4 - 95);
-
-                for(int i = 0; speedCommand.length() < 3; i++)
-                    speedCommand = "0" + speedCommand;
-
-                //::::for loop separator::::\\
-                Log.e("ANGLEIFS", "" + angle);
-                if(angle > 45 && angle <= 135 || angle > 225 && angle <= 315){
-                   // threads.r1.write("a045?");
-                }
-                else if(angle > 135 && angle <= 225){
-                   // threads.r1.write("a000?");
-                }
-                else {//if(angle > 180 && angle <=225 || angle > 315 && <= 45){
-                  //  threads.r1.write("a090?");
-                }
-                //else i
-                //steerCommand = angle >= 0 && angle <= 180? "" + (90 - (int) angle / 2) : "" + (int)(360-angle)/2;
-
-                //for(int i = 0; steerCommand.length() < 3; i++)
-                 //steerCommand = "0" + steerCommand;
-
-                //::::for loop separator::::\\
-
-                // Sets the speed
-               // threads.r1.write("d" + speedCommand + "?");
-
-               // threads.r1.write("d" + speedCommand + "?");
-                Log.e("Speed", "d" + speedCommand + "?");
-
-                //System.out.println("d" + speedCommand + "?");
-
-                // Sets the angle
-
-                //Sthreads.r1.write("a" + steerCommand + "?");
-               // Log.e("Angle","a" + steerCommand + "?");
-                break;
+                sendCarCommandv1(angle, speed);
+                sendCarCommandv2(angle, speed);
+        break;
         }
+
     }
 
+    private void sendCameraCommand(double angle) {
+
+        String command = "";
+        if(angle <= 45 || angle > 315 && !(oldCameraAngle <= 45 || oldCameraAngle > 315)){
+            command = "x002?"; // threads.r1.write("x001?");
+        }
+        else if(angle <= 135 && angle > 45 && !(oldCameraAngle <= 135 && oldCameraAngle > 45)){
+            command = "y001?"; // threads.r1.write("y002?");
+        }
+        else if(angle <= 225 && angle > 135 && !(oldCameraAngle <= 225 && oldCameraAngle > 135)){
+            command = "x001?"; // threads.r1.write("x002?");
+        }
+        else if(angle <= 315 && angle > 225 && !(oldCameraAngle <= 315 && oldCameraAngle > 225)){
+            command = "y002?"; // threads.r1.write("y001?");
+        }
+        oldCameraAngle = angle;
+        Log.e("Camera command", command);
+
+    }
+
+    private void sendCarCommandv1(double angle, double speed){
+        // The angle
+        if(Math.abs(angle-oldCarAngle) < 10){
+            String command = angle <= 180? "" + (90 - (int) angle / 2) : "" + (int)(360-angle)/2;
+
+            for(int i = 0; command.length() < 3; i++)
+                command = "0" + command;
+            // threads.r1.write("d" + command + "?");
+            if(DEBUG) Log.e("V1 Car speed", "d" + command + "?");
+        }
+        // The speed
+        if (speed != oldCarSpeed && (speedPause % 5 == 0 || speed == 0)) {
+            String command = "";
+            // min 29
+            // max 52
+            // Translating input from joystick according to protocol
+            command = "" + (int) -(speed / 4 - 95);
+
+            for (int i = 0; command.length() < 3; i++)
+                command = "0" + command;
+            // threads.r1.write("d" + command + "?");
+            oldCarSpeed = speed;
+            speedPause++;
+            if(DEBUG)Log.e("Car speed", "d" + command + "?");
+        }
+
+    }
+
+    private void sendCarCommandv2(double angle, double speed){
+        // The angle
+        String command = "";
+
+        if (angle <= 30 || angle > 330 && !(oldCarAngle <= 30 || oldCarAngle > 330)) {
+            command = "090";// threads.r1.write("a090?");
+        } else if (angle <= 60 && angle > 30 && !(oldCarAngle <= 60 && oldCarAngle > 30)) {
+            command = "068";// threads.r1.write("a068?");
+        } else if (angle <= 120 && angle > 60 && !(oldCarAngle <= 120 && oldCarAngle > 60)) {
+            command = "045";// threads.r1.write("a045?");
+        } else if (angle <= 150 && angle > 120 && !(oldCarAngle <= 150 && oldCarAngle > 120)) {
+            command = "023";// threads.r1.write("a023?");
+        } else if (angle <= 210 && angle > 150 && !(oldCarAngle <= 210 && oldCarAngle > 150)) {
+            command = "000";// threads.r1.write("a000?");
+        } else if (angle <= 240 && angle > 210 && !(oldCarAngle <= 240 && oldCarAngle > 210)) {
+            command = "068";// threads.r1.write("a068?");
+        } else if (angle <= 300 && angle > 240 && !(oldCarAngle <= 300 && oldCarAngle > 240)) {
+            command = "045";// threads.r1.write("a045?");
+        } else if (angle <= 330 && angle > 300 && !(oldCarAngle <= 330 && oldCarAngle > 300)) {
+            command = "023";// threads.r1.write("a023?");
+        }
+
+        oldCarAngle = angle;
+        if(DEBUG)Log.e("V2 Car angle", "a" + command + "?");
+
+        // The speed
+        command = "";
+        if (speed != oldCarSpeed && (speedPause % 5 == 0 || speed == 0)) {
+            // min 29
+            // max 52
+            // Translating input from joystick according to protocol
+            command = "" + (int) -(speed / 4 - 95);
+
+            for (int i = 0; command.length() < 3; i++)
+                command = "0" + command;
+                // threads.r1.write("d" + command + "?");
+            oldCarSpeed = speed;
+            speedPause++;
+        }
+        if(DEBUG)Log.e("Car speed", "d" + command + "?");
+    }
     //static String drive = "d070";
     /*@Override
     protected void onCreate(Bundle savedInstanceState) {
