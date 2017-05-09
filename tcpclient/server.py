@@ -4,6 +4,6 @@
 
 from receiver import Receiver
 
-Receiver("172.24.1.255", 9005)
+Receiver("172.24.1.1", 9005)
 
 
