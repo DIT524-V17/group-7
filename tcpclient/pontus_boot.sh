@@ -28,8 +28,5 @@ fi
 # Run TCP server
 python tcpclient/server.py
 
-# In case of emergency. Call 911.
-cd
-
 
 

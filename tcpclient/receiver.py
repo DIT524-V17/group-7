@@ -80,7 +80,7 @@ class Receiver:
                     # http://stackoverflow.com/questions/2719017/how-to-set-timeout-on-pythons-socket-recv-method
                     # This will give me a none blocking message receiver.
                     # with a 1 second timeout flag.
-                    ready = select.select([client], [], [], 1)
+                    ready = select.select([client], [], [], 0.1)
 
                     # Times out according to previous declaration.
                     if ready[0]:

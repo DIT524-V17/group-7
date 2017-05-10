@@ -3,7 +3,7 @@
 # Maintained since: 17th of April 2017.
 
 from receiver import Receiver
-print("Version 2.1")
+print("Version 2.2")
 Receiver("172.24.1.1", 9005)
 
 
