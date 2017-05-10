@@ -14,7 +14,7 @@ Pontus Laestadius
 Anthony Path
 
 @Version 1.1.1
-2017-05-12
+2017-05-10
 Tim Jonasson: Removed the delay that made it so it doesnt send commands when the value doesnt change and that caused issues since we didnt 
 get the temperature to the app when the temperature didnt change
 Fixed an issue with the flame commands not being sent properly
