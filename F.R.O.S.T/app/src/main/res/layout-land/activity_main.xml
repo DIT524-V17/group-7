@@ -172,8 +172,7 @@
         android:background="@android:color/holo_green_dark"
         android:text="Menu"
         android:textColor="@android:color/white" />
-
-<<<<<<< HEAD
+    
     <Button
         android:id="@+id/button7"
         android:layout_width="wrap_content"
@@ -222,7 +221,7 @@
         <item android:name="android:scaleType">fitXY</item>
         <item android:name="android:src">@drawable/img_background</item>
     </style>-->
-=======
+
     <ImageView
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
@@ -230,7 +229,5 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
         app:srcCompat="@drawable/aa" />
-
->>>>>>> integration
 
 </RelativeLayout>
