@@ -13,9 +13,9 @@ Tim Jonasson
 Pontus Laestadius
 Anthony Path
 
-@Version 1.1 
-2017-05-08
-Isabelle Törnqvist: Added code to allow for deactivation of camera servos, X and Y. Refined temperature code. 
+@Version 1.2 
+2017-05-10
+Anthony Path: Added method for measuring and sending of motor's battery voltage to the serial for battery level display
 */
 
 const int ONE_WIRE_BUS_PIN = 3; //for temperature sensor
