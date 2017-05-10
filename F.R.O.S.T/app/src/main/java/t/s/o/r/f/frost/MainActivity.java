@@ -438,7 +438,7 @@ public class MainActivity extends AppCompatActivity {
                     displayTemp(value);
                     break;
                 case 'f': //Flame sensor input
-                    if(s.charAt(3) == 1){
+                    if(s.charAt(3) == '1'){
                         fireImage.setVisibility(View.VISIBLE);
                     } else {
                         fireImage.setVisibility(View.INVISIBLE);
