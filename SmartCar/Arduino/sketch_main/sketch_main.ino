@@ -31,6 +31,8 @@ const int FLAME_SENSOR_PIN = 6;
 const int MOTOR_PIN = 7;
 const int COLLISION_SERVO_PIN = 8;
 const int LED_PIN = 12;
+const int  VOLT_PIN = A5;
+float voltage_Now=1.5;
 
 const int START_POSITION_MOTOR_SERVO = 90;
 const int START_POSITION_STEER_SERVO = 45;
@@ -340,6 +342,15 @@ void readTemp(){
     printTemperature(thermometer); //Call  
 }
 
+void sendVoltage(){ //measure voltage of each cell of motor's battery and print it to serial. Works for 1.2 V NIMHs
+int value = analogRead(VOLT_PIN); 
+float voltage = value * (5.00 / 1023.00*3.13/8); // 5.00/1023 is formula for conversion of analog input to actual voltage. Multiplied 3.13 because 47 and 100 K Ohm resistors lower voltage about 3.13 times, then divided by 8 to get voltage per cell
+ if (voltage<voltage_Now){ //change global variable and send voltage to phone only when voltage drops
+  voltage_Now=voltage;
+  voltage_string = "v" + voltage_Now + '\n';
+  Serial.write(voltage_string);
+ }
+}
 void loop() { 
      //Is true when a command with a ? in the end is given or if the input reaches a length atleast 4
     if(complete_command){
@@ -353,7 +364,7 @@ void loop() {
     if(flame_activation){
     readFlame();  
     }
-
+sendVoltage();
 //_activation of ultrasonic sensor
   if(ultrasonic_activation){
    //Pings the ultrasonic sensor
