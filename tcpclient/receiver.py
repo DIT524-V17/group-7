@@ -1,3 +1,8 @@
+# @author Pontus Laestadius
+# @since 20-03-2017
+# Maintained since: 26-04-2017
+# @version 1.0
+
 import socket
 import select
 import os
@@ -15,11 +20,11 @@ usb = serial.Serial('/dev/ttyACM0', 9600, timeout=.1)
 class Receiver:
 
     receiver = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    host = None // host, an adress.
-    port = None // port, integer please.
-    connection = False // Connection, a boolean.
-    address = None // address, the clients address.
-    msg = None // msg, The message to be sent.
+    host = None  # host, an address.
+    port = None  # port, integer please.
+    connection = False  # Connection, a boolean.
+    address = None  # address, the clients address.
+    msg = None  # msg, The message to be sent.
 
     # Constructor
     def __init__(self, host, port):
@@ -29,9 +34,9 @@ class Receiver:
         self.bind()
 
     # Binds the socket to the dedicated TCP port.
-    # If the port is in use
     def bind(self):
 
+        # If the port is in use
         # Makes sure the port is not in use by clearing it in the terminal.
         # In previous iterations this was located in the Shell script.
         # But it was moved here so that reconnections or manual launches of
@@ -66,7 +71,6 @@ class Receiver:
             # Used to decide if the client is able to reconnect or not.
             self.connection = True
 
-
             # Only breaks when/if the client disconnects from the server.
             while self.connection:
 
@@ -75,7 +79,8 @@ class Receiver:
                     # This follows this example of how to use select in python:
                     # http://stackoverflow.com/questions/2719017/how-to-set-timeout-on-pythons-socket-recv-method
                     # This will give me a none blocking message receiver.
-                    ready = select.select([client], [], [], 1)
+                    # with a 1 second timeout flag.
+                    ready = select.select([client], [], [], 0.1)
 
                     # Times out according to previous declaration.
                     if ready[0]:
@@ -110,13 +115,10 @@ class Receiver:
                         client.send(info.encode(coding))
 
                 # Due to socket issues or if the client disconnects.
-                except socket.error:
+                # All errors thrown by the socket are sub exceptions of OSError.
+                except OSError:
 
                     # If a client disconnects. This will end the while self.connection loop.
+                    client.shutdown()
                     self.connection = False
-                    print("4. Client disconnected ")
-
-    # Used for logs. Can be extended to support more features but is not important.
-    @staticmethod
-    def disconnected(s):
-        print("Disconnected at: %s" % s)
+                    print("4. Client disconnected")

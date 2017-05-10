@@ -23,11 +23,10 @@ sudo git fetch
 # By doing this it will always ignore all local changes, since It shouldn't have any anyways.
 sudo git reset --hard origin/TCPclient
 
+fi
+
 # Run TCP server
 python tcpclient/server.py
 
-# In case of emergency. Call 911.
-cd
 
-fi
 
