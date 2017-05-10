@@ -172,7 +172,7 @@
         android:background="@android:color/holo_green_dark"
         android:text="Menu"
         android:textColor="@android:color/white" />
-    
+
     <Button
         android:id="@+id/button7"
         android:layout_width="wrap_content"
