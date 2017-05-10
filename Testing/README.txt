@@ -15,6 +15,13 @@ Preferably on the Automated Testing branch.
 
 The intial step is launching the android emulator.
 This needs to be initiated by adding Android to your PATH system variables.
+This is done by opening yout system environment variables. 
+1. You will find it if you search for it on windows.
+2. Press edit variables.
+3. 
+<Add how to do it here>
+AppData/Local/Android/sdk/tools
+AppData/Local/Android/sdk/platform-tools
 Google should help you with that one.
 Next if your computer does not have a system image with android23/24 on it.
 It will unsuccessfully launch the test suite, read the emulator instructions below.
