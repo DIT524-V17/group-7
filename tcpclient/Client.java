@@ -1,17 +1,14 @@
-
-import org.omg.CosNaming.NamingContextExtPackage.InvalidAddressHolder;
-
 import java.net.*;
 import java.io.*;
 /**
  * @author Pontus Laestadius
  * Date format: DD-MM-YYYY
  * @since 20-03-2017
- * Maintained since: 24-04-2017
+ * Maintained since: 10-05-2017
+ * Version 2.2
  */
 
 public class Client {
-
 
 	// Don't change the port. As it is the same as on the raspberry pi.
 	static int port = 9005;
@@ -23,6 +20,9 @@ public class Client {
 	static Boolean c = false;
 }
 
+/**
+* Class that holds all information regarding communication.
+*/
 class TCP {
 	DataOutputStream out;
 	BufferedReader in;
