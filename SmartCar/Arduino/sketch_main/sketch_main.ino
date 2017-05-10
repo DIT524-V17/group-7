@@ -13,7 +13,13 @@ Tim Jonasson
 Pontus Laestadius
 Anthony Path
 
-@Version 1.1 
+@Version 1.1.1
+2017-05-12
+Tim Jonasson: Removed the delay that made it so it doesnt send commands when the value doesnt change and that caused issues since we didnt 
+get the temperature to the app when the temperature didnt change
+Fixed an issue with the flame commands not being sent properly
+
+Version 1.1 
 2017-05-08
 Isabelle Törnqvist: Added code to allow for deactivation of camera servos, X and Y. Refined temperature code. 
 */
