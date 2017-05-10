@@ -39,7 +39,6 @@ int velocity;
 int ultrasonic_range;
 //Temperature variables
 int temperature;
-int temperature_old;
 
 int collision_delay = 250;
 int flame_delay = 500;
@@ -134,7 +133,6 @@ void setup() {
 
 //function to print the temperature 
 void printTemperature(DeviceAddress deviceAddress){  
-  temperature_old = temperature;
   temperature = (int)temperature_sensor.getTempC(deviceAddress);
   String temp_string = "t";
 
@@ -147,9 +145,8 @@ void printTemperature(DeviceAddress deviceAddress){
   temp_string += temperature; 
 
 //delay for sending the temperature: if the temperature has changed, send the temperature 
-  if(temperature_old != temperature){
-      Serial.println(temp_string);  
-  }  
+  Serial.println(temp_string);  
+
 }
 
   /*
@@ -321,10 +318,9 @@ void readFlame(){
       if (flame_reading == HIGH && !flame_detected){
         if (++flame_delay >= 500){
           Serial.write("f001\n");
-        }
         flame_detected = true;
         digitalWrite(LED_PIN, HIGH);
-
+        }
        //when the flame disapears it sends a command that it stopped seing a flame
       }else if(flame_detected && flame_reading == LOW){
         Serial.write("f000\n");
