@@ -19,7 +19,6 @@ Tim Jonasson: Removed the delay that made it so it doesnt send commands when the
 get the temperature to the app when the temperature didnt change
 Fixed an issue with the flame commands not being sent properly
 
-Version 1.1 
 2017-05-08
 Isabelle Törnqvist: Added code to allow for deactivation of camera servos, X and Y. Refined temperature code. 
 */
