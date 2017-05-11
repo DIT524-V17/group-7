@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     View v;
     TextView tv;
     View tvbg;
+    private static ImageView fireImage;
     static TextView ccValue;
     static TextView textElement;
     static ImageSwitcher SwitchImageTemp;
@@ -65,6 +66,8 @@ public class MainActivity extends AppCompatActivity {
         tv = (TextView) findViewById(R.id.collision_text); //TextView for collision text.
         v = findViewById(R.id.cc_view4);
         tvbg = findViewById(R.id.text_background);
+        fireImage = (ImageView)findViewById(R.id.imageView1);
+        fireImage.setVisibility(View.INVISIBLE);
 
         ccValue = (TextView) findViewById(R.id.ccValue); //TextView for collision distance value.
         animate();
@@ -539,6 +542,11 @@ public class MainActivity extends AppCompatActivity {
                     displayTemp(value);
                     break;
                 case 'f': //Flame sensor input
+                    if(s.charAt(3) == '1'){
+                        fireImage.setVisibility(View.VISIBLE);
+                    } else {
+                        fireImage.setVisibility(View.INVISIBLE);
+                    }
                     break;
             }
         }catch(Exception e){

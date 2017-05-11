@@ -222,4 +222,12 @@
         <item android:name="android:src">@drawable/img_background</item>
     </style>-->
 
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        app:srcCompat="@drawable/aa" />
+
 </RelativeLayout>
