@@ -13,7 +13,10 @@ Tim Jonasson
 Pontus Laestadius
 Anthony Path
 
-@Version 1.1.1
+@Version 1.2
+2017-05-11
+Anthony Path: Added battery voltage measurement feature to determine and display battery level.
+
 2017-05-10
 Tim Jonasson: Removed the delay that made it so it doesnt send commands when the value doesnt change and that caused issues since we didnt 
 get the temperature to the app when the temperature didnt change
@@ -342,13 +345,20 @@ void readTemp(){
     printTemperature(thermometer); //Call  
 }
 
-void sendVoltage(){ //measure voltage of each cell of motor's battery and print it to serial. Works for 1.2 V NIMHs
+/*
+@Author Anthony Path
+Measure voltage of each cell of motor's battery and print it to serial. Works for both 1.5 V batteries and 1.2 V NIMHs
+*/
+void sendVoltage(){ 
 int value = analogRead(VOLT_PIN); 
-float voltage = value * (5.00 / 1023.00*3.13/8); // 5.00/1023 is formula for conversion of analog input to actual voltage. Multiplied 3.13 because 47 and 100 K Ohm resistors lower voltage about 3.13 times, then divided by 8 to get voltage per cell
+float voltage = value * (5.00 / 1023.00*3.13/8); // 5.00/1023 is formula for conversion of analog input to actual voltage. 
+ //Formula taken from here: https://www.arduino.cc/en/Tutorial/ReadAnalogVoltage
+ //Multiplied 3.13 because 47 and 100 K Ohm resistors lower voltage about 3.13 times, then divided by 8 to get approximate voltage per cell.
  if (voltage<voltage_Now){ //change global variable and send voltage to phone only when voltage drops
   voltage_Now=voltage;
-  voltage_string = "v" + voltage_Now + '\n';
-  Serial.write(voltage_string);
+  voltage_string = "v" + voltage_Now;
+  voltage_string_to_send=voltage_string.substring(0, 4) + '\n';
+  Serial.write(voltage_string_to_send);
  }
 }
 void loop() { 
