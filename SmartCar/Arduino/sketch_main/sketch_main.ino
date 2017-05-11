@@ -351,7 +351,7 @@ Measure voltage of each cell of motor's battery and print it to serial. Works fo
 */
 void sendVoltage(){ 
 int value = analogRead(VOLT_PIN); 
-float voltage = value * (5.00 / 1023.00*3.13/8); // 5.00/1023 is formula for conversion of analog input to actual voltage. 
+float voltage = value * (5.00 / 1023.00*3.13/8);  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
  //Formula taken from here: https://www.arduino.cc/en/Tutorial/ReadAnalogVoltage
  //Multiplied 3.13 because 47 and 100 K Ohm resistors lower voltage about 3.13 times, then divided by 8 to get approximate voltage per cell.
  if (voltage<voltage_Now){ //change global variable and send voltage to phone only when voltage drops
