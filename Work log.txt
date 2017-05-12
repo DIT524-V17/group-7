@@ -45,4 +45,11 @@ testing updated system.
 05/05 - Working with battery level. 
 EUREKA!!! Finally built functional voltage divider using 47 and 100 K Ohm resistors to prevent Arduino from frying during voltage measurement of 10.5 V battery. It's pretty accurate, and gives values almost identical to multimeter's. GUI and app part still
 need to be implemented (3.5 hours) 
+08/05 - Working with battery - making smaller voltage divider for placement on the car, doing additional research on charge/voltage relationship (3 hours)
+09/05 - Soldering additional wires to battery socket, connecting voltage divider to Arduino Mega, addtional testing of new feature (2.5 hours).
+10/05 - Battery level feature finished and integrated, can send values to phone now. Attempted to test collision control, noticed strange behavior of the motor (abnormal moves and sounds). Suspected reasons were: insufficient voltage, connection problems and I suspected transmission damage. I decided to disassemble it, and found that one of the three gears in it is damaged. Started working on solution together with team members.
+11/05 - Final minor adjustments to battery, attempts to find replacement gear (3 hours).
+12/05 - 
+
+
 
