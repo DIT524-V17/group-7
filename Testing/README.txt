@@ -4,6 +4,22 @@ Automatic Testing
 Author: Pontus Laestadius
 Since: 03-05-2017
 
+
+
+------------------------------
+Pre-requirements
+------------------------------
+Java and android added to your PATH
+This is done by opening your system environment variables. 
+	2. Press edit variables.
+	3. For android add:
+		AppData/Local/Android/sdk/tools
+		AppData/Local/Android/sdk/platform-tools
+	4. for Java, figure it out yourself.
+
+
+
+
 ------------------------------
 How do I run it?
 ------------------------------
@@ -14,18 +30,11 @@ was your app you wish to run the test case on.
 Preferably on the Automated Testing branch.
 
 The intial step is launching the android emulator.
-This needs to be initiated by adding Android to your PATH system variables.
-This is done by opening yout system environment variables. 
-1. You will find it if you search for it on windows.
-2. Press edit variables.
-3. 
 <Add how to do it here>
-AppData/Local/Android/sdk/tools
-AppData/Local/Android/sdk/platform-tools
+
 Google should help you with that one.
 Next if your computer does not have a system image with android23/24 on it.
 It will unsuccessfully launch the test suite, read the emulator instructions below.
-
 
 To create an emulator that will run this test suite, follow these steps:
 	1. Open up a your command promt

@@ -1,0 +1,27 @@
+Sleep 8000
+Wait {ImageFolder}/1494163877738.png
+Click {ImageFolder}/1494163877738.png 86 79
+Move 0 1080
+Sleep 300
+If {ImageFolder}/1494163299314.png
+	Click {ImageFolder}/1494163299314.png
+	Sleep 200
+Else
+	Write 	"[WINDOWS]"
+	Sleep 50
+	Write "Android Studio"
+	Sleep 3000
+	Write "[ENTER]"
+	Sleep 65000
+	WhileNot "{ImageFolder}/1494163396499.png"
+	EndWhile
+EndIf
+Click "{ImageFolder}/1494163396499.png"
+Sleep 2000
+Write "[ENTER]"
+Sleep 6000
+Write "[WINDOWS_PRESS]"
+Write "[DOWN]"
+Write "[WINDOWS_RELEASE]"
+Sleep 13000
+

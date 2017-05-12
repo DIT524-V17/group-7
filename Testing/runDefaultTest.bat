@@ -3,7 +3,7 @@ rem @Author: Pontus Laestadius
 rem @Since: 06-05-2017
 
 cd c:\EyeAutomate
-java -Xmx512m -jar EyeAutomate.jar scripts\generated.txt
+java -Xmx512m -jar EyeAutomate.jar "sensitivity=70" scripts\generated.txt
 cd C:\Users\pontu\IdeaProjects\group-7\Testing
 start compare.py
 start report.py

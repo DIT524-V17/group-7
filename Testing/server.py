@@ -4,25 +4,31 @@
 
 from receiver import Receiver
 import traceback
+import os
+
+
+abspath = os.path.abspath("") + "\\"
+abspath = abspath.replace("\\", "/")
+print(abspath)
 
 def main():
     # Clears the generated file.
-    open('C:/Users/pontu/IdeaProjects/group-7/Testing/testcase_generated.txt', 'w').close()
+    open(abspath + '_testcase/testcase_generated.txt', 'w').close()
 
     try:
         write_file = [lines for lines in
-                      open('C:/Users/pontu/IdeaProjects/group-7/Testing/testcase_write.txt', 'r')]
+                      open(abspath + '_testcase/testcase_write.txt', 'r')]
         # If there is a test case written or not.
         if len(write_file) > 2:
             print("Using testcase written in testcase_write.")
-            file = open('testcase_expected.txt', 'w')
+            file = open(abspath + '_testcase/testcase_expected.txt', 'w')
             for lines in write_file:
                 file.write(lines)
             file.close()
 
             print("Generating EyeAutomate testcase")
-            file = open("C:/EyeAutomate/scripts/generated.txt", "w")
-            file.write("Call \"scripts/defaultTest.txt\"\n")
+            file = open(abspath + "EyeAutomatic/scripts/generated.txt", "w")
+            file.write("Call \"EyeAutomatic/scripts/defaultTest.txt\"\n")
             for lines in write_file:
                 if lines == "a045\n":
                     file.write(call("release.txt"))

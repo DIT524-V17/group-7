@@ -11,16 +11,19 @@ from time import gmtime, strftime
 def main():
     try:
 
-        with open("testcase_generated.txt", "r") as f:
+        with open("_testcase/testcase_generated.txt", "r") as f:
             list_generated = f.read().splitlines()
         f.close()
 
         # Opens the file in reverse.
-        matchee = [lines for lines in open("testcase_generated.txt", "r")][::-1]
-        if matchee[0].startswith("@"):
-            failed("Previously matched")
+        try:
+            matchee = [lines for lines in open("_testcase/testcase_generated.txt", "r")][::-1]
+            if matchee[0].startswith("@"):
+                failed("Previously matched")
+        except:
+            failed("Empty generated file")
 
-        with open("testcase_expected.txt", "r") as f:
+        with open("_testcase/testcase_expected.txt", "r") as f:
             list_expected = f.read().splitlines()
         f.close()
 
@@ -44,7 +47,7 @@ def main():
             i += 1
         print("---------- Done ----------")
 
-        file = open("testcase_generated.txt", "a")
+        file = open("_testcase/testcase_generated.txt", "a")
         file.write("@Success\n")
 
         success()
@@ -69,7 +72,7 @@ def success():
 
 
 def write(string):
-    f = open("testcase_result.txt", "a")
+    f = open("_testcase/testcase_result.txt", "a")
     f.write(time() + " - " + string + "\n")
     f.close()
     sys.exit(0)

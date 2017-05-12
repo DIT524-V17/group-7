@@ -9,6 +9,7 @@
 git checkout AutomatedTesting
 
 while true; do
+git fetch
 # This might aswell be magic. 
 # http://stackoverflow.com/questions/3258243/check-if-pull-needed-in-git
 [ $(git rev-parse HEAD) = $(git ls-remote $(git rev-parse --abbrev-ref @{u} | \
