@@ -13,7 +13,10 @@ Tim Jonasson
 Pontus Laestadius
 Anthony Path
 
-@Version 1.1.1
+@Version 1.2
+2017-05-11
+Anthony Path: Added battery voltage measurement feature to determine and display battery level.
+
 2017-05-10
 Tim Jonasson: Removed the delay that made it so it doesnt send commands when the value doesnt change and that caused issues since we didnt 
 get the temperature to the app when the temperature didnt change
@@ -31,6 +34,8 @@ const int FLAME_SENSOR_PIN = 6;
 const int MOTOR_PIN = 7;
 const int COLLISION_SERVO_PIN = 8;
 const int LED_PIN = 12;
+const int  VOLT_PIN = A5;
+float voltage_Now=1.5;
 
 const int START_POSITION_MOTOR_SERVO = 90;
 const int START_POSITION_STEER_SERVO = 45;
@@ -45,6 +50,7 @@ int ultrasonic_range;
 //Temperature variables
 int temperature;
 
+int voltage_delay = 500;
 int collision_delay = 250;
 int flame_delay = 500;
 int last_distance_read = 0;
@@ -340,6 +346,25 @@ void readTemp(){
     printTemperature(thermometer); //Call  
 }
 
+/*
+@Author Anthony Path
+Measure voltage of each cell of motor's battery and print it to serial. Works for both 1.5 V batteries and 1.2 V NIMHs
+*/
+void sendVoltage(){ 
+int value = analogRead(VOLT_PIN); 
+float voltage = value * (5.00 / 1023.00*3.13/8);  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+ //Formula taken from here: https://www.arduino.cc/en/Tutorial/ReadAnalogVoltage
+ //Multiplied 3.13 because 47 and 100 K Ohm resistors lower voltage about 3.13 times, then divided by 8 to get approximate voltage per cell.
+ if (voltage<voltage_Now && ++voltage_delay>=1000){ //change global variable and send voltage to phone only when voltage drops
+  voltage_Now=voltage;
+ String voltage_string = "v" + String(voltage_Now,2); // Normal .toString() method doesn't work for Float, had to use String(float, decimal places) instead
+//Serial.println(voltage_Now);
+  voltage_delay=0;
+String voltage_string_to_send=voltage_string.substring(0, 5) + '\n';
+  Serial.println(voltage_string_to_send);
+  //output examples: v1.39, v1.31 etc
+ } 
+}
 void loop() { 
      //Is true when a command with a ? in the end is given or if the input reaches a length atleast 4
     if(complete_command){
@@ -353,7 +378,7 @@ void loop() {
     if(flame_activation){
     readFlame();  
     }
-
+sendVoltage();
 //_activation of ultrasonic sensor
   if(ultrasonic_activation){
    //Pings the ultrasonic sensor
