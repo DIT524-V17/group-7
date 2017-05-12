@@ -11,6 +11,7 @@ abspath = os.path.abspath("") + "\\"
 abspath = abspath.replace("\\", "/")
 print(abspath)
 
+
 def main():
     # Clears the generated file.
     open(abspath + '_testcase/testcase_generated.txt', 'w').close()

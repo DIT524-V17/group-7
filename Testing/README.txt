@@ -9,7 +9,8 @@ Since: 03-05-2017
 ------------------------------
 Pre-requirements
 ------------------------------
-Java and android added to your PATH
+Be able to use java, android and git commands in the command line.
+This can be done by adding them to your PATH.
 This is done by opening your system environment variables. 
 	2. Press edit variables.
 	3. For android add:
@@ -17,41 +18,25 @@ This is done by opening your system environment variables.
 		AppData/Local/Android/sdk/platform-tools
 	4. for Java, figure it out yourself.
 
-
-
-
-------------------------------
-How do I run it?
-------------------------------
-This test suite is run in multiple steps.
-
-Make sure you have android studio, either up and running or the latest project
-was your app you wish to run the test case on.
-Preferably on the Automated Testing branch.
-
-The intial step is launching the android emulator.
-<Add how to do it here>
-
-Google should help you with that one.
-Next if your computer does not have a system image with android23/24 on it.
-It will unsuccessfully launch the test suite, read the emulator instructions below.
-
-To create an emulator that will run this test suite, follow these steps:
+Have a system.img emulator with android 23 or 24.
+Either install the ABI's from the commandline or use the Android SDK Manager.
+To create an emulator with the command line:
 	1. Open up a your command promt
 	2. Run this command to install the system image required.
 	echo "y" | android update sdk -a --no-ui --filter sys-img-x86_64-android-24
 	3. Time to make the emulator. Use this 
 	echo "n" | android create avd --name myandroid22 -t "android-24"
+If you get a MISSING KERNAL error, you just missed to install some of the packages.
 
+Have Android studio either running and the last project you ran should be the one you 
+wish to install. As signing debug builds can only occur in the IDE.
 
 ------------------------------
-What do I execute?
+How do I run it?
 ------------------------------
 Run the main.bat file if you want to passively check and run test cases from git.
 Run the universe.bat file to execute a test case.
 
 The results will be opened with a default web browser and a text document
 for the GUI testing and expected value testing respectively.
-
-
 

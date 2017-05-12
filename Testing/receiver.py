@@ -2,6 +2,7 @@ import socket
 import select
 import time
 import traceback
+from server import abspath
 
 # This import will throw a syntax error if the module is not installed.
 # import serial
@@ -69,7 +70,7 @@ class Receiver:
 
             read_stop = True
             try:
-                read = [lines for lines in open("C:/Users/pontu/IdeaProjects/group-7/Testing/_testcase/testcase_read.txt", "r")]
+                read = [lines for lines in open(abspath + "_testcase/testcase_read.txt", "r")]
                 read_index = 0
                 start_time = time.time()
                 read_time = int(read[read_index][0:read[read_index].find(" ")])
@@ -184,6 +185,6 @@ class Receiver:
 
 
 def testcase(value):
-    file = open('C:/Users/pontu/IdeaProjects/group-7/Testing/_testcase/testcase_generated.txt','a')
+    file = open(abspath + '_testcase/testcase_generated.txt','a')
     file.write(value + "\n")
     file.close()

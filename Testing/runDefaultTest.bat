@@ -1,3 +1,5 @@
+
+echo Running Eye Automate script...
 @echo off
 rem @Author: Pontus Laestadius
 rem @Since: 06-05-2017

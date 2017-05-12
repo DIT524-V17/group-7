@@ -6,6 +6,7 @@
 
 import webbrowser
 import os
+from server import abspath
 
 mypath = "C:/EyeAutomate/reports/"
 startswith = "generated.txt"
@@ -23,4 +24,4 @@ print(mypath + reports[0])
 webbrowser.open_new_tab(mypath + reports[0])
 
 # This currently only opens the test document and not in a web browser. Functional but not optimal.
-webbrowser.open_new_tab("file:///C:/Users/pontu/IdeaProjects/group-7/Testing/_testcase/testcase_result.txt")
+webbrowser.open_new_tab("file:///" + abspath + "testcase_result.txt")
