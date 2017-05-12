@@ -50,7 +50,7 @@ int ultrasonic_range;
 //Temperature variables
 int temperature;
 
-int voltageDelay = 500;
+int voltage_delay = 500;
 int collision_delay = 250;
 int flame_delay = 500;
 int last_distance_read = 0;
@@ -355,11 +355,11 @@ int value = analogRead(VOLT_PIN);
 float voltage = value * (5.00 / 1023.00*3.13/8);  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
  //Formula taken from here: https://www.arduino.cc/en/Tutorial/ReadAnalogVoltage
  //Multiplied 3.13 because 47 and 100 K Ohm resistors lower voltage about 3.13 times, then divided by 8 to get approximate voltage per cell.
- if (voltage<voltage_Now && ++voltageDelay>=1000){ //change global variable and send voltage to phone only when voltage drops
+ if (voltage<voltage_Now && ++voltage_delay>=1000){ //change global variable and send voltage to phone only when voltage drops
   voltage_Now=voltage;
  String voltage_string = "v" + String(voltage_Now,2); // Normal .toString() method doesn't work for Float, had to use String(float, decimal places) instead
 //Serial.println(voltage_Now);
-  voltageDelay=0;
+  voltage_delay=0;
 String voltage_string_to_send=voltage_string.substring(0, 5) + '\n';
   Serial.println(voltage_string_to_send);
   //output examples: v1.39, v1.31 etc
