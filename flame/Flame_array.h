@@ -5,10 +5,28 @@
 #ifndef FLAME_FLAME_H
 #define FLAME_FLAME_H
 
-#include <Arduino.h>
+//#include <Arduino.h>
 #include <vector>
 #include <string>
+#include <iostream>
+
 using namespace std;
+
+class Flame{
+public:
+    bool getFlameBool(){return flame_bool;}
+    int getFlameValue(){return flame_reading;}
+    void readFlame(){flame_reading = 400;}//analogRead(FLAME_SENSOR_PIN);}
+    void setFlameBool(bool value){flame_bool = value;}
+    Flame();
+    Flame(const int pin){FLAME_SENSOR_PIN = pin;};
+    ~Flame(){};
+
+private:
+    bool flame_bool = false;
+    int flame_reading = 500;
+    int FLAME_SENSOR_PIN;
+};
 
 class Flame_array {
 public:
@@ -19,7 +37,7 @@ public:
     Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3, int flame_pin_4);
     Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3, int flame_pin_4, int flame_pin_5);
 
-    ~Flame_array();
+    ~Flame_array(){};
 
     string read_flame_array();
 
@@ -37,21 +55,6 @@ private:
 
     vector<Flame> flame_vector;
 
-};
-class Flame{
-public:
-    bool getFlameBool(){return flame_bool;}
-    int getFlameValue(){return flame_reading;}
-    void readFlame(){flame_reading = analogRead(FLAME_SENSOR_PIN);}
-    void setFlameBool(bool value){flame_bool = value;}
-    Flame();
-    Flame(const int pin){FLAME_SENSOR_PIN = pin;};
-    ~Flame();
-
-private:
-    bool flame_bool = false;
-    int flame_reading = 500;
-    int FLAME_SENSOR_PIN;
 };
 
 #endif //FLAME_FLAME_H
