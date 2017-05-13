@@ -39,6 +39,7 @@ string Flame_array::read_flame_array() {
 
     flame_vector.at(index).getFlameValue() >= MAX_READING ? flame_sun = true : flame_sun = false;
 
+    
     if(!flame_sun) {
         std::ostringstream index_string;
         index_string << "f0" << index;
