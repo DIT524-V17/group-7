@@ -16,7 +16,6 @@ class Flame{
 public:
     bool getFlameBool(){return flame_bool;}
     int getFlameValue(){return flame_reading;}
-    void setFlameValue(int input){this -> flame_reading = input;}
     void setFlame(){flame_reading = 700;}//analogRead(FLAME_SENSOR_PIN);}
     void setFlameBool(bool value){flame_bool = value;}
     int getPin(){return FLAME_SENSOR_PIN;}
@@ -33,7 +32,7 @@ private:
 class Flame_array {
 public:
     Flame_array();
-    Flame_array(int flame_pin[]);
+    Flame_array(int flame_pin[], int size);
 
     ~Flame_array(){};
 
@@ -41,7 +40,7 @@ public:
     void addFlame(int flame_pin);
     vector <Flame>* getVector(){return &flame_vector;}
 
-    string read_flame_array();
+
     void setIndex(int x){index = x;}
 
 private:
@@ -56,6 +55,7 @@ private:
     bool compareToAverage(int &value);
 
     vector<Flame> flame_vector;
+    string read_flame_array();
 
 };
 

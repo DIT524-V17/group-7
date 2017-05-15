@@ -5,8 +5,7 @@
 #include <sstream>
 #include "Flame_array.h"
 
-Flame_array::Flame_array(int flame_pins[]) {
-    int size = sizeof(flame_pins)/4;
+Flame_array::Flame_array(int flame_pins[], int size) {
     for(int i = 0; i< size; i++){
         addFlame(flame_pins[i]);
     }
