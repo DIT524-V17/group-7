@@ -548,6 +548,7 @@ public class MainActivity extends AppCompatActivity {
                         fireImage.setVisibility(View.INVISIBLE);
                     }
                     break;
+
             }
         }catch(Exception e){
             System.out.println("Inputs are coming in too fast, close the borders!");
