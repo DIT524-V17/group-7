@@ -31,6 +31,13 @@ Flame_array::Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3, int fl
     flame_vector.push_back(Flame(flame_pin_5));
 }
 
+void Flame_array::addFlame(int flame_pin) {
+    flame_vector.push_back(Flame(flame_pin));
+}
+
+void Flame_array::removeFlame() {
+    flame_vector.pop_back();
+}
 string Flame_array::read_flame_array() {
     if (flame_vector.size() >= index){
         return "Error: Index out of bounds";
@@ -39,7 +46,7 @@ string Flame_array::read_flame_array() {
 
     flame_vector.at(index).getFlameValue() >= MAX_READING ? flame_sun = true : flame_sun = false;
 
-    
+
     if(!flame_sun) {
         std::ostringstream index_string;
         index_string << "f0" << index;

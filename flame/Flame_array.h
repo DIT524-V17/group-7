@@ -39,6 +39,9 @@ public:
 
     ~Flame_array(){};
 
+    void removeFlame();
+    void addFlame(int flame_pin);
+
     string read_flame_array();
 
 private:
