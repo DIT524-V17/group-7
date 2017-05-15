@@ -25,7 +25,7 @@ class BaseSocket implements Runnable {
 	private String host;
 	private int port;
 	DataOutputStream out;
-	BufferedReader in;
+	InputStream in;
 
 	// A queue is used to handle all input commands so they go in the proper order and are not lost.
 	Queue<String> input = new PriorityQueue<>();
@@ -50,17 +50,50 @@ class BaseSocket implements Runnable {
 	 *
 	 * @return the first command in the queue.
 	 */
-	public String read(){
+	public Strong read(){
 
 		String s;
 		try {
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // I hate Java.
-			s = in.readLine();
-			return s;
+			in = socket.getInputStream(); // I hate Java.
+			int index = 0;
+
+			byte[] data = new byte[20000];
+			int count = in.read(data);
+			index += count;
+			System.out.println("DATA " + Integer.valueOf(String.valueOf(0), 16) + " | " + Integer.valueOf(String.valueOf(data[0]), 16));
+			if (Integer.valueOf(String.valueOf(data[0]), 16).equals(Integer.valueOf(String.valueOf(0), 16))){
+				System.out.println("STARTED GETTING IMAGE");
+				System.out.println("STARTED: " + Integer.valueOf(String.valueOf(data[index-1]), 16));
+
+				while(Integer.valueOf(String.valueOf(data[index]), 16) != 0x02){
+					byte[] data2 = new byte[20000];
+					count = in.read(data2);
+					int oldindex = index;
+					index += count;
+					for (int i = 1; oldindex +i < index; i++){
+						data[oldindex+i] = data2[i];
+					}
+				}
+				System.out.println("FINISHED GETTING IMAGE");
+			}
+
+
+			System.out.println("COUNT " + count);
+			if (count < 1000){
+				char[] newThings = new char[count];
+				for(int i = 0; i < count; i++) {
+					newThings[i] = (char)data[i];
+				}
+				// This should be obvious
+				Strong string = new Strong(new String(newThings));
+				return string;
+			}
+			//s = in.readLine();
+			return new Strong(data);
 		} catch (IOException e){
 			e.printStackTrace();
 		}
-		return ""; // Only occurs if an exception is thrown.
+		return new Strong(""); // Only occurs if an exception is thrown.
 	}
 
 	/**

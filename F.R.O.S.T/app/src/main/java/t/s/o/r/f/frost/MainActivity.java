@@ -4,6 +4,9 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.NetworkOnMainThreadException;
 import android.provider.Settings;
@@ -11,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.view.menu.ActionMenuItemView;
 import android.support.v7.widget.PopupMenu;
+import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -43,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     View v;
     TextView tv;
     View tvbg;
+    static ImageView ImageSequence;
     private static ImageView fireImage;
     static TextView ccValue;
     static TextView textElement;
@@ -56,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private Boolean item_rip_boolean = true;
     private Boolean item_camera_horizontal_boolean = true;
     private Boolean item_camera_vertical_boolean = true;
+//    ImageSequence im = new ImageSequence();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         tvbg = findViewById(R.id.text_background);
         fireImage = (ImageView)findViewById(R.id.imageView1);
         fireImage.setVisibility(View.INVISIBLE);
-
+        ImageSequence = (ImageView) findViewById(R.id.imageSequence);
         ccValue = (TextView) findViewById(R.id.ccValue); //TextView for collision distance value.
         animate();
         //Context used for the reconnect feature.
@@ -528,21 +534,46 @@ public class MainActivity extends AppCompatActivity {
      */
     //Method for handling the received information from the Arduino sensors.
     static void handleInput(){
+        int value;
+
         try {
-            String s = threads.r1.read();
+            Strong s = threads.r1.read();
+            if (s == null){
+                System.out.println("NULL NULL NULL");
+                return;
+            }
+            if (s.isStrong){
+                s.strong = s.strong.replace("\n", "");
+                s.strong = s.strong.replaceAll("\"", "");
+            }
+
             //System.out.print(threads.r1.read());
-            if (s.length() < 2) return;
-            System.out.println("HandleInput: " + s);
-            int value = Integer.parseInt(s.substring(1)); //Ignores the first character of the input.
-            switch (s.charAt(0)) {
+            if (s.isStrong)
+                if (s.strong.length() < 2) return;
+
+            if (s.isStrung){
+                byte[] str_byte = s.strung;
+                System.out.print("IsStrung");
+                ImageHandling(str_byte);
+                return;
+
+            }
+            System.out.println("HandleInput: " + s.strong);
+            switch (s.strong.charAt(0)) {
                 case 'c': //Collision sensor input.
+                     value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
+
                     updateCollisionIndicator(ccValue, value);
                     break;
                 case 't': //Temperature sensor input.
+                     value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
+
                     displayTemp(value);
                     break;
                 case 'f': //Flame sensor input
-                    if(s.charAt(3) == '1'){
+                     value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
+
+                    if(s.strong.charAt(3) == '1'){
                         fireImage.setVisibility(View.VISIBLE);
                     } else {
                         fireImage.setVisibility(View.INVISIBLE);
@@ -559,6 +590,19 @@ public class MainActivity extends AppCompatActivity {
     //Updates the collision indicator text.
     static void updateCollisionIndicator(TextView view, int value){
         view.setText(value == 0 ? "+" : value + "");
+    }
+
+     static void ImageHandling(byte[] imageByte){
+
+        Bitmap bm = BitmapFactory.decodeByteArray(imageByte, 1 , imageByte.length-1);
+        DisplayMetrics dm = new DisplayMetrics();
+
+        //getWindowManager().getDefaultDisplay().getMetrics(dm);
+
+        ImageSequence.setMinimumHeight(dm.heightPixels);
+        ImageSequence.setMinimumWidth(dm.widthPixels);
+         BitmapDrawable ob = new BitmapDrawable(bm);
+       // ImageSequence.setImageBitmap(bm);
     }
 
 
@@ -586,8 +630,8 @@ public class MainActivity extends AppCompatActivity {
                 }
 
             } catch (Exception e) {
-                System.out.println("Yeah you are probably not connected. soo...... bad luck");
-                e.printStackTrace();
+               // System.out.println("Yeah you are probably not connected. soo...... bad luck");
+               // e.printStackTrace();
             }
             return null;
         }
