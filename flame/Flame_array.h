@@ -16,45 +16,44 @@ class Flame{
 public:
     bool getFlameBool(){return flame_bool;}
     int getFlameValue(){return flame_reading;}
-    void readFlame(){flame_reading = 400;}//analogRead(FLAME_SENSOR_PIN);}
+    void setFlameValue(int input){this -> flame_reading = input;}
+    void setFlame(){flame_reading = 700;}//analogRead(FLAME_SENSOR_PIN);}
     void setFlameBool(bool value){flame_bool = value;}
+    int getPin(){return FLAME_SENSOR_PIN;}
     Flame();
     Flame(const int pin){FLAME_SENSOR_PIN = pin;};
     ~Flame(){};
 
 private:
     bool flame_bool = false;
-    int flame_reading = 500;
+    int flame_reading;
     int FLAME_SENSOR_PIN;
 };
 
 class Flame_array {
 public:
     Flame_array();
-    Flame_array(int flame_pin);
-    Flame_array(int flame_pin, int flame_pin_2);
-    Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3);
-    Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3, int flame_pin_4);
-    Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3, int flame_pin_4, int flame_pin_5);
+    Flame_array(int flame_pin[]);
 
     ~Flame_array(){};
 
     void removeFlame();
     void addFlame(int flame_pin);
+    vector <Flame>* getVector(){return &flame_vector;}
 
     string read_flame_array();
+    void setIndex(int x){index = x;}
 
 private:
     bool flame_sun;
 
-    int average_value;
+    int average_value = 500;
     int index = 0;
 
     const int MAX_READING = 650;
     const int FLAME_SENSITIVITY = 200;
 
-    bool compareToAverage(int value);
-
+    bool compareToAverage(int &value);
 
     vector<Flame> flame_vector;
 
