@@ -41,6 +41,7 @@ public:
     vector <Flame>* getVector(){return &flame_vector;}
 
 
+    string read();
     void setIndex(int x){index = x;}
 
 private:

@@ -20,9 +20,6 @@ void Flame_array::removeFlame() {
     flame_vector.pop_back();
 }
 string Flame_array::read_flame_array() {
-    if (flame_vector.size() <= index){
-        return "Error: Index out of bounds";
-    }
     //flame_vector.at(index).setFlame();
 
     flame_vector.at(index).getFlameValue() >= MAX_READING ? flame_sun = true : flame_sun = false;
@@ -58,4 +55,13 @@ bool Flame_array::compareToAverage(int &value){
         return true;
     }
     return false;
+}
+
+string Flame_array::read() {
+    if (flame_vector.size() <= index){
+        this->index = 0;
+    }
+    string temp = read_flame_array();
+    this-> index++;
+    return temp;
 }
