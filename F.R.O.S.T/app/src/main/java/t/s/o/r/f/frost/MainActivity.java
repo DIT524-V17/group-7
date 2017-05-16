@@ -61,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
     private Boolean item_rip_boolean = true;
     private Boolean item_camera_horizontal_boolean = true;
     private Boolean item_camera_vertical_boolean = true;
+    public static String stupidVariable = "";
+    Magic task = new Magic();
+    public static String sendMe = "";
 //    ImageSequence im = new ImageSequence();
 
     @Override
@@ -533,9 +536,16 @@ public class MainActivity extends AppCompatActivity {
      * Updated by: Sebastian Fransson
      */
     //Method for handling the received information from the Arduino sensors.
-    static void handleInput(){
+     void handleInput(){
         int value;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
 
+//stuff that updates ui
+
+            }
+        });
         try {
             Strong s = threads.r1.read();
             if (s == null){
@@ -612,7 +622,7 @@ public class MainActivity extends AppCompatActivity {
      * Initiates the Transmitter with the 'host' id and correct port.
      * TODO: Rewrite this to actually make sense. Override the two other methods if they are needed later.
      */
-   public static class threads extends AsyncTask<String, Void, Void> {
+  /* public static class threads extends AsyncTask<String, Void, Void> {
        static Transmitter r1;
        int yes = 1;
 
@@ -648,5 +658,5 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 }
