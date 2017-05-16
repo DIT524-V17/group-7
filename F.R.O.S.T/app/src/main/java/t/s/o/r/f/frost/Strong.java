@@ -1,6 +1,7 @@
 package t.s.o.r.f.frost;
 
 /**
+ * This class should never have existed.
  * @author No one
  * @since Never
  * @deprecated Yes

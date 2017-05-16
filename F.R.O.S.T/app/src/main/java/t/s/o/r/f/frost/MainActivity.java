@@ -41,14 +41,16 @@ import static t.s.o.r.f.frost.Client.*;
  * Author: Sebastian Fransson
  * Last Updated: 19-04-2017
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Magic.AsyncResponse{
+
+
 
     //Views for collision animation.
     View v;
     TextView tv;
     View tvbg;
     static ImageView ImageSequence;
-    private static ImageView fireImage;
+    static ImageView fireImage;
     static TextView ccValue;
     static TextView textElement;
     static ImageSwitcher SwitchImageTemp;
@@ -62,16 +64,25 @@ public class MainActivity extends AppCompatActivity {
     private Boolean item_camera_horizontal_boolean = true;
     private Boolean item_camera_vertical_boolean = true;
     public static String stupidVariable = "";
-    Magic task = new Magic();
     public static String sendMe = "";
+    AppCompatActivity tt = this;
 //    ImageSequence im = new ImageSequence();
+
+    //this override the implemented method from AsyncResponse
+    @Override
+    public void processFinish(String output){
+        //Here you will receive the result fired from async class
+        //of onPostExecute(result) method.
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        new threads().execute(); //Executes the AsyncTask and establishes Client connection.
+        //new threads().execute(); //Executes the AsyncTask and establishes Client connection.
+        new Magic(this).execute(); // TODO: 16/05/2017 understand this 
+
         tv = (TextView) findViewById(R.id.collision_text); //TextView for collision text.
         v = findViewById(R.id.cc_view4);
         tvbg = findViewById(R.id.text_background);
@@ -117,44 +128,44 @@ public class MainActivity extends AppCompatActivity {
                                 case R.id.flame:
                                     item_flame_boolean = !item_flame_boolean;
                                     item.setChecked(item_flame_boolean);
-                                    threads.r1.write("F000?");
+                                    sendMe = ("F000?");
                                     System.out.println("Flame");
                                     break;
                                 //The case for when the temperature checkbox is pressed
                                 case R.id.temperature:
                                     item_temperature_boolean = !item_temperature_boolean;
                                     item.setChecked(item_temperature_boolean);
-                                    threads.r1.write("T000?");
+                                    sendMe = ("T000?");
                                     break;
                                 //The case for when the ultrasonic checkbox is pressed
                                 case R.id.ultrasonic:
                                     item_ultrasonic_boolean = !item_ultrasonic_boolean;
                                     item.setChecked(item_ultrasonic_boolean);
-                                    threads.r1.write("U000?");
+                                    sendMe = ("U000?");
                                     break;
                                 //The case for when the motor checkbox is pressed
                                 case R.id.motor:
                                     item_motor_boolean = !item_motor_boolean;
                                     item.setChecked(item_motor_boolean);
-                                    threads.r1.write("M000?");
+                                    sendMe = ("M000?");
                                     break;
                                 //The case for when the steer checkbox is pressed
                                 case R.id.steering:
                                     item_steering_boolean = !item_steering_boolean;
                                     item.setChecked(item_steering_boolean);
-                                    threads.r1.write("S000?");
+                                    sendMe = ("S000?");
                                     break;
                                 //The case for when the "camera vertical" checkbox is pressed
                                 case R.id.camera_vertical:
                                     item_camera_vertical_boolean = !item_camera_vertical_boolean;
                                     item.setChecked(item_camera_vertical_boolean);
-                                    threads.r1.write("Y000");
+                                    sendMe = ("Y000");
                                     break;
                                 //The case for when the "camera horizontal" checkbox is pressed
                                 case R.id.camera_horizontal:
                                     item_camera_horizontal_boolean = !item_camera_horizontal_boolean;
                                     item.setChecked(item_camera_horizontal_boolean);
-                                    threads.r1.write("X000");
+                                    sendMe = ("X000");
                                     break;
                                 //The case for when the RIP checkbox is pressed
                                 case R.id.rip:
@@ -174,12 +185,12 @@ public class MainActivity extends AppCompatActivity {
                                     item.setChecked(item_rip_boolean);
                                     item_camera_horizontal.setChecked(item_rip_boolean);
                                     item_camera_vertical.setChecked(item_rip_boolean);
-                                    threads.r1.write("E000?");
+                                    sendMe = ("E000?");
                                     break;
                             }
                             /*Just a random command to make sure that the car doesnt get spammed with the
                             command for turning a sensor on/off*/
-                            threads.r1.write("0000?");
+                            sendMe = ("0000?");
 
                         } catch (Exception e) {
                             System.out.println("Error in popup menu");
@@ -217,12 +228,12 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         //Sends a "forward" commmand to the Raspberry pi (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                                threads.r1.write("d070?");
+                                sendMe = ("d070?");
                             // System.out.println("Drive forward");
                         }
                         //Sends command to stop the current activity (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_UP) {
-                            threads.r1.write("d090?");
+                            sendMe = ("d090?");
                             //System.out.println("stop driving");
                         }
                     } catch (Exception e) {
@@ -243,12 +254,12 @@ public class MainActivity extends AppCompatActivity {
                         //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
-                            threads.r1.write("d110?");
+                            sendMe = ("d110?");
                             // System.out.println("Reversing");
                         }
                         //Sends command to stop reversing (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_UP) {
-                            threads.r1.write("d090?");
+                            sendMe = ("d090?");
                             //  System.out.println("Stop reversing");
                         }
                     } catch (Exception e) {
@@ -268,12 +279,12 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         //Sends a "go right" commmand to the Raspberry pi (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                            threads.r1.write("a090?");
+                            sendMe = ("a090?");
                             // System.out.println("Steer Right");
                         }
                         //Sends command to stop steering right (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_UP) {
-                            threads.r1.write("a045?");
+                            sendMe = ("a045?");
                             // System.out.println("Stop steering right");
                         }
                     } catch (Exception e) {
@@ -293,12 +304,12 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         //Sends a "go left" commmand to the Raspberry pi (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                            threads.r1.write("a000?");
+                            sendMe = ("a000?");
                             //  System.out.println("Steering Left");
                         }
                         //Sends command to stop steering left (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_UP) {
-                            threads.r1.write("a045?");
+                            sendMe = ("a045?");
                             // System.out.println("Stop steering left");
                         }
                     } catch (Exception e) {
@@ -350,12 +361,12 @@ public class MainActivity extends AppCompatActivity {
                     //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
-                        threads.r1.write("y001?");
+                        sendMe = ("y001?");
                         // System.out.println("Reversing");
                     }
                     //Sends command to stop reversing (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_UP) {
-                        threads.r1.write("y000?");
+                        sendMe = ("y000?");
                         //  System.out.println("Stop reversing");
                     }
                 } catch (Exception e) {
@@ -376,12 +387,12 @@ public class MainActivity extends AppCompatActivity {
                     //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
-                        threads.r1.write("y002?");
+                        sendMe = ("y002?");
                         // System.out.println("Reversing");
                     }
                     //Sends command to stop reversing (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_UP) {
-                        threads.r1.write("y000?");
+                        sendMe = ("y000?");
                         //  System.out.println("Stop reversing");
                     }
                 } catch (Exception e) {
@@ -402,12 +413,12 @@ public class MainActivity extends AppCompatActivity {
                     //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
-                        threads.r1.write("x001?");
+                        sendMe = ("x001?");
                         // System.out.println("Reversing");
                     }
                     //Sends command to stop reversing (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_UP) {
-                        threads.r1.write("x000?");
+                        sendMe = ("x000?");
                         //  System.out.println("Stop reversing");
                     }
                 } catch (Exception e) {
@@ -428,12 +439,12 @@ public class MainActivity extends AppCompatActivity {
                     //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
-                        threads.r1.write("x002?");
+                        sendMe = ("x002?");
                         // System.out.println("Reversing");
                     }
                     //Sends command to stop reversing (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_UP) {
-                        threads.r1.write("x000?");
+                        sendMe = ("x000?");
                         //  System.out.println("Stop reversing");
                     }
                 } catch (Exception e) {
@@ -536,65 +547,65 @@ public class MainActivity extends AppCompatActivity {
      * Updated by: Sebastian Fransson
      */
     //Method for handling the received information from the Arduino sensors.
-     void handleInput(){
-        int value;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
+     void handleInput(final Strong s){
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    //stuff that updates ui
 
-//stuff that updates ui
 
-            }
-        });
-        try {
-            Strong s = threads.r1.read();
-            if (s == null){
-                System.out.println("NULL NULL NULL");
-                return;
-            }
-            if (s.isStrong){
-                s.strong = s.strong.replace("\n", "");
-                s.strong = s.strong.replaceAll("\"", "");
-            }
+                    int value;
 
-            //System.out.print(threads.r1.read());
-            if (s.isStrong)
-                if (s.strong.length() < 2) return;
+                    try {
+                        if (s == null){
+                            System.out.println("NULL NULL NULL");
+                            return;
+                        }
+                        if (s.isStrong){
+                            s.strong = s.strong.replace("\n", "");
+                            s.strong = s.strong.replaceAll("\"", "");
+                        }
 
-            if (s.isStrung){
-                byte[] str_byte = s.strung;
-                System.out.print("IsStrung");
-                ImageHandling(str_byte);
-                return;
+                        //System.out.print(threads.r1.read());
+                        if (s.isStrong)
+                            if (s.strong.length() < 2) return;
 
-            }
-            System.out.println("HandleInput: " + s.strong);
-            switch (s.strong.charAt(0)) {
-                case 'c': //Collision sensor input.
-                     value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
+                        if (s.isStrung){
+                            byte[] str_byte = s.strung;
+                            System.out.print("IsStrung");
+                            ImageHandling(str_byte);
+                            return;
 
-                    updateCollisionIndicator(ccValue, value);
-                    break;
-                case 't': //Temperature sensor input.
-                     value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
+                        }
+                        System.out.println("HandleInput: " + s.strong);
+                        switch (s.strong.charAt(0)) {
+                            case 'c': //Collision sensor input.
+                                value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
 
-                    displayTemp(value);
-                    break;
-                case 'f': //Flame sensor input
-                     value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
+                                updateCollisionIndicator(ccValue, value);
+                                break;
+                            case 't': //Temperature sensor input.
+                                value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
 
-                    if(s.strong.charAt(3) == '1'){
-                        fireImage.setVisibility(View.VISIBLE);
-                    } else {
-                        fireImage.setVisibility(View.INVISIBLE);
+                                displayTemp(value);
+                                break;
+                            case 'f': //Flame sensor input
+                                value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
+
+                                if(s.strong.charAt(3) == '1'){
+                                    fireImage.setVisibility(View.VISIBLE);
+                                } else {
+                                    fireImage.setVisibility(View.INVISIBLE);
+                                }
+                                break;
+
+                        }
+                    }catch(Exception e){
+                        System.out.println("Inputs are coming in too fast, close the borders!");
+                        e.printStackTrace();
                     }
-                    break;
-
-            }
-        }catch(Exception e){
-            System.out.println("Inputs are coming in too fast, close the borders!");
-            e.printStackTrace();
-        }
+                }
+            });
     }
 
     //Updates the collision indicator text.

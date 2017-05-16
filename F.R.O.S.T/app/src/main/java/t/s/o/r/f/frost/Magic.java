@@ -1,6 +1,7 @@
 package t.s.o.r.f.frost;
 
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.widget.ImageSwitcher;
 import android.widget.TextView;
 import android.view.View;
@@ -12,6 +13,11 @@ import java.io.InputStreamReader;
 import java.net.Socket;
 
 import static t.s.o.r.f.frost.Client.port;
+import static t.s.o.r.f.frost.MainActivity.ImageHandling;
+import static t.s.o.r.f.frost.MainActivity.ccValue;
+import static t.s.o.r.f.frost.MainActivity.displayTemp;
+import static t.s.o.r.f.frost.MainActivity.fireImage;
+import static t.s.o.r.f.frost.MainActivity.updateCollisionIndicator;
 
 /**
  * @author Pontus Laestadius
@@ -27,11 +33,23 @@ public class Magic extends AsyncTask<String, Void, Void> {
     long looptime = 0;
 
 
-    @Override
-    protected void onPreExecute() {
-        super.onPreExecute();
+    // you may separate this or combined to caller class.
+    public interface AsyncResponse {
+        void processFinish(String output);
     }
 
+    public AsyncResponse delegate = null;
+
+    public Magic(AsyncResponse delegate){
+        this.delegate = delegate;
+    }
+
+    @Override //// TODO: 16/05/2017 ???????????????????????????????? 
+    protected void onPostExecute(Void v) {
+        if (s.isStrong || s.isStrung){
+            // Stuff??
+        }
+    }
 
     @Override
     public Void doInBackground(String... params) {
@@ -75,6 +93,65 @@ public class Magic extends AsyncTask<String, Void, Void> {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
+
+            Strong st = read();
+            final Strong s = st;
+            if (s.isStrong || s.isStrung){
+                    // TODO: 16/05/2017 Fix this and you get a golden star.
+                    MainActivity.tt.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //update here
+
+                        int value;
+
+                        try {
+                            if (s == null){
+                                System.out.println("NULL NULL NULL");
+                                return;
+                            }
+                            if (s.isStrong){
+                                if (s.strong.length() < 2) return;
+                                s.strong = s.strong.replace("\n", "");
+                                s.strong = s.strong.replaceAll("\"", "");
+                            }
+
+                            if (s.isStrung){
+                                byte[] str_byte = s.strung;
+                                System.out.print("IsStrung");
+                                ImageHandling(str_byte);
+                                return;
+                            }
+                            System.out.println("HandleInput: " + s.strong);
+                            switch (s.strong.charAt(0)) {
+                                case 'c': //Collision sensor input.
+                                    value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
+
+                                    updateCollisionIndicator(ccValue, value);
+                                    break;
+                                case 't': //Temperature sensor input.
+                                    value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
+
+                                    displayTemp(value);
+                                    break;
+                                case 'f': //Flame sensor input
+                                    value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
+
+                                    if(s.strong.charAt(3) == '1'){
+                                        fireImage.setVisibility(View.VISIBLE);
+                                    } else {
+                                        fireImage.setVisibility(View.INVISIBLE);
+                                    }
+                                    break;
+
+                            }
+                        }catch(Exception e){
+                            System.out.println("Inputs are coming in too fast, close the borders!");
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
         }
         return null;
@@ -141,5 +218,7 @@ public class Magic extends AsyncTask<String, Void, Void> {
 
         return new Strong("");
     }
+
+
 
 }
