@@ -4,7 +4,7 @@ package t.s.o.r.f.frost;
  * @author No one
  * @since Never
  * @deprecated Yes
- * @Version Only one
+ * @Version Only one ever
  */
 
 public class Strong {

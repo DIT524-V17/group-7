@@ -27,9 +27,6 @@ class BaseSocket implements Runnable {
 	DataOutputStream out;
 	InputStream in;
 
-	// A queue is used to handle all input commands so they go in the proper order and are not lost.
-	Queue<String> input = new PriorityQueue<>();
-	Queue<String> output = new PriorityQueue<>(); // TODO: 06/04/2017 make a read function for this.
 	Socket socket;
 
 	// Macro for add.
@@ -57,24 +54,45 @@ class BaseSocket implements Runnable {
 			in = socket.getInputStream(); // I hate Java.
 			int index = 0;
 
-			byte[] data = new byte[20000];
+			byte[] data = new byte[200000];
 			int count = in.read(data);
+			if (count == -1) return new Strong("");
 			index += count;
-			System.out.println("DATA " + Integer.valueOf(String.valueOf(0), 16) + " | " + Integer.valueOf(String.valueOf(data[0]), 16));
-			if (Integer.valueOf(String.valueOf(data[0]), 16).equals(Integer.valueOf(String.valueOf(0), 16))){
+			if ((char)data[0]== 'b'){
 				System.out.println("STARTED GETTING IMAGE");
-				System.out.println("STARTED: " + Integer.valueOf(String.valueOf(data[index-1]), 16));
-
-				while(Integer.valueOf(String.valueOf(data[index]), 16) != 0x02){
-					byte[] data2 = new byte[20000];
+				int leng = -1;
+				String str = "";
+				for (int i = 1; i < 20; i++){
+					if ((char) data[i] == 'b'){
+						break;
+					}
+					str += (char) data[i];
+				}
+				leng = Integer.parseInt(str);
+				if (leng < 50){
+					return new Strong("");
+				}
+				System.out.println("LENGTH:" + leng);
+				data = new byte[leng];
+				while(index < leng) {
+					byte[] data2 = new byte[40000];
 					count = in.read(data2);
+					if (count == -1) break;
 					int oldindex = index;
 					index += count;
-					for (int i = 1; oldindex +i < index; i++){
-						data[oldindex+i] = data2[i];
+					try {
+						for (int i = 1; oldindex + i < index; i++) {
+							if (oldindex+i > leng){
+								break;
+							}
+							data[oldindex + i] = data2[i];
+						}
+					}catch(IndexOutOfBoundsException e){
+						System.out.println("Ignore this");
 					}
 				}
-				System.out.println("FINISHED GETTING IMAGE");
+				System.out.println("FINISHED GETTING IMAGE ");
+
 			}
 
 
@@ -96,34 +114,6 @@ class BaseSocket implements Runnable {
 		return new Strong(""); // Only occurs if an exception is thrown.
 	}
 
-	/**
-	 *
-	 * @return all the queued up output as an array of strings.
-	 */
-
-    /*
-    public String[] readAll(){
-        int i = 0;
-        String[] res = new String[output.size()];
-        while (!output.isEmpty())
-            res[i++] = read();
-        return res;
-    }
-    */
-
-	/**
-	 *
-	 * @return a formated version of all queued up output received.
-	 */
-    /*
-    public String readAllFormated(){
-        String[] format = readAll();
-        String formatted = "";
-        for (String f: format)
-            formatted += f + ", ";
-        return formatted.substring(0, formatted.length()-3);
-    }
-*/
 	BaseSocket(String host, int port) {
 		this.host = host;
 		this.port = port;
@@ -140,6 +130,7 @@ class Transmitter extends BaseSocket implements Runnable {
 
 	Transmitter(String host, int port) {
 		super(host,port);
+
 		try {
 			socket = new Socket(host, port);
 		} catch (IOException e){

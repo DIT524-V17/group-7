@@ -22,7 +22,7 @@ public class ImageSequence extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Bitmap bm = BitmapFactory.decodeByteArray(imageByte, 0, imageByte.length);
+        Bitmap bm = BitmapFactory.decodeByteArray(imageByte, 1, imageByte.length);
         DisplayMetrics dm = new DisplayMetrics();
 
         getWindowManager().getDefaultDisplay().getMetrics(dm);

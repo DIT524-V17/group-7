@@ -592,17 +592,17 @@ public class MainActivity extends AppCompatActivity {
         view.setText(value == 0 ? "+" : value + "");
     }
 
-     static void ImageHandling(byte[] imageByte){
+      static void ImageHandling(byte[] imageByte){
 
         Bitmap bm = BitmapFactory.decodeByteArray(imageByte, 1 , imageByte.length-1);
-        DisplayMetrics dm = new DisplayMetrics();
 
+          //DisplayMetrics dm = new DisplayMetrics();
         //getWindowManager().getDefaultDisplay().getMetrics(dm);
+        //ImageSequence.setMinimumHeight(dm.heightPixels); //Useless stuff without metrics.
+        //ImageSequence.setMinimumWidth(dm.widthPixels); // ^
+         //BitmapDrawable ob = new BitmapDrawable(bm);
+        ImageSequence.setImageBitmap(bm);
 
-        ImageSequence.setMinimumHeight(dm.heightPixels);
-        ImageSequence.setMinimumWidth(dm.widthPixels);
-         BitmapDrawable ob = new BitmapDrawable(bm);
-       // ImageSequence.setImageBitmap(bm);
     }
 
 
