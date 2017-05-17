@@ -14,17 +14,24 @@ Flame_array::Flame_array(int flame_pins[], int size) {
 void Flame_array::addFlame(int flame_pin) {
     this->flame_array_size++;
     changeArraySize();
-    *(ptrFlame_array + flame_array_size -1) = Flame(flame_pin);
-    (*(ptrFlame_array + flame_array_size -1)).setFlame();
+    ptrFlame_array[flame_array_size - 1] = Flame(flame_pin);
+    ptrFlame_array[flame_array_size - 1].setFlame();
+    int i = 0;
+    for(i; i < flame_array_size; i++){
+        std::cout << (*(ptrFlame_array + i)).getPin() << ", ";
+        std::cout << (*(ptrFlame_array + i)).getFlameValue() << ", ";
+        std::cout << (*(ptrFlame_array + i)).getFlameBool() << "     hi"<< std::endl;
+
+    }
 }
 
 void Flame_array::changeArraySize() {
     Flame tempArray[this->flame_array_size];
     int i = 0;
     for(i; i < this->flame_array_size; i++){
-        tempArray[i].setFlameBool((*(ptrFlame_array + index)).getFlameBool());
-        tempArray[i].setFlame((*(ptrFlame_array + index)).getFlameValue());
-        tempArray[i].setPin((*(ptrFlame_array + index)).getPin());
+        tempArray[i].setFlameBool(ptrFlame_array[i].getFlameBool());
+        tempArray[i].setFlame(ptrFlame_array[i].getFlameValue());
+        tempArray[i].setPin(ptrFlame_array[i].getPin());
     }
     Flame* ptrTempArray = tempArray;
     this->ptrFlame_array = ptrTempArray;
@@ -35,9 +42,9 @@ void Flame_array::removeFlame() {
     changeArraySize();
 }
 string Flame_array::read_flame_array() {
-    (*(ptrFlame_array + index)).setFlame();
+    ptrFlame_array[flame_array_size - 1].setFlame();
 
-    (*(ptrFlame_array + index)).getFlameValue() >= MAX_READING ? flame_sun = true : flame_sun = false;
+    ptrFlame_array[flame_array_size - 1].getFlameValue() >= MAX_READING ? flame_sun = true : flame_sun = false;
 
 
     if(!flame_sun) {
@@ -46,13 +53,13 @@ string Flame_array::read_flame_array() {
         string command = index_string.str();
         index_string.str("");
         index_string.clear();
-        int flame_value = (*(ptrFlame_array + index)).getFlameValue();
+        int flame_value = ptrFlame_array[flame_array_size - 1].getFlameValue();
         if (compareToAverage(flame_value)) {
-            (*(ptrFlame_array + index)).setFlameBool(true);
+            ptrFlame_array[flame_array_size - 1].setFlameBool(true);
             command += "1";
             return command;
         }
-        (*(ptrFlame_array + index)).setFlameBool(false);
+        ptrFlame_array[flame_array_size - 1].setFlameBool(false);
         command += "0";
         return command;
     }
