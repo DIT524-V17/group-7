@@ -22,35 +22,36 @@ public:
     void setPin(const int pin){FLAME_SENSOR_PIN = pin;}
 
     Flame(){};
+    Flame(const int pin, int reading, bool flame){this->FLAME_SENSOR_PIN = pin;this->flame_reading = reading;this->flame_bool = flame;}
     Flame(const int pin){this->FLAME_SENSOR_PIN = pin;}
-    ~Flame(){};
+    ~Flame(){ cout << "deleted";}
 
 private:
     bool flame_bool = false;
-    int flame_reading;
-    int FLAME_SENSOR_PIN;
+    int flame_reading = 0;
+    int FLAME_SENSOR_PIN = 0;
 };
 
 class Flame_array {
 public:
     Flame_array();
-    Flame_array(int flame_pin[], int size);
-
+    Flame_array(int flame_pin);
+    Flame_array(int flame_pin, int flame_pin_2);
+    Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3);
+    Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3, int flame_pin_4);
+    Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3, int flame_pin_4, int flame_pin_5);
     ~Flame_array(){};
 
     void removeFlame();
     void addFlame(int flame_pin);
-    Flame* getArray(){return ptrFlame_array;}
-
+    Flame* getArray(){return flame_array;}
 
     string read();
     void setIndex(int x){index = x;}
     int getArraySize(){return flame_array_size;};
 
 private:
-
-    void changeArraySize();
-    bool flame_sun;
+    bool flame_sun = false;
 
     int average_value = 500;
     int index = 0;
@@ -60,9 +61,8 @@ private:
 
     bool compareToAverage(int &value);
 
-    Flame flame_array[0];
-    Flame* ptrFlame_array = flame_array;
-    int flame_array_size = 0;
+    Flame flame_array[5];
+    int flame_array_size = 5;
     string read_flame_array();
 };
 

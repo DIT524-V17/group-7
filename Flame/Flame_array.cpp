@@ -5,65 +5,59 @@
 #include <sstream>
 #include "Flame_array.h"
 
-Flame_array::Flame_array(int flame_pins[], int size) {
-    for(int i = 0; i< size; i++){
-        addFlame(flame_pins[i]);
-    }
+Flame_array::Flame_array(int flame_pin) {
+    flame_array[0] = *new Flame(flame_pin);
+    flame_array[1] = *new Flame(99);
+    flame_array[2] = *new Flame(99);
+    flame_array[3] = *new Flame(99);
+    flame_array[4] = *new Flame(99);
+}
+Flame_array::Flame_array(int flame_pin, int flame_pin_2) {
+    flame_array[0] = *new Flame(flame_pin);
+    flame_array[1] = *new Flame(flame_pin_2);
+    flame_array[2] = *new Flame(99);
+    flame_array[3] = *new Flame(99);
+    flame_array[4] = *new Flame(99);
+}
+Flame_array::Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3) {
+    flame_array[0] = *new Flame(flame_pin);
+    flame_array[1] = *new Flame(flame_pin_2);
+    flame_array[2] = *new Flame(flame_pin_3);
+    flame_array[3] = *new Flame(99);
+    flame_array[4] = *new Flame(99);
+}
+Flame_array::Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3, int flame_pin_4) {
+    flame_array[0] = *new Flame(flame_pin);
+    flame_array[1] = *new Flame(flame_pin_2);
+    flame_array[2] = *new Flame(flame_pin_3);
+    flame_array[3] = *new Flame(flame_pin_4);
+    flame_array[4] = *new Flame(99);
+}
+Flame_array::Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3, int flame_pin_4, int flame_pin_5) {
+    flame_array[0] = *new Flame(flame_pin);
+    flame_array[1] = *new Flame(flame_pin_2);
+    flame_array[2] = *new Flame(flame_pin_3);
+    flame_array[3] = *new Flame(flame_pin_4);
+    flame_array[4] = *new Flame(flame_pin_5);
 }
 
-void Flame_array::addFlame(int flame_pin) {
-    this->flame_array_size++;
-    Flame tempArray[flame_array_size];
-    Flame* ptrTempArray = tempArray;
-    int i = 0;
-    for(i; i < flame_array_size - 1; i++){
-        ptrTempArray[i] = ptrFlame_array[i];
-    }
-    ptrFlame_array = ptrTempArray;
-    *(ptrFlame_array + flame_array_size -1) = Flame(flame_pin);
-    (*(ptrFlame_array + flame_array_size -1)).setFlame();
-    std::cout << (*(ptrFlame_array + flame_array_size -1)).getPin() << std::endl;
-}
-/*
-void Flame_array::changeArraySize() {
-    Flame tempArray[flame_array_size];
-    Flame* ptrTempArray = tempArray;
-    int i = 0;
-    for(i; i < flame_array_size - 1; i++){
-        ptrTempArray[i] = ptrFlame_array[i];
-    }
-    ptrFlame_array = ptrTempArray;
-}*/
-
-void Flame_array::removeFlame() {
-    this->flame_array_size--;
-    Flame tempArray[flame_array_size];
-    Flame* ptrTempArray = tempArray;
-    int i = 0;
-    for(i; i < flame_array_size - 1; i++){
-        ptrTempArray[i] = ptrFlame_array[i];
-    }
-    ptrFlame_array = ptrTempArray;
-}
 string Flame_array::read_flame_array() {
-    (*(ptrFlame_array + index)).setFlame();
+    //(*(flame_array + index)).setFlame();
 
-    (*(ptrFlame_array + index)).getFlameValue() >= MAX_READING ? flame_sun = true : flame_sun = false;
-
-
+    (*(flame_array + index)).getFlameValue() >= MAX_READING ? flame_sun = true : flame_sun = false;
     if(!flame_sun) {
         std::ostringstream index_string;
         index_string << "f0" << index;
         string command = index_string.str();
         index_string.str("");
         index_string.clear();
-        int flame_value = (*(ptrFlame_array + index)).getFlameValue();
+        int flame_value = (*(flame_array + index)).getFlameValue();
         if (compareToAverage(flame_value)) {
-            (*(ptrFlame_array + index)).setFlameBool(true);
+            (*(flame_array + index)).setFlameBool(true);
             command += "1";
             return command;
         }
-        (*(ptrFlame_array + index)).setFlameBool(false);
+        (*(flame_array + index)).setFlameBool(false);
         command += "0";
         return command;
     }
@@ -86,7 +80,7 @@ bool Flame_array::compareToAverage(int &value){
 }
 
 string Flame_array::read() {
-    if (flame_array_size <= this->index){
+    if (flame_array[index].getPin() == 99 || index == 5){
         this->index = 0;
     }
     string temp = read_flame_array();
