@@ -65,8 +65,12 @@ public class MainActivity extends AppCompatActivity implements Magic.AsyncRespon
     private Boolean item_camera_vertical_boolean = true;
     public static String stupidVariable = "";
     public static String sendMe = "";
-    AppCompatActivity tt = this;
+    MainActivity tt = this;
 //    ImageSequence im = new ImageSequence();
+
+    public MainActivity getInstance(){
+        return tt;
+    }
 
     //this override the implemented method from AsyncResponse
     @Override
@@ -81,8 +85,9 @@ public class MainActivity extends AppCompatActivity implements Magic.AsyncRespon
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //new threads().execute(); //Executes the AsyncTask and establishes Client connection.
-        new Magic(this).execute(); // TODO: 16/05/2017 understand this 
-
+        Magic mg = new Magic(this); // TODO: 16/05/2017 understand this
+        mg.setMain(tt);
+        mg.execute();
         tv = (TextView) findViewById(R.id.collision_text); //TextView for collision text.
         v = findViewById(R.id.cc_view4);
         tvbg = findViewById(R.id.text_background);

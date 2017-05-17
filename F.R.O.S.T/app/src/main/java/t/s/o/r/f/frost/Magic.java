@@ -31,7 +31,11 @@ public class Magic extends AsyncTask<String, Void, Void> {
     boolean stupid = false;
     String last = "";
     long looptime = 0;
+    MainActivity tt;
 
+    public void setMain(MainActivity ts){
+        tt = ts;
+    }
 
     // you may separate this or combined to caller class.
     public interface AsyncResponse {
@@ -44,12 +48,14 @@ public class Magic extends AsyncTask<String, Void, Void> {
         this.delegate = delegate;
     }
 
+    /*
     @Override //// TODO: 16/05/2017 ???????????????????????????????? 
     protected void onPostExecute(Void v) {
         if (s.isStrong || s.isStrung){
             // Stuff??
         }
     }
+    */
 
     @Override
     public Void doInBackground(String... params) {
@@ -95,11 +101,11 @@ public class Magic extends AsyncTask<String, Void, Void> {
                 }
             }
 
-            Strong st = read();
-            final Strong s = st;
+            final Strong s = read();
             if (s.isStrong || s.isStrung){
                     // TODO: 16/05/2017 Fix this and you get a golden star.
-                    MainActivity.tt.runOnUiThread(new Runnable() {
+
+                    tt.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
                         //update here
