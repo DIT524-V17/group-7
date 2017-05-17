@@ -16,7 +16,8 @@ public class Strong {
 
     Strong(String s){
         this.strong = s;
-        isStrong = true;
+        if (!s.equals(""))
+            isStrong = true;
     }
     Strong(byte[] s){
         this.strung = s;

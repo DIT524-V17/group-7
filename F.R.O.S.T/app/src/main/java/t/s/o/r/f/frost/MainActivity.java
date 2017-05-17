@@ -618,7 +618,7 @@ public class MainActivity extends AppCompatActivity implements Magic.AsyncRespon
         view.setText(value == 0 ? "+" : value + "");
     }
 
-      static void ImageHandling(byte[] imageByte){
+    void ImageHandling(byte[] imageByte){
 
         Bitmap bm = BitmapFactory.decodeByteArray(imageByte, 1 , imageByte.length-1);
 
