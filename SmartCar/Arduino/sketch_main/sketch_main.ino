@@ -404,7 +404,7 @@ if (motor_activation && velocity < 90 ){
                 obstacle_detected = true;
                 collision_delay = 0;
     
-                motor.write(START_POSITION_MOTOR_SERVO +30);
+               // motor.write(START_POSITION_MOTOR_SERVO +30);
                 delay(300);
                 motor.write(START_POSITION_MOTOR_SERVO);
             }
