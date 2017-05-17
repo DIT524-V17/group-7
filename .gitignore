@@ -2,3 +2,15 @@
 *.xml
 
 Rasberrytoarduino/Rasberrytoarduino/\.idea/
+
+*.out
+
+*.cmake
+
+Flame/\.idea/
+
+Flame/cmake-build-debug/
+
+Flame/main\.cpp
+
+Flame/CMakeLists\.txt
