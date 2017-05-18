@@ -30,11 +30,11 @@ private:
 class Flame_array {
 public:
     Flame_array();
-    Flame_array(int flame_pin);
-    Flame_array(int flame_pin, int flame_pin_2);
-    Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3);
-    Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3, int flame_pin_4);
-    Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3, int flame_pin_4, int flame_pin_5);
+    Flame_array(unsigned short flame_pin);
+    Flame_array(unsigned short flame_pin, unsigned short flame_pin_2);
+    Flame_array(unsigned short flame_pin, unsigned short flame_pin_2, unsigned short flame_pin_3);
+    Flame_array(unsigned short flame_pin, unsigned short flame_pin_2, unsigned short flame_pin_3, unsigned short flame_pin_4);
+    Flame_array(unsigned short flame_pin, unsigned short flame_pin_2, unsigned short flame_pin_3, unsigned short flame_pin_4, unsigned short flame_pin_5);
     ~Flame_array(){};
 
     void removeFlame();

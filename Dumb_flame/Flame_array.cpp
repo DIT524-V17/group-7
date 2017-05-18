@@ -4,29 +4,29 @@
 
 #include "Flame_array.h"
 
-Flame_array::Flame_array(int flame_pin) {
+Flame_array::Flame_array(unsigned short flame_pin) {
     flame_array[0].setPin(flame_pin);
     amountOfSensors = 1;
 }
-Flame_array::Flame_array(int flame_pin, int flame_pin_2) {
+Flame_array::Flame_array(unsigned short flame_pin, unsigned short flame_pin_2) {
     flame_array[0].setPin(flame_pin);
     flame_array[1].setPin(flame_pin_2);
     amountOfSensors = 2;
 }
-Flame_array::Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3) {
+Flame_array::Flame_array(unsigned short flame_pin, unsigned short flame_pin_2, unsigned short flame_pin_3) {
     flame_array[0].setPin(flame_pin);
     flame_array[1].setPin(flame_pin_2);
     flame_array[2].setPin(flame_pin_3);
     amountOfSensors = 3;
 }
-Flame_array::Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3, int flame_pin_4) {
+Flame_array::Flame_array(unsigned short flame_pin, unsigned short flame_pin_2, unsigned short flame_pin_3, unsigned short flame_pin_4) {
     flame_array[0].setPin(flame_pin);
     flame_array[1].setPin(flame_pin_2);
     flame_array[2].setPin(flame_pin_3);
     flame_array[3].setPin(flame_pin_4);
     amountOfSensors = 4;
 }
-Flame_array::Flame_array(int flame_pin, int flame_pin_2, int flame_pin_3, int flame_pin_4, int flame_pin_5) {
+Flame_array::Flame_array(unsigned short flame_pin, unsigned short flame_pin_2, unsigned short flame_pin_3, unsigned short flame_pin_4, unsigned short flame_pin_5) {
     flame_array[0].setPin(flame_pin);
     flame_array[1].setPin(flame_pin_2);
     flame_array[2].setPin(flame_pin_3);
