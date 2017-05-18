@@ -448,7 +448,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //Calling the method "displayTemp" which is defined below
-       // displayTemp(theOutputFromTheSensor); //Test method call.
+        //displayTemp(60); //Test method call.
 
     }
 
@@ -461,6 +461,7 @@ public class MainActivity extends AppCompatActivity {
      * @param degrees
      */
     static void displayTemp(int degrees){
+        degrees = 60;
         String text = degrees + "\u2103";
         textElement.setText(text);
 

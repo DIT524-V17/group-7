@@ -87,7 +87,8 @@
         android:layout_height="44dp"
         android:background="@drawable/circle2"
         android:id="@+id/cc_view2"
-        android:layout_marginStart="85dp" />
+        android:layout_marginStart="85dp"
+        android:layout_alignEnd="@+id/buttonCC" />
 
     <View android:layout_width="5dp"
         android:layout_height="22dp"
@@ -125,9 +126,9 @@
         android:id="@+id/buttonCC"
         android:color="#66FF0000"
         android:alpha="0"
-        android:layout_marginStart="0dp"
         android:layout_alignBottom="@+id/cc_view2"
-        android:layout_toEndOf="@+id/button5" />
+        android:layout_toEndOf="@+id/button5"
+        android:layout_marginStart="13dp" />
 
     <!---Reconnection Button-->
     <Button
@@ -135,7 +136,7 @@
         android:id="@+id/button5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/holo_orange_light"
+        android:background="@drawable/rounded_reconnect"
         android:textColor="@android:color/holo_red_dark"
         android:layout_below="@+id/button6"
         android:layout_alignParentStart="true"
@@ -147,19 +148,18 @@
         android:layout_height="wrap_content"
         android:text="Degrees"
         android:textSize="24sp"
-        android:textColor="@android:color/white"
+        android:textColor="@android:color/darker_gray"
         tools:layout_editor_absoluteX="61dp"
         tools:layout_editor_absoluteY="56dp"
-        android:layout_above="@+id/imgsw"
-        android:layout_alignStart="@+id/imgsw" />
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true" />
 
     <ImageSwitcher
         android:id="@+id/imgsw"
         android:layout_width="200px"
         android:layout_height="200px"
-        android:layout_above="@+id/button"
-        android:layout_alignEnd="@+id/button3"
-        android:layout_marginEnd="55dp">
+        android:layout_below="@+id/imageView1"
+        android:layout_alignParentEnd="true">
 
     </ImageSwitcher>
 
@@ -169,7 +169,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toStartOf="@+id/buttonCC"
-        android:background="@android:color/holo_green_dark"
+        android:background="@drawable/rounded_corners"
         android:text="Menu"
         android:textColor="@android:color/white" />
 
@@ -179,9 +179,10 @@
         android:layout_height="wrap_content"
         android:background="@android:color/holo_green_dark"
         android:textColor="@android:color/white"
-        android:layout_below="@+id/imgsw"
-        android:layout_toEndOf="@+id/button3"
-        android:text="Camera Right" />
+        android:text="Camera Right"
+        android:layout_alignBaseline="@+id/button8"
+        android:layout_alignBottom="@+id/button8"
+        android:layout_toEndOf="@+id/button3" />
 
     <Button
         android:id="@+id/button8"
@@ -189,9 +190,10 @@
         android:layout_height="wrap_content"
         android:background="@android:color/holo_green_dark"
         android:textColor="@android:color/white"
-        android:layout_alignBottom="@+id/button7"
-        android:layout_alignEnd="@+id/button3"
-        android:text="Camera Left" />
+        android:text="Camera Left"
+        android:layout_alignBaseline="@+id/button9"
+        android:layout_alignBottom="@+id/button9"
+        android:layout_alignStart="@+id/button3" />
 
     <Button
         android:id="@+id/button9"
@@ -226,8 +228,8 @@
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
+        app:srcCompat="@drawable/aa"
         android:layout_alignParentTop="true"
-        app:srcCompat="@drawable/aa" />
+        android:layout_toStartOf="@+id/imgsw" />
 
 </RelativeLayout>
