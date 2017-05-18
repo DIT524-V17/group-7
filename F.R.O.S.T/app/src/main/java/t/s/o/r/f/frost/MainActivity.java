@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
                 break;
             case R.id.joystickCar:
                 sendCarCommandv1(angle, speed);
-                sendCarCommandv2(angle, speed);
+                //sendCarCommandv2(angle, speed);
         break;
         }
 
@@ -88,8 +88,8 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
 
             for(int i = 0; command.length() < 3; i++)
                 command = "0" + command;
-            // threads.r1.write("d" + command + "?");
-            if(DEBUG) Log.e("V1 Car speed", "d" + command + "?");
+            // threads.r1.write("a" + command + "?");
+            if(DEBUG && command.length() == 3)Log.e("V1 Car angle", "a" + command + "?");
         }
         // The speed
         if (speed != oldCarSpeed && (speedPause % 5 == 0 || speed == 0)) {
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
         }
 
         oldCarAngle = angle;
-        if(DEBUG)Log.e("V2 Car angle", "a" + command + "?");
+        if(DEBUG && command.length() == 3)Log.e("V2 Car angle", "a" + command + "?");
 
         // The speed
         command = "";
