@@ -630,49 +630,4 @@ public class MainActivity extends AppCompatActivity implements Magic.AsyncRespon
         ImageSequence.setImageBitmap(bm);
 
     }
-
-
-    /**
-     * Created by: Sebastian Fransson
-     * AsyncTask used to allow sub-threading in the main application.
-     * Initiates the Transmitter with the 'host' id and correct port.
-     * TODO: Rewrite this to actually make sense. Override the two other methods if they are needed later.
-     */
-  /* public static class threads extends AsyncTask<String, Void, Void> {
-       static Transmitter r1;
-       int yes = 1;
-
-        @Override
-        public Void doInBackground(String... params) {
-
-            try {
-                //Initializes the Transmitter 'r1' with the appropriate host and port.
-                r1 = init(host, port);
-                System.out.println("In AsyncTask");
-
-                //Keeps infinitely looping to handle inputs from the sensors.
-               while(yes == 1) {
-                    handleInput();
-                }
-
-            } catch (Exception e) {
-               // System.out.println("Yeah you are probably not connected. soo...... bad luck");
-               // e.printStackTrace();
-            }
-            return null;
-        }
-
-        //closeConnection method for reconnecting without restarting the app. (Not working/used for now)
-        //It should probably halt the current connection
-        public static void closeConnection (){
-            try {
-                System.out.println("Entered closeConnection");
-                r1 = null;
-            }
-            catch(Exception e){
-                System.out.println("Close a connection? Pffffff....NO");
-                e.printStackTrace();
-            }
-        }
-    }*/
 }

@@ -21,7 +21,8 @@ public class Strong {
     }
     Strong(byte[] s){
         this.strung = s;
-        isStrung = true;
+        if (s.length > 1)
+            isStrung = true;
     }
 
 

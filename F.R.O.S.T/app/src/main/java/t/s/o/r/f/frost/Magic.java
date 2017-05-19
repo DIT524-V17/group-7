@@ -7,11 +7,20 @@ import android.view.View;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.lang.reflect.Array;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 import static t.s.o.r.f.frost.Client.port;
 import static t.s.o.r.f.frost.MainActivity.ImageSequence;
@@ -61,11 +70,6 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
     @Override
     protected Bitmap doInBackground(String... params) {
 
-        long this_loop = looptime - System.currentTimeMillis();
-        looptime = System.currentTimeMillis();
-
-        System.out.println("Loop time: " + this_loop);
-
 
         if (!stupid) {
             try {
@@ -79,6 +83,13 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
         boolean bullshit = true;
 
         while (bullshit) {
+
+            long this_loop = looptime - System.currentTimeMillis();
+            looptime = System.currentTimeMillis();
+
+            if (this_loop > 100){
+                System.out.println("Slow loop: 0." + this_loop + "s");
+            }
 
             try { // Catches IO exceptions
 
@@ -102,7 +113,53 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                 }
             }
 
-            wizardofdos(read());
+            // wizardofdos(read());
+
+            try{
+
+                /*
+                for (int i = 0; i < data.length ; i++) {// default len is a relative large number (8192 - readPosition)
+                    int c = in.read();
+                    if (c == -1) {
+                        System.out.println("BREAK");
+                        break;
+                    }
+                    data[index++] = (byte)c;
+                }
+
+                System.out.println("LENG: " + index);
+
+                */
+
+                in = socket.getInputStream();
+
+                byte[] data = new byte[1024*180];
+                int index = 0;
+                int count;
+                long mili1 = System.currentTimeMillis();
+                final int MIN_BUFFER = 1024;
+
+                if (in.available() > 0){
+
+                    while ((count = in.read(data, index, MIN_BUFFER)) > 0){
+                        System.out.print(" G: " + count);
+                        index += count;
+                        if (count < MIN_BUFFER) break;
+                        while (mili1 > System.currentTimeMillis() + 4);
+                        mili1 = System.currentTimeMillis();
+                    }
+                    if (index != 0){
+                        System.out.println("INDEX: " + index);
+                    }
+
+                    wizardofdos(new Strong(Arrays.copyOfRange(data, 0, index)));
+
+                }
+
+            } catch (IOException ex){
+                ex.printStackTrace();
+            }
+
         }
         Bitmap n = null;
         return n;
@@ -114,25 +171,27 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
             tt.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
+
+                    if (s.isStrung){
+                        System.out.print("ISSTRUNG " + s.strung.length);
+
+                        Bitmap bm = BitmapFactory.decodeByteArray(s.strung, 0 , s.strung.length);
+                        ImageSequence.setImageBitmap(bm);
+
+                        return;
+                    }
+
+
                     int value;
+                    if (s.strong.length() < 2 || s.strong.length() > 7) return;
+                    System.out.println("ISSTRONG " + s.strong);
+                    // s.strong = s.strong.replaceAll(" ", "");
+                    // s.strong = s.strong.replace("\n", "");
+
 
                     try {
 
-                        if (s.isStrong){
-                            if (s.strong.length() < 2 || s.strong.length() > 7) return;
-                            System.out.println("ISSTRONG " + s.strong);
-                            // s.strong = s.strong.replaceAll(" ", "");
-                            // s.strong = s.strong.replace("\n", "");
-                        }
 
-                        if (s.isStrung){
-                            System.out.print("ISSTRUNG");
-
-                            Bitmap bm = BitmapFactory.decodeByteArray(s.strung, 0 , s.strung.length);
-                            ImageSequence.setImageBitmap(bm);
-
-                            return;
-                        }
                         System.out.println("SWITCH " + s.strong.charAt(0));
                         switch (s.strong.charAt(0)) {
                             case 'c': //Collision sensor input.
@@ -164,6 +223,7 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
         }
     }
 
+    /*
     // Read
     public Strong read() {
         try {
@@ -175,11 +235,16 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
             int count = in.read(data);
             if (count == -1) return new Strong("");
 
+            int q = 0;
             for (byte ins: data){
-                if (ins > (int) 'a' && ins < (int) 'Z'){
+                q++;
+                System.out.print(" I:" + (int) ins);
+                if (Character.isLowerCase((char) ins)){
+                    //System.out.println("Char:" + (char) ins);
 
-                    if ((char) data[0] == 'b') {
-                        processBytes(data, index, count);
+
+                    if ((char) ins == 'b') {
+                        processBytes(data, index, count, q);
                         break;
                     } else {
                         String str = "";
@@ -189,6 +254,12 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                                 str += (char) data[i];
                             else {
                                 break;
+                            }
+                            // Resets the loop while it has not found a new line.
+                            if (i == data.length -1){
+                                count = in.read(data);
+                                if (count == -1) return new Strong("");
+                                i = 0;
                             }
                         }
                         Strong s = new Strong(str);
@@ -206,7 +277,7 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
         return new Strong("");
     }
 
-    Strong processBytes(byte[] data, int index, int count){
+    Strong processBytes(byte[] data, int index, int count, int offset){ // TODO: 18/05/2017 b might not be first character.
 
         index += count;
         System.out.println("STARTED GETTING IMAGE");
@@ -215,10 +286,10 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
 
 
         boolean foundEndB = false;
-        int i = 1;
+        int i = offset;
         int tries = 0;
         while (!foundEndB){
-            while (i++ < data.length) {
+            while (i++ < data.length -1) {
                 if ((char) data[i] == 'b') {
                     foundEndB = true;
                     break;
@@ -235,7 +306,6 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
             data = new byte[5];
             i = 0;
 
-
             try{
                 count = in.read(data);
             } catch (IOException ex){
@@ -244,7 +314,7 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
         }
 
         // Saves the remaining bytes.
-        byte[] rem = new byte[i - data.length];
+        byte[] rem = new byte[data.length - i];
         index = rem.length;
         for (int j = 0; j < rem.length; j++){
             rem[j] = data[i+j];
@@ -273,8 +343,8 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
         for (int z = 0; z < rem.length; z++)
             data[z] = rem[z];
 
+        // Fetch some more bytes
         while (index < leng) {
-
 
             // Make a new array with the number of bytes we need to read.
             byte[] data2 = new byte[leng - index];
@@ -286,8 +356,6 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
 
             // If we reach end of stream. Something is fishy.
             if (count == -1) break;
-
-
 
             int oldindex = index;
             index += count;
@@ -304,12 +372,9 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
             }
         }
 
-        System.out.println("FINISHED GETTING IMAGE ");
+        System.out.println("FINISHED GETTING IMAGE " + data.length);
         Strong picture = new Strong(data);
-        picture.isStrung = true;
         return picture;
     }
-
-
-
+    */
 }
