@@ -67,7 +67,7 @@ private:
     //Initialized the values to this
     int average_value = 500;
     int index = 0;
-    int amountOfSensors;
+    int amountOfSensors = 0;
 
     //Every reading higher than this will be interpreted as the sun
     const int MAX_READING = 650;
@@ -79,7 +79,6 @@ private:
     //The array of flame sensors
     Flame flame_array[5];
     //The size of the array
-    int flame_array_size = 5;
     char* read_flame_array();
 };
 
