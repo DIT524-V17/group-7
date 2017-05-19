@@ -404,8 +404,8 @@ if (motor_activation && velocity < 90 ){
                 obstacle_detected = true;
                 collision_delay = 0;
     
-                motor.write(START_POSITION_MOTOR_SERVO +30);
-                delay(300);
+               // motor.write(START_POSITION_MOTOR_SERVO +30);
+               // delay(300);
                 motor.write(START_POSITION_MOTOR_SERVO);
             }
         //Sets obstacle to false if the obstacle in front of the car disapeared
