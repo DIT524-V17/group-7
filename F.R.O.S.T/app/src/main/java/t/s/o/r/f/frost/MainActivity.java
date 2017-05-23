@@ -49,11 +49,11 @@ public class MainActivity extends AppCompatActivity implements Magic.AsyncRespon
     View v;
     TextView tv;
     View tvbg;
-    static ImageView ImageSequence;
-    static ImageView fireImage;
-    static TextView ccValue;
-    static TextView textElement;
-    static ImageSwitcher SwitchImageTemp;
+    ImageView ImageSequence;
+    ImageView fireImage;
+    TextView ccValue;
+    TextView textElement;
+    ImageSwitcher SwitchImageTemp;
     public Button button6;
     private Boolean item_flame_boolean = true;
     private Boolean item_temperature_boolean = true;
@@ -485,7 +485,7 @@ public class MainActivity extends AppCompatActivity implements Magic.AsyncRespon
      * Integrated by: Sebastian Fransson
      * @param degrees
      */
-    static void displayTemp(int degrees){
+     void displayTemp(int degrees){
         String text = degrees + "\u2103";
         textElement.setText(text);
 
@@ -552,7 +552,7 @@ public class MainActivity extends AppCompatActivity implements Magic.AsyncRespon
      * Updated by: Sebastian Fransson
      */
     //Method for handling the received information from the Arduino sensors.
-     void handleInput(final Strong s){
+    /* void handleInput(final Strong s){
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -611,23 +611,23 @@ public class MainActivity extends AppCompatActivity implements Magic.AsyncRespon
                     }
                 }
             });
-    }
+    }*/
 
     //Updates the collision indicator text.
-    static void updateCollisionIndicator(TextView view, int value){
+     void updateCollisionIndicator(TextView view, int value){
         view.setText(value == 0 ? "+" : value + "");
     }
 
-    void ImageHandling(byte[] imageByte){
+   /* void ImageHandling(byte[] imageByte){
 
         Bitmap bm = BitmapFactory.decodeByteArray(imageByte, 1 , imageByte.length-1);
 
-          //DisplayMetrics dm = new DisplayMetrics();
-        //getWindowManager().getDefaultDisplay().getMetrics(dm);
-        //ImageSequence.setMinimumHeight(dm.heightPixels); //Useless stuff without metrics.
-        //ImageSequence.setMinimumWidth(dm.widthPixels); // ^
+          DisplayMetrics dm = new DisplayMetrics();
+        getWindowManager().getDefaultDisplay().getMetrics(dm);
+        ImageSequence.setMinimumHeight(dm.heightPixels); //Useless stuff without metrics.
+        ImageSequence.setMinimumWidth(dm.widthPixels); // ^
          //BitmapDrawable ob = new BitmapDrawable(bm);
         ImageSequence.setImageBitmap(bm);
 
-    }
+    }*/
 }

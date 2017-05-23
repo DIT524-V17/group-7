@@ -3,6 +3,7 @@ package t.s.o.r.f.frost;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.util.DisplayMetrics;
 import android.view.View;
 
 import java.io.BufferedInputStream;
@@ -22,12 +23,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import static t.s.o.r.f.frost.Client.port;
+import static t.s.o.r.f.frost.Client.port;/*
 import static t.s.o.r.f.frost.MainActivity.ImageSequence;
 import static t.s.o.r.f.frost.MainActivity.ccValue;
 import static t.s.o.r.f.frost.MainActivity.displayTemp;
 import static t.s.o.r.f.frost.MainActivity.fireImage;
-import static t.s.o.r.f.frost.MainActivity.updateCollisionIndicator;
+import static t.s.o.r.f.frost.MainActivity.updateCollisionIndicator;*/
 
 /**
  * @author Pontus Laestadius
@@ -227,7 +228,12 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                         System.out.print("ISSTRUNG " + s.strung.length);
 
                         Bitmap bm = BitmapFactory.decodeByteArray(s.strung, 0 , s.strung.length);
-                        ImageSequence.setImageBitmap(bm);
+                        DisplayMetrics dm = new DisplayMetrics();
+
+                        tt.getWindowManager().getDefaultDisplay().getMetrics(dm);
+                        tt.ImageSequence.setMinimumHeight(dm.heightPixels);
+                        tt.ImageSequence.setMinimumWidth(dm.widthPixels);
+                        tt.ImageSequence.setImageBitmap(bm);
 
                         return;
                     }
@@ -248,20 +254,20 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                             case 'c': //Collision sensor input.
                                 value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
 
-                                updateCollisionIndicator(ccValue, value);
+                                tt.updateCollisionIndicator(tt.ccValue, value);
                                 break;
                             case 't': //Temperature sensor input.
                                 value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
 
-                                displayTemp(value);
+                                tt.displayTemp(value);
                                 break;
                             case 'f': //Flame sensor input
                                 value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
 
                                 if(s.strong.charAt(3) == '1'){
-                                    fireImage.setVisibility(View.VISIBLE);
+                                    tt.fireImage.setVisibility(View.VISIBLE);
                                 } else {
-                                    fireImage.setVisibility(View.INVISIBLE);
+                                   tt.fireImage.setVisibility(View.INVISIBLE);
                                 }
                                 break;
 
