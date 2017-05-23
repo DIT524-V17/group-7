@@ -43,7 +43,13 @@ public class MainActivity extends AppCompatActivity {
     View v;
     TextView tv;
     View tvbg;
-    private static ImageView fireImage;
+    //ImageViews for flame detection
+    private static ImageView fireImageNorth;
+    private static ImageView fireImageNorthNorthWest;
+    private static ImageView fireImageNorthWest;
+    private static ImageView fireImageNorthNorthEast;
+    private static ImageView fireImageNorthEast;
+
     static TextView ccValue;
     static TextView textElement;
     static ImageSwitcher SwitchImageTemp;
@@ -66,8 +72,22 @@ public class MainActivity extends AppCompatActivity {
         tv = (TextView) findViewById(R.id.collision_text); //TextView for collision text.
         v = findViewById(R.id.cc_view4);
         tvbg = findViewById(R.id.text_background);
-        fireImage = (ImageView)findViewById(R.id.imageView1);
-        fireImage.setVisibility(View.INVISIBLE);
+
+        //added 2017-05-23 for flame detection using 5-channel
+        fireImageNorth = (ImageView)findViewById(R.id.imageView1);
+        fireImageNorth.setVisibility(View.INVISIBLE);
+
+        fireImageNorthNorthWest = (ImageView)findViewById(R.id.imageView);
+        fireImageNorthNorthWest.setVisibility(View.INVISIBLE);
+
+        fireImageNorthWest = (ImageView)findViewById(R.id.imageView3);
+        fireImageNorthWest.setVisibility(View.INVISIBLE);
+
+        fireImageNorthNorthEast = (ImageView)findViewById(R.id.imageView2);
+        fireImageNorthNorthEast.setVisibility(View.INVISIBLE);
+
+        fireImageNorthEast = (ImageView)findViewById(R.id.imageView4);
+        fireImageNorthEast.setVisibility(View.INVISIBLE);
 
         ccValue = (TextView) findViewById(R.id.ccValue); //TextView for collision distance value.
         animate();
@@ -461,7 +481,6 @@ public class MainActivity extends AppCompatActivity {
      * @param degrees
      */
     static void displayTemp(int degrees){
-        degrees = 60;
         String text = degrees + "\u2103";
         textElement.setText(text);
 
@@ -543,10 +562,48 @@ public class MainActivity extends AppCompatActivity {
                     displayTemp(value);
                     break;
                 case 'f': //Flame sensor input
-                    if(s.charAt(3) == '1'){
-                        fireImage.setVisibility(View.VISIBLE);
-                    } else {
-                        fireImage.setVisibility(View.INVISIBLE);
+                    if(s.charAt(1) == '1'){
+                        //"Too much sunlight"
+                    }
+                    //if the NortWest sensor is activated
+                    else if(s.charAt(2) == '0'){
+                        if(s.charAt(3) == '1'){
+                            fireImageNorthWest.setVisibility(View.VISIBLE);
+                        } else {
+                            fireImageNorth.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                    //if the NorthNorthWest sensor is activated
+                    else if(s.charAt(2) == '1'){
+                        if(s.charAt(3) == '1'){
+                            fireImageNorthNorthWest.setVisibility(View.VISIBLE);
+                        } else {
+                            fireImageNorthNorthWest.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                    //if the North sensor is activated
+                    else if(s.charAt(2) == '2'){
+                        if (s.charAt(3) == '1'){
+                            fireImageNorth.setVisibility(View.VISIBLE);
+                        }else {
+                            fireImageNorth.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                    //if the NorthNorthEast sensor is activated
+                    else if(s.charAt(2) == '3'){
+                        if(s.charAt(3) == '1'){
+                            fireImageNorthNorthEast.setVisibility(View.VISIBLE);
+                        }else{
+                            fireImageNorthNorthEast.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                    //if the NorthEast sensor is activated
+                    else if(s.charAt(2) == '4'){
+                        if(s.charAt(3) == '1'){
+                            fireImageNorthEast.setVisibility(View.VISIBLE);
+                        }else{
+                            fireImageNorthEast.setVisibility(View.INVISIBLE);
+                        }
                     }
                     break;
             }
