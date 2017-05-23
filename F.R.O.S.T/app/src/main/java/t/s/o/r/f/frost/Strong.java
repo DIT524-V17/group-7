@@ -4,8 +4,7 @@ package t.s.o.r.f.frost;
  * This class should never have existed.
  * @author No one
  * @since Never
- * @deprecated Yes
- * @Version Only one ever
+ * @Version Only one ever 1.2
  */
 
 public class Strong {

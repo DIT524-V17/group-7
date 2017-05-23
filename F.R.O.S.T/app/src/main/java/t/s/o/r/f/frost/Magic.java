@@ -147,8 +147,7 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                                    // for performance reasons.
                                    while ((count = in.read(data, index, BIG_BUFFER)) > 0){
                                        index += count;
-                                       if (start+index >= 90000){
-                                           System.out.println("BREAK");
+                                       if (start+index >= 100000){
                                            break;
                                        }
                                    }
@@ -163,13 +162,11 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
 
                                // Identifies end of image.
                                if (data[index-2] == eoi[0] || data[index-1] == eoi[0]){
-                                   // System.out.println("I: " + index + " " + data[index-2] + "&" + data[index-1]);
                                    if (data[index-1] == eoi[1]){
                                        break;
                                    } else {
                                        // Reads the next byte to see if it 0xD9.
-                                       count = in.read(data, index, 1);
-                                       index += count;
+                                       index += in.read(data, index, 1);
                                        if (data[index-1] == eoi[1]){
                                            break;
                                        }
@@ -203,8 +200,7 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
             }
 
         }
-        Bitmap n = null;
-        return n;
+        return null;
     }
 
     private void wizardOfDos(final Strong s){
