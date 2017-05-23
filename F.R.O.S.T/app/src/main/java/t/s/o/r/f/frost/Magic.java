@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.concurrent.Executors;
 
 import static t.s.o.r.f.frost.Client.port;/*
 import static t.s.o.r.f.frost.MainActivity.ImageSequence;
@@ -37,43 +38,31 @@ import static t.s.o.r.f.frost.MainActivity.updateCollisionIndicator;*/
  */
 public class Magic extends AsyncTask<String, Void, Bitmap> {
 
-    DataOutputStream out;
-    InputStream in1;
-    BufferedInputStream in2;
-    DataInputStream in;
-    Socket socket;
-    boolean stupid = false;
-    String last = "";
-    long looptime = 0;
-    MainActivity tt;
+    private DataOutputStream out;
+    private DataInputStream in;
+    private Socket socket;
+    private boolean stupid = false;
+    private String last = "";
+    private long looptime = 0;
+    private MainActivity tt;
+    private AsyncResponse delegate = null;
 
-    public void setMain(MainActivity ts){
+    void setMain(MainActivity ts){
         tt = ts;
     }
 
     // you may separate this or combined to caller class.
-    public interface AsyncResponse {
+    interface AsyncResponse {
         void processFinish(String output);
     }
 
-    public AsyncResponse delegate = null;
 
-    public Magic(AsyncResponse delegate){
+    Magic(AsyncResponse delegate){
         this.delegate = delegate;
     }
 
-    /*
-    @Override //// TODO: 16/05/2017 ???????????????????????????????? 
-    protected void onPostExecute(Bitmap v) {
-        if (s.isStrong || s.isStrung){
-            // Stuff??
-        }
-    }
-    */
-
     @Override
     protected Bitmap doInBackground(String... params) {
-
 
         if (!stupid) {
             try {
@@ -117,27 +106,8 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                 }
             }
 
-            // wizardofdos(read());
-
             try{
-
-                /*
-                for (int i = 0; i < data.length ; i++) {// default len is a relative large number (8192 - readPosition)
-                    int c = in.read();
-                    if (c == -1) {
-                        System.out.println("BREAK");
-                        break;
-                    }
-                    data[index++] = (byte)c;
-                }
-
-                System.out.println("LENG: " + index);
-
-                */
-
-                in1 = socket.getInputStream();
-                in2 = new BufferedInputStream(in1);
-                in = new DataInputStream(in2);
+                in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
 
                 // start of image identifier identifiers
                 byte ff = (byte) 0xFF; // FF byte identifier
@@ -150,13 +120,11 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 boolean parsingImage = false;
 
-                byte[] data = new byte[1024*380]; // TODO: 23/05/2017 Handle AIOOB
+                byte[] data = new byte[1024*380];
                 int index = 0;
-                int prevFoundNeg1 = 0;
                 int count;
                 final int MIN_BUFFER = 2; // Only reads in 2 byte increments. :( Bit sad.
-                final int BIG_BUFFER = MIN_BUFFER*512*4;
-                //final int BIG_READ = 110;
+                final int BIG_BUFFER = MIN_BUFFER*1024*4;
                 int start = 0;
 
                 long frameTime = System.currentTimeMillis();
@@ -185,39 +153,48 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                                        }
                                    }
                                } else {
+                                   // If it's been trying to look for a starting byte for way to long.
+                                   // Set it back to 0.
                                    if (index > 10000){
                                        index = 0;
                                    }
                                }
                            } else {
-                               // Identifies end of image.
 
+                               // Identifies end of image.
                                if (data[index-2] == eoi[0] || data[index-1] == eoi[0]){
                                    // System.out.println("I: " + index + " " + data[index-2] + "&" + data[index-1]);
                                    if (data[index-1] == eoi[1]){
                                        break;
-                                   }
-
-                                   count = in.read(data, index, 1);
-                                   index += count;
-                                   if (data[index-1] == eoi[1]){
-                                       break;
+                                   } else {
+                                       // Reads the next byte to see if it 0xD9.
+                                       count = in.read(data, index, 1);
+                                       index += count;
+                                       if (data[index-1] == eoi[1]){
+                                           break;
+                                       }
                                    }
                                }
-
                            }
-
-                           index += count;
                        }
                    } catch (ArrayIndexOutOfBoundsException ex){
                        ex.printStackTrace();
-                       wizardOfDos(new Strong(Arrays.copyOfRange(data, start, data.length)));
+                       index = data.length;
                    }
                     if (index != 0)
                         System.out.println("EOI: " + index + " IN " + (System.currentTimeMillis() - frameTime) + "ms");
 
+                    final byte[] f_data = data;
+                    final int f_start = start;
+                    final int f_index = index;
+
                     // Copies the part of the array that was filled with data.
-                    wizardOfDos(new Strong(Arrays.copyOfRange(data, start, index)));
+                    tt.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            wizardOfDos(new Strong(Arrays.copyOfRange(f_data, f_start, f_index)));
+                        }
+                    });
 
                 }
 
@@ -238,7 +215,7 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                 public void run() {
 
                     if (s.isStrung){
-                        System.out.print("ISSTRUNG " + s.strung.length);
+                        System.out.println("ISSTRUNG " + s.strung.length);
 
                         Bitmap bm = BitmapFactory.decodeByteArray(s.strung, 0 , s.strung.length);
                         DisplayMetrics dm = new DisplayMetrics();
@@ -292,159 +269,4 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
             });
         }
     }
-
-    /*
-    // Read
-    public Strong read() {
-        try {
-
-            in = socket.getInputStream();
-            int index = 0;
-
-            byte[] data = new byte[5];
-            int count = in.read(data);
-            if (count == -1) return new Strong("");
-
-            int q = 0;
-            for (byte ins: data){
-                q++;
-                System.out.print(" I:" + (int) ins);
-                if (Character.isLowerCase((char) ins)){
-                    //System.out.println("Char:" + (char) ins);
-
-
-                    if ((char) ins == 'b') {
-                        processBytes(data, index, count, q);
-                        break;
-                    } else {
-                        String str = "";
-                        for (int i = 0; i < data.length; i++){
-                            char d = (char) data[i];
-                            if (d != '\n')
-                                str += (char) data[i];
-                            else {
-                                break;
-                            }
-                            // Resets the loop while it has not found a new line.
-                            if (i == data.length -1){
-                                count = in.read(data);
-                                if (count == -1) return new Strong("");
-                                i = 0;
-                            }
-                        }
-                        Strong s = new Strong(str);
-                        s.isStrong = true;
-                        return s;
-                    }
-                }
-            }
-
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-
-        return new Strong("");
-    }
-
-    Strong processBytes(byte[] data, int index, int count, int offset){ // TODO: 18/05/2017 b might not be first character.
-
-        index += count;
-        System.out.println("STARTED GETTING IMAGE");
-        int leng = -1;
-        String str = "";
-
-
-        boolean foundEndB = false;
-        int i = offset;
-        int tries = 0;
-        while (!foundEndB){
-            while (i++ < data.length -1) {
-                if ((char) data[i] == 'b') {
-                    foundEndB = true;
-                    break;
-                }
-                str += (char) data[i];
-            }
-
-            // Nothing to be found here.
-            if (tries++ > 2){
-                return new Strong("");
-            }
-
-            // Reset and add 5 more bytes.
-            data = new byte[5];
-            i = 0;
-
-            try{
-                count = in.read(data);
-            } catch (IOException ex){
-                ex.printStackTrace();
-            }
-        }
-
-        // Saves the remaining bytes.
-        byte[] rem = new byte[data.length - i];
-        index = rem.length;
-        for (int j = 0; j < rem.length; j++){
-            rem[j] = data[i+j];
-        }
-
-
-        // Gets the amount of bytes we should read.
-        try {
-            leng = Integer.parseInt(str);
-        } catch (NumberFormatException e){
-            e.printStackTrace();
-            return new Strong("");
-        }
-
-        // To small to be a picture.
-        if (leng < 50) {
-            return new Strong("");
-        }
-
-
-        // Here starts the image byte processing.
-        System.out.println("LENGTH:" + leng);
-        data = new byte[leng];
-
-        // Copy over remaining bytes.
-        for (int z = 0; z < rem.length; z++)
-            data[z] = rem[z];
-
-        // Fetch some more bytes
-        while (index < leng) {
-
-            // Make a new array with the number of bytes we need to read.
-            byte[] data2 = new byte[leng - index];
-            try{
-                count = in.read(data2);
-            } catch (IOException ex){
-                ex.printStackTrace();
-            }
-
-            // If we reach end of stream. Something is fishy.
-            if (count == -1) break;
-
-            int oldindex = index;
-            index += count;
-            try {
-                for (int k = 1; oldindex + k < index; k++) {
-                    if (oldindex + k >= leng) {
-                        break;
-                    }
-                    data[oldindex + k] = data2[k];
-                }
-
-            } catch (IndexOutOfBoundsException e) {
-                e.printStackTrace();
-            }
-        }
-
-        System.out.println("FINISHED GETTING IMAGE " + data.length);
-        Strong picture = new Strong(data);
-        return picture;
-    }
-    */
 }
