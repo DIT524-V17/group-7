@@ -144,42 +144,63 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 boolean parsingImage = false;
 
-                byte[] data = new byte[1024*180]; // TODO: 23/05/2017 Handle AIOOB
+                byte[] data = new byte[1024*380]; // TODO: 23/05/2017 Handle AIOOB
                 int index = 0;
+                int prevFoundNeg1 = 0;
                 int count;
                 final int MIN_BUFFER = 2; // Only reads in 2 byte increments. :( Bit sad.
-                final int BIG_BUFFER = MIN_BUFFER*512;
-                final int BIG_READ = 100;
+                final int BIG_BUFFER = MIN_BUFFER*512*4;
+                final int BIG_READ = 110;
 
                 long frameTime = System.currentTimeMillis();
 
                 if (in.available() > 0){
 
                     // TODO: 23/05/2017 This does not handle if the eoi bytes exist in the image.
-                    while ((count = in.read(data, index, MIN_BUFFER)) > 0){
+                    while ((count = in.read(data, index, MIN_BUFFER -prevFoundNeg1)) > 0){
+                        index += count;
 
                         // Identifies start of image.
-                        if (!parsingImage)
-                            if (data[index] == soi[0] && data[index+1] == soi[1]){
+                        if (!parsingImage){
+                            if (data[index-2] == soi[0] && data[index-1] == soi[1]){
+                                System.out.println("SOI: " + index);
                                 parsingImage = true;
 
-                                // Read a set number of kb without checking any bytes for performance.
+                                // Read a set number of kb without checking any bytes
+                                // for performance reasons.
                                 while ((count = in.read(data, index, BIG_BUFFER)) > 0){
                                     index += count;
-                                    if (index >= BIG_BUFFER*BIG_READ)
+                                    if (index >= 115000){
+                                        System.out.println("BREAK");
                                         break;
+                                    }
                                 }
                             }
-                        else
+                        } else {
                             // Identifies end of image.
-                            if (data[index] == eoi[0] && data[index+1] == eoi[1]){
-                                index += count;
-                                break;
+
+                            if (prevFoundNeg1 == 1){
+                                System.out.println("I: " + index + " " + data[index-1]);
+                                if (data[index-1] == eoi[1]){
+                                    break;
+                                }
+                                prevFoundNeg1 = 0;
                             }
+
+                            if (data[index-2] == eoi[0] || data[index-1] == eoi[0]){
+                                System.out.println("I: " + index + " " + data[index-2] + "&" + data[index-1]);
+                                prevFoundNeg1 = 1;
+                                if (data[index-1] == eoi[1]){
+                                    break;
+                                }
+                            }
+
+                        }
+
                         index += count;
                     }
                     if (index != 0)
-                        System.out.println("IMAGE LENGTH: " + index + " IN " + (System.currentTimeMillis() - frameTime) + "ms");
+                        System.out.println("EOI: " + index + " IN " + (System.currentTimeMillis() - frameTime) + "ms");
 
                     // Copies the part of the array that was filled with data.
                     wizardOfDos(new Strong(Arrays.copyOfRange(data, 0, index)));

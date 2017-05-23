@@ -16,10 +16,7 @@
     <ImageView
         android:id="@+id/imageSequence"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentTop="true"
-        />
+        android:layout_height="match_parent" />
 
     <!---Steer Right Button-->
     <Button
