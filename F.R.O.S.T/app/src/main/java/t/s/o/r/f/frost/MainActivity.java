@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private static ImageView fireImageNorthWest;
     private static ImageView fireImageNorthNorthEast;
     private static ImageView fireImageNorthEast;
+    private static TextView toMuchLight;
 
     static TextView ccValue;
     static TextView textElement;
@@ -62,6 +63,10 @@ public class MainActivity extends AppCompatActivity {
     private Boolean item_rip_boolean = true;
     private Boolean item_camera_horizontal_boolean = true;
     private Boolean item_camera_vertical_boolean = true;
+
+    static ImageView[] fireArray = new ImageView[]{fireImageNorth, fireImageNorthNorthWest, fireImageNorthWest,
+            fireImageNorthNorthEast, fireImageNorthEast};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +93,9 @@ public class MainActivity extends AppCompatActivity {
 
         fireImageNorthEast = (ImageView)findViewById(R.id.imageView4);
         fireImageNorthEast.setVisibility(View.INVISIBLE);
+
+        toMuchLight = (TextView)findViewById(R.id.textView4);
+        toMuchLight.setVisibility(View.INVISIBLE);
 
         ccValue = (TextView) findViewById(R.id.ccValue); //TextView for collision distance value.
         animate();
@@ -496,6 +504,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    static void WhereFlameAt(ImageView flameLocation, char flameStatus){
+        if(flameStatus == '1'){
+            flameLocation.setVisibility(View.VISIBLE);
+        }else{
+            flameLocation.setVisibility(View.INVISIBLE);
+        }
+
+    }
+
+
+
     //Method for collision button animation.
 
     /**
@@ -562,48 +581,16 @@ public class MainActivity extends AppCompatActivity {
                     displayTemp(value);
                     break;
                 case 'f': //Flame sensor input
-                    if(s.charAt(1) == '1'){
-                        //"Too much sunlight"
-                    }
-                    //if the NortWest sensor is activated
-                    else if(s.charAt(2) == '0'){
-                        if(s.charAt(3) == '1'){
-                            fireImageNorthWest.setVisibility(View.VISIBLE);
-                        } else {
-                            fireImageNorth.setVisibility(View.INVISIBLE);
+                    if(s.charAt(1) == '1') {
+                        toMuchLight.setVisibility(View.VISIBLE);
+                        //Setting all indicators to invisible
+                        for (ImageView tempName : fireArray){
+                            tempName.setVisibility(View.INVISIBLE);
                         }
-                    }
-                    //if the NorthNorthWest sensor is activated
-                    else if(s.charAt(2) == '1'){
-                        if(s.charAt(3) == '1'){
-                            fireImageNorthNorthWest.setVisibility(View.VISIBLE);
-                        } else {
-                            fireImageNorthNorthWest.setVisibility(View.INVISIBLE);
-                        }
-                    }
-                    //if the North sensor is activated
-                    else if(s.charAt(2) == '2'){
-                        if (s.charAt(3) == '1'){
-                            fireImageNorth.setVisibility(View.VISIBLE);
-                        }else {
-                            fireImageNorth.setVisibility(View.INVISIBLE);
-                        }
-                    }
-                    //if the NorthNorthEast sensor is activated
-                    else if(s.charAt(2) == '3'){
-                        if(s.charAt(3) == '1'){
-                            fireImageNorthNorthEast.setVisibility(View.VISIBLE);
-                        }else{
-                            fireImageNorthNorthEast.setVisibility(View.INVISIBLE);
-                        }
-                    }
-                    //if the NorthEast sensor is activated
-                    else if(s.charAt(2) == '4'){
-                        if(s.charAt(3) == '1'){
-                            fireImageNorthEast.setVisibility(View.VISIBLE);
-                        }else{
-                            fireImageNorthEast.setVisibility(View.INVISIBLE);
-                        }
+
+                    } else{
+                        toMuchLight.setVisibility(View.VISIBLE);
+                        WhereFlameAt(fireArray[s.charAt(2)], s.charAt(3));
                     }
                     break;
             }
