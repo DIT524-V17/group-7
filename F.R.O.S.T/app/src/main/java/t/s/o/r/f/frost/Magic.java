@@ -9,6 +9,7 @@ import android.view.View;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
+import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,7 +38,9 @@ import static t.s.o.r.f.frost.MainActivity.updateCollisionIndicator;*/
 public class Magic extends AsyncTask<String, Void, Bitmap> {
 
     DataOutputStream out;
-    InputStream in;
+    InputStream in1;
+    BufferedInputStream in2;
+    DataInputStream in;
     Socket socket;
     boolean stupid = false;
     String last = "";
@@ -132,7 +135,9 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 */
 
-                in = socket.getInputStream();
+                in1 = socket.getInputStream();
+                in2 = new BufferedInputStream(in1);
+                in = new DataInputStream(in2);
 
                 // start of image identifier identifiers
                 byte ff = (byte) 0xFF; // FF byte identifier
@@ -151,60 +156,68 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                 int count;
                 final int MIN_BUFFER = 2; // Only reads in 2 byte increments. :( Bit sad.
                 final int BIG_BUFFER = MIN_BUFFER*512*4;
-                final int BIG_READ = 110;
+                //final int BIG_READ = 110;
+                int start = 0;
 
                 long frameTime = System.currentTimeMillis();
 
                 if (in.available() > 0){
 
-                    // TODO: 23/05/2017 This does not handle if the eoi bytes exist in the image.
-                    while ((count = in.read(data, index, MIN_BUFFER -prevFoundNeg1)) > 0){
-                        index += count;
+                   try {
+                       // TODO: 23/05/2017 This does not handle if the eoi bytes exist in the image.
+                       while ((count = in.read(data, index, MIN_BUFFER)) > 0){
+                           index += count;
 
-                        // Identifies start of image.
-                        if (!parsingImage){
-                            if (data[index-2] == soi[0] && data[index-1] == soi[1]){
-                                System.out.println("SOI: " + index);
-                                parsingImage = true;
+                           // Identifies start of image.
+                           if (!parsingImage){
+                               if (data[index-2] == soi[0] && data[index-1] == soi[1]){
+                                   System.out.println("SOI: " + index);
+                                   start = index-2;
+                                   parsingImage = true;
 
-                                // Read a set number of kb without checking any bytes
-                                // for performance reasons.
-                                while ((count = in.read(data, index, BIG_BUFFER)) > 0){
-                                    index += count;
-                                    if (index >= 115000){
-                                        System.out.println("BREAK");
-                                        break;
-                                    }
-                                }
-                            }
-                        } else {
-                            // Identifies end of image.
+                                   // Read a set number of kb without checking any bytes
+                                   // for performance reasons.
+                                   while ((count = in.read(data, index, BIG_BUFFER)) > 0){
+                                       index += count;
+                                       if (start+index >= 90000){
+                                           System.out.println("BREAK");
+                                           break;
+                                       }
+                                   }
+                               } else {
+                                   if (index > 10000){
+                                       index = 0;
+                                   }
+                               }
+                           } else {
+                               // Identifies end of image.
 
-                            if (prevFoundNeg1 == 1){
-                                System.out.println("I: " + index + " " + data[index-1]);
-                                if (data[index-1] == eoi[1]){
-                                    break;
-                                }
-                                prevFoundNeg1 = 0;
-                            }
+                               if (data[index-2] == eoi[0] || data[index-1] == eoi[0]){
+                                   // System.out.println("I: " + index + " " + data[index-2] + "&" + data[index-1]);
+                                   if (data[index-1] == eoi[1]){
+                                       break;
+                                   }
 
-                            if (data[index-2] == eoi[0] || data[index-1] == eoi[0]){
-                                System.out.println("I: " + index + " " + data[index-2] + "&" + data[index-1]);
-                                prevFoundNeg1 = 1;
-                                if (data[index-1] == eoi[1]){
-                                    break;
-                                }
-                            }
+                                   count = in.read(data, index, 1);
+                                   index += count;
+                                   if (data[index-1] == eoi[1]){
+                                       break;
+                                   }
+                               }
 
-                        }
+                           }
 
-                        index += count;
-                    }
+                           index += count;
+                       }
+                   } catch (ArrayIndexOutOfBoundsException ex){
+                       ex.printStackTrace();
+                       wizardOfDos(new Strong(Arrays.copyOfRange(data, start, data.length)));
+                   }
                     if (index != 0)
                         System.out.println("EOI: " + index + " IN " + (System.currentTimeMillis() - frameTime) + "ms");
 
                     // Copies the part of the array that was filled with data.
-                    wizardOfDos(new Strong(Arrays.copyOfRange(data, 0, index)));
+                    wizardOfDos(new Strong(Arrays.copyOfRange(data, start, index)));
 
                 }
 
@@ -231,8 +244,8 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                         DisplayMetrics dm = new DisplayMetrics();
 
                         tt.getWindowManager().getDefaultDisplay().getMetrics(dm);
-                        tt.ImageSequence.setMinimumHeight(dm.heightPixels);
-                        tt.ImageSequence.setMinimumWidth(dm.widthPixels);
+                        //tt.ImageSequence.setMinimumHeight(dm.heightPixels);
+                        //tt.ImageSequence.setMinimumWidth(dm.widthPixels);
                         tt.ImageSequence.setImageBitmap(bm);
 
                         return;
