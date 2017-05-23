@@ -133,26 +133,56 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 in = socket.getInputStream();
 
-                byte[] data = new byte[1024*180];
+                // start of image identifier identifiers
+                byte ff = (byte) 0xFF; // FF byte identifier
+                byte d8 = (byte) 0xD8;
+                byte[] soi = {ff, d8};
+
+                // end of image identifier
+                byte d9 = (byte) 0xD9;
+                byte[] eoi = {ff, d9};
+
+                boolean parsingImage = false;
+
+                byte[] data = new byte[1024*180]; // TODO: 23/05/2017 Handle AIOOB
                 int index = 0;
                 int count;
-                long mili1 = System.currentTimeMillis();
-                final int MIN_BUFFER = 1024;
+                final int MIN_BUFFER = 2; // Only reads in 2 byte increments. :( Bit sad.
+                final int BIG_BUFFER = MIN_BUFFER*512;
+                final int BIG_READ = 100;
+
+                long frameTime = System.currentTimeMillis();
 
                 if (in.available() > 0){
 
+                    // TODO: 23/05/2017 This does not handle if the eoi bytes exist in the image.
                     while ((count = in.read(data, index, MIN_BUFFER)) > 0){
-                        System.out.print(" G: " + count);
-                        index += count;
-                        if (count < MIN_BUFFER) break;
-                        while (mili1 > System.currentTimeMillis() + 4);
-                        mili1 = System.currentTimeMillis();
-                    }
-                    if (index != 0){
-                        System.out.println("INDEX: " + index);
-                    }
 
-                    wizardofdos(new Strong(Arrays.copyOfRange(data, 0, index)));
+                        // Identifies start of image.
+                        if (!parsingImage)
+                            if (data[index] == soi[0] && data[index+1] == soi[1]){
+                                parsingImage = true;
+
+                                // Read a set number of kb without checking any bytes for performance.
+                                while ((count = in.read(data, index, BIG_BUFFER)) > 0){
+                                    index += count;
+                                    if (index >= BIG_BUFFER*BIG_READ)
+                                        break;
+                                }
+                            }
+                        else
+                            // Identifies end of image.
+                            if (data[index] == eoi[0] && data[index+1] == eoi[1]){
+                                index += count;
+                                break;
+                            }
+                        index += count;
+                    }
+                    if (index != 0)
+                        System.out.println("IMAGE LENGTH: " + index + " IN " + (System.currentTimeMillis() - frameTime) + "ms");
+
+                    // Copies the part of the array that was filled with data.
+                    wizardOfDos(new Strong(Arrays.copyOfRange(data, 0, index)));
 
                 }
 
@@ -165,7 +195,7 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
         return n;
     }
 
-    void wizardofdos(final Strong s){
+    private void wizardOfDos(final Strong s){
         if (s.isStrong || s.isStrung){
 
             tt.runOnUiThread(new Runnable() {
