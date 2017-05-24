@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.ImageView;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
@@ -26,11 +27,6 @@ import java.util.Collections;
 import java.util.concurrent.Executors;
 
 import static t.s.o.r.f.frost.Client.port;/*
-import static t.s.o.r.f.frost.MainActivity.ImageSequence;
-import static t.s.o.r.f.frost.MainActivity.ccValue;
-import static t.s.o.r.f.frost.MainActivity.displayTemp;
-import static t.s.o.r.f.frost.MainActivity.fireImage;
-import static t.s.o.r.f.frost.MainActivity.updateCollisionIndicator;*/
 
 /**
  * @author Pontus Laestadius
@@ -46,6 +42,7 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
     private long looptime = 0;
     private MainActivity tt;
     private AsyncResponse delegate = null;
+    private boolean lastImgLeftOver = false;
 
     void setMain(MainActivity ts){
         tt = ts;
@@ -120,25 +117,24 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 boolean parsingImage = false;
 
-                byte[] data = new byte[1024*380];
+                byte[] data = new byte[1024*40];
                 int index = 0;
                 int count;
                 final int MIN_BUFFER = 2; // Only reads in 2 byte increments. :( Bit sad.
-                final int BIG_BUFFER = MIN_BUFFER*1024*4;
+                final int BIG_BUFFER = MIN_BUFFER*1024*2;
                 int start = 0;
 
                 long frameTime = System.currentTimeMillis();
-
                 if (in.available() > 0){
 
                    try {
-                       // TODO: 23/05/2017 This does not handle if the eoi bytes exist in the image.
                        while ((count = in.read(data, index, MIN_BUFFER)) > 0){
                            index += count;
 
                            // Identifies start of image.
                            if (!parsingImage){
-                               if (data[index-2] == soi[0] && data[index-1] == soi[1]){
+                               if ((data[index-2] == soi[0] && data[index-1] == soi[1]) || lastImgLeftOver){
+                                   lastImgLeftOver = false;
                                    System.out.println("SOI: " + index);
                                    start = index-2;
                                    parsingImage = true;
@@ -147,9 +143,8 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                                    // for performance reasons.
                                    while ((count = in.read(data, index, BIG_BUFFER)) > 0){
                                        index += count;
-                                       if (start+index >= 100000){
+                                       if (start+index >= 14000)
                                            break;
-                                       }
                                    }
                                } else {
                                    // If it's been trying to look for a starting byte for way to long.
@@ -161,14 +156,38 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                            } else {
 
                                // Identifies end of image.
-                               if (data[index-2] == eoi[0] || data[index-1] == eoi[0]){
-                                   if (data[index-1] == eoi[1]){
-                                       break;
-                                   } else {
+                               if (data[index-2] == eoi[0] || data[index-1] == eoi[0]){ // Looks for FF.
+                                   if (data[index-1] == eoi[1]){ // Looks for D9
+                                        System.out.println("EOI: index-1");
+                                       // Reads to see if the start bytes exist afterwards for new img.
+
+                                       if (in.available() > 0){
+                                           index += in.read(data, index, MIN_BUFFER);
+                                           if (data[index-2] == soi[0] && data[index-1] == soi[1]){
+                                               lastImgLeftOver = true;
+                                               break;
+                                           }
+                                       } else {
+                                           break;
+                                       }
+
+                                   } else { // data[index-2] == eoi[0]
                                        // Reads the next byte to see if it 0xD9.
                                        index += in.read(data, index, 1);
                                        if (data[index-1] == eoi[1]){
-                                           break;
+                                           System.out.println("EOI: index");
+                                           // Reads to see if the start bytes exist afterwards for new img.
+
+                                           if (in.available() > 0){
+                                               index += in.read(data, index, MIN_BUFFER);
+                                               if (data[index-2] == soi[0] && data[index-1] == soi[1]){
+                                                   lastImgLeftOver = true;
+                                                   break;
+                                               }
+                                           } else {
+                                               break;
+                                           }
+
                                        }
                                    }
                                }
@@ -219,6 +238,7 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                         tt.getWindowManager().getDefaultDisplay().getMetrics(dm);
                         //tt.ImageSequence.setMinimumHeight(dm.heightPixels);
                         //tt.ImageSequence.setMinimumWidth(dm.widthPixels);
+                        // tt.ImageSequence.setScaleType(ImageView.ScaleType.FIT_XY);
                         tt.ImageSequence.setImageBitmap(bm);
 
                         return;
