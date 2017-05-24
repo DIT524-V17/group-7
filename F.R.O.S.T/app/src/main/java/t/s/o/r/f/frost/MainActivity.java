@@ -4,46 +4,27 @@ import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.os.AsyncTask;
-import android.os.NetworkOnMainThreadException;
-import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.view.menu.ActionMenuItemView;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.PopupMenu;
-import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
-import android.widget.Button;
-import android.view.View.OnTouchListener;
-import android.widget.CompoundButton;
-import android.widget.Switch;
-import android.widget.TextView;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.ImageSwitcher;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
-import java.io.IOException;
-import java.util.Scanner;
-
-import static t.s.o.r.f.frost.Client.*;
 
 /**
  * Author: Sebastian Fransson
  * Last Updated: 19-04-2017
  */
-public class MainActivity extends AppCompatActivity implements Magic.AsyncResponse{
-
-
+public class MainActivity extends AppCompatActivity {
 
     //Views for collision animation.
     View v;
@@ -63,21 +44,7 @@ public class MainActivity extends AppCompatActivity implements Magic.AsyncRespon
     private Boolean item_rip_boolean = true;
     private Boolean item_camera_horizontal_boolean = true;
     private Boolean item_camera_vertical_boolean = true;
-    public static String stupidVariable = "";
     public static String sendMe = "";
-    MainActivity tt = this;
-//    ImageSequence im = new ImageSequence();
-
-    public MainActivity getInstance(){
-        return tt;
-    }
-
-    //this override the implemented method from AsyncResponse
-    @Override
-    public void processFinish(String output){
-        //Here you will receive the result fired from async class
-        //of onPostExecute(result) method.
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements Magic.AsyncRespon
         setContentView(R.layout.activity_main);
         //new threads().execute(); //Executes the AsyncTask and establishes Client connection.
         Magic mg = new Magic(this); // TODO: 16/05/2017 understand this
-        mg.setMain(tt);
         mg.execute();
         tv = (TextView) findViewById(R.id.collision_text); //TextView for collision text.
         v = findViewById(R.id.cc_view4);
@@ -100,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements Magic.AsyncRespon
        final Context context = this;
 
 
-        /**
+        /*
          *  Menu for deactivating sensors either individually or in bulk.
          */
         button6 = (Button) findViewById(R.id.button6);
@@ -325,7 +291,7 @@ public class MainActivity extends AppCompatActivity implements Magic.AsyncRespon
                 }
             });
 
-        /**
+        /*
          * Created by Anthony Path
          * Integrated by: Sebastian Fransson
          */
@@ -546,88 +512,8 @@ public class MainActivity extends AppCompatActivity implements Magic.AsyncRespon
         });
     }
 
-    /**
-     * Created by: Pontus Laestadius
-     * Integrated by: Pontus Laestadius, Sebastian Fransson
-     * Updated by: Sebastian Fransson
-     */
-    //Method for handling the received information from the Arduino sensors.
-    /* void handleInput(final Strong s){
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    //stuff that updates ui
-
-
-                    int value;
-
-                    try {
-                        if (s == null){
-                            System.out.println("NULL NULL NULL");
-                            return;
-                        }
-                        if (s.isStrong){
-                            s.strong = s.strong.replace("\n", "");
-                            s.strong = s.strong.replaceAll("\"", "");
-                        }
-
-                        //System.out.print(threads.r1.read());
-                        if (s.isStrong)
-                            if (s.strong.length() < 2) return;
-
-                        if (s.isStrung){
-                            byte[] str_byte = s.strung;
-                            System.out.print("IsStrung");
-                            ImageHandling(str_byte);
-                            return;
-
-                        }
-                        System.out.println("HandleInput: " + s.strong);
-                        switch (s.strong.charAt(0)) {
-                            case 'c': //Collision sensor input.
-                                value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
-
-                                updateCollisionIndicator(ccValue, value);
-                                break;
-                            case 't': //Temperature sensor input.
-                                value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
-
-                                displayTemp(value);
-                                break;
-                            case 'f': //Flame sensor input
-                                value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
-
-                                if(s.strong.charAt(3) == '1'){
-                                    fireImage.setVisibility(View.VISIBLE);
-                                } else {
-                                    fireImage.setVisibility(View.INVISIBLE);
-                                }
-                                break;
-
-                        }
-                    }catch(Exception e){
-                        System.out.println("Inputs are coming in too fast, close the borders!");
-                        e.printStackTrace();
-                    }
-                }
-            });
-    }*/
-
     //Updates the collision indicator text.
      void updateCollisionIndicator(TextView view, int value){
         view.setText(value == 0 ? "+" : value + "");
     }
-
-   /* void ImageHandling(byte[] imageByte){
-
-        Bitmap bm = BitmapFactory.decodeByteArray(imageByte, 1 , imageByte.length-1);
-
-          DisplayMetrics dm = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(dm);
-        ImageSequence.setMinimumHeight(dm.heightPixels); //Useless stuff without metrics.
-        ImageSequence.setMinimumWidth(dm.widthPixels); // ^
-         //BitmapDrawable ob = new BitmapDrawable(bm);
-        ImageSequence.setImageBitmap(bm);
-
-    }*/
 }

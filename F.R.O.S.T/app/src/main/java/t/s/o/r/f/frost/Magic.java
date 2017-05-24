@@ -5,28 +5,13 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.ImageView;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.concurrent.Executors;
-
-import static t.s.o.r.f.frost.Client.port;/*
 
 /**
  * @author Pontus Laestadius
@@ -36,26 +21,16 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
 
     private DataOutputStream out;
     private DataInputStream in;
-    private Socket socket;
+    private Socket socket_camera;
+    private Socket socket_commands;
     private boolean stupid = false;
     private String last = "";
     private long looptime = 0;
     private MainActivity tt;
-    private AsyncResponse delegate = null;
     private boolean lastImgLeftOver = false;
 
-    void setMain(MainActivity ts){
+    Magic(MainActivity ts){
         tt = ts;
-    }
-
-    // you may separate this or combined to caller class.
-    interface AsyncResponse {
-        void processFinish(String output);
-    }
-
-
-    Magic(AsyncResponse delegate){
-        this.delegate = delegate;
     }
 
     @Override
@@ -63,16 +38,17 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
 
         if (!stupid) {
             try {
-                socket = new Socket("172.24.1.1", port);
+                socket_camera = new Socket("172.24.1.1", 9005);
+                socket_commands = new Socket("172.24.1.1", 9006);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             stupid = true;
         }
 
-        boolean bullshit = true;
+        boolean alwaysTrue = true;
 
-        while (bullshit) {
+        while (alwaysTrue) {
 
             long this_loop = looptime - System.currentTimeMillis();
             looptime = System.currentTimeMillis();
@@ -82,10 +58,7 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
             }
 
             try { // Catches IO exceptions
-
-                // Out and input streams.
-                out = new DataOutputStream(socket.getOutputStream());
-
+                out = new DataOutputStream(socket_commands.getOutputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -104,7 +77,7 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
             }
 
             try{
-                in = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+                in = new DataInputStream(new BufferedInputStream(socket_camera.getInputStream()));
 
                 // start of image identifier identifiers
                 byte ff = (byte) 0xFF; // FF byte identifier
@@ -121,7 +94,7 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                 int index = 0;
                 int count;
                 final int MIN_BUFFER = 2; // Only reads in 2 byte increments. :( Bit sad.
-                final int BIG_BUFFER = MIN_BUFFER*1024*2;
+                final int BIG_BUFFER = MIN_BUFFER*1024;
                 int start = 0;
 
                 long frameTime = System.currentTimeMillis();
@@ -143,15 +116,14 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                                    // for performance reasons.
                                    while ((count = in.read(data, index, BIG_BUFFER)) > 0){
                                        index += count;
-                                       if (start+index >= 37000)
+                                       if (start+index >= 39000)
                                            break;
                                    }
                                } else {
                                    // If it's been trying to look for a starting byte for way to long.
                                    // Set it back to 0.
-                                   if (index > 10000){
+                                   if (index > 10000)
                                        index = 0;
-                                   }
                                }
                            } else {
 
@@ -187,7 +159,6 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                                            } else {
                                                break;
                                            }
-
                                        }
                                    }
                                }
@@ -197,92 +168,75 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                        ex.printStackTrace();
                        index = data.length;
                    }
-                    if (index != 0)
+                    if (index != 0){
                         System.out.println("EOI: " + index + " IN " + (System.currentTimeMillis() - frameTime) + "ms");
+                        final byte[] f_data = data;
+                        final int f_start = start;
+                        final int f_index = index-(lastImgLeftOver?2:0);
 
-                    final byte[] f_data = data;
-                    final int f_start = start;
-                    final int f_index = index;
-
-                    // Copies the part of the array that was filled with data.
-                    tt.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            wizardOfDos(new Strong(Arrays.copyOfRange(f_data, f_start, f_index)));
-                        }
-                    });
-
+                        // Copies the part of the array that was filled with data.
+                        tt.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                displayImage(Arrays.copyOfRange(f_data, f_start, f_index));
+                            }
+                        });
+                    }
                 }
-
             } catch (IOException ex){
                 ex.printStackTrace();
             }
-
         }
         return null;
     }
 
-    private void wizardOfDos(final Strong s){
-        if (s.isStrong || s.isStrung){
+    private void displayImage(final byte[] arr){
+        tt.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Bitmap bm = BitmapFactory.decodeByteArray(arr, 0 , arr.length);
+                DisplayMetrics dm = new DisplayMetrics();
+                tt.getWindowManager().getDefaultDisplay().getMetrics(dm);
+                tt.ImageSequence.setImageBitmap(bm);
+                return;
+            }
+        });
+    }
 
-            tt.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
+    private void readCommand(final String s){
+        tt.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
 
-                    if (s.isStrung){
-                        System.out.println("ISSTRUNG " + s.strung.length);
+                int value;
+                if (s.length() < 2 || s.length() > 7) return;
 
-                        Bitmap bm = BitmapFactory.decodeByteArray(s.strung, 0 , s.strung.length);
-                        DisplayMetrics dm = new DisplayMetrics();
+                try {
+                    switch (s.charAt(0)) {
+                        case 'c': //Collision sensor input.
+                            value = Integer.parseInt(s.substring(1)); //Ignores the first character of the input.
 
-                        tt.getWindowManager().getDefaultDisplay().getMetrics(dm);
-                        //tt.ImageSequence.setMinimumHeight(dm.heightPixels);
-                        //tt.ImageSequence.setMinimumWidth(dm.widthPixels);
-                        // tt.ImageSequence.setScaleType(ImageView.ScaleType.FIT_XY);
-                        tt.ImageSequence.setImageBitmap(bm);
+                            tt.updateCollisionIndicator(tt.ccValue, value);
+                            break;
+                        case 't': //Temperature sensor input.
+                            value = Integer.parseInt(s.substring(1)); //Ignores the first character of the input.
 
-                        return;
+                            tt.displayTemp(value);
+                            break;
+                        case 'f': //Flame sensor input
+                            value = Integer.parseInt(s.substring(1)); //Ignores the first character of the input.
+
+                            if(s.charAt(3) == '1'){
+                                tt.fireImage.setVisibility(View.VISIBLE);
+                            } else {
+                                tt.fireImage.setVisibility(View.INVISIBLE);
+                            }
+                            break;
                     }
-
-
-                    int value;
-                    if (s.strong.length() < 2 || s.strong.length() > 7) return;
-                    System.out.println("ISSTRONG " + s.strong);
-                    // s.strong = s.strong.replaceAll(" ", "");
-                    // s.strong = s.strong.replace("\n", "");
-
-
-                    try {
-
-
-                        System.out.println("SWITCH " + s.strong.charAt(0));
-                        switch (s.strong.charAt(0)) {
-                            case 'c': //Collision sensor input.
-                                value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
-
-                                tt.updateCollisionIndicator(tt.ccValue, value);
-                                break;
-                            case 't': //Temperature sensor input.
-                                value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
-
-                                tt.displayTemp(value);
-                                break;
-                            case 'f': //Flame sensor input
-                                value = Integer.parseInt(s.strong.substring(1)); //Ignores the first character of the input.
-
-                                if(s.strong.charAt(3) == '1'){
-                                    tt.fireImage.setVisibility(View.VISIBLE);
-                                } else {
-                                   tt.fireImage.setVisibility(View.INVISIBLE);
-                                }
-                                break;
-
-                        }
-                    }catch(Exception e){
-                        e.printStackTrace();
-                    }
+                }catch(Exception e){
+                    e.printStackTrace();
                 }
-            });
-        }
+            }
+        });
     }
 }
