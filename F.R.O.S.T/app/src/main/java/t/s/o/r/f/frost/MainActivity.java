@@ -504,11 +504,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Author: Isabelle Törnqvist
+     * Content: Checks to see if a flame is detected and where, and shows the appropriate image
+     * @param flameLocation
+     * @param flameStatus
+     */
     static void WhereFlameAt(ImageView flameLocation, char flameStatus){
         if(flameStatus == '1'){
             flameLocation.setVisibility(View.VISIBLE);
         }else{
             flameLocation.setVisibility(View.INVISIBLE);
+            //flameLocation.setImageAlpha(30);
         }
 
     }
