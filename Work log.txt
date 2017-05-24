@@ -1,8 +1,8 @@
 // Sprint 1
 15/02 - made the car motor to work using my own sketch. Speed 
 currently non adjustable.
-16/02 - checked steering system, encountered problem (see problem log)
-Problem fixed on the same day, steering system almost complete,
+16/02 - checked steering system, encountered problem (servo had broken gear in it)
+Problem fixed on the same day (replaced defunct servo with new one), steering system almost complete,
 but still requires some adjustments.
 17/02 - tested the motor, calibrated it.
 25-26/02 - recalibrated the motor, tested the car driving 
@@ -49,7 +49,15 @@ need to be implemented (3.5 hours)
 09/05 - Soldering additional wires to battery socket, connecting voltage divider to Arduino Mega, addtional testing of new feature (2.5 hours).
 10/05 - Battery level feature finished and integrated, can send values to phone now. Attempted to test collision control, noticed strange behavior of the motor (abnormal moves and sounds). Suspected reasons were: insufficient voltage, connection problems and I suspected transmission damage. I decided to disassemble it, and found that one of the three gears in it is damaged. Started working on solution together with team members.
 11/05 - Final minor adjustments to battery, attempts to find replacement gear (3 hours).
-12/05 - 
+12/05 - Fully charged the batteries, noticed unexpectedly high voltage at max charge. Did more research and experiments on NIMH charge/voltage relationship, changed values for display a little bit, tested updated system (2 hours).
+15/05 - As I could not buy the replacement gear, I decided to 3D print it. Was making gear 3D model in Sketchup (4,5 hours).
+16/05 - Unsuccessfully tried to fix the car's transmission with 3D printed gear, but it had hole of wrong size because of 3D printer's inaccuracy. Possibly many versions of gear must be printed and tested in order to make working version. Made new improved gear model right away, waiting for it to be printed. (2 hours).
+17/05 - Gear turned out to be too big. Making new improved gear models, experimenting with buzzer (3 hours).
+18/05 - Making more improved gear models (3 hours).
+19/05 - New versions did not work as well. Making further improved gear versions' models, further modifying collision control system (made plastic mount for it) (3 hours).
+22/05 - Working with final project report (5 hours).
+23/05 - Finally newest version of gear makes driving the car possible, although making scratching sound at the same time. Working with collision control system, making 3D models of new gears with thinner teeth for more smooth motor motion (5 hours).
+24/05 - 
 
 
 
