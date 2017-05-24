@@ -426,12 +426,10 @@ if (motor_activation && velocity < 90 ){
         if (((ultrasonic_range_front_mid != 0 && ultrasonic_range_front_mid <= 50 ) && ++collision_delay >= 10) ||
         (ultrasonic_range_front_right != 0 && ultrasonic_range_front_right <= 25 ) ||
         (ultrasonic_range_front_left != 0 && ultrasonic_range_front_left <= 25 ) 
-        || flame_detected){
-            {
+        || flame_detected){            
                 obstacle_detected_front = true;
                 collision_delay = 0;
-                motor.write(START_POSITION_MOTOR_SERVO);
-            }
+                motor.write(START_POSITION_MOTOR_SERVO);           
         //Sets obstacle to false if the obstacle in front of the car disapeared
         } else if (obstacle_detected_front){
             obstacle_detected_front = false;
