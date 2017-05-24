@@ -271,7 +271,7 @@ void command() {
         //Controls the speed
         case 'd':
             velocity = input.substring(1, 4).toInt();
-            if ((!flame_detected && !obstacle_detected_front && velocity < 90) || (velocity > 90 && !obstacle_detected_back)){
+            if ((!flame_detected && !obstacle_detected_front && velocity < 90) || (velocity > 90 && !obstacle_detected_back) || velocity== 90){
                 motor.write(velocity);
             }
             break;
