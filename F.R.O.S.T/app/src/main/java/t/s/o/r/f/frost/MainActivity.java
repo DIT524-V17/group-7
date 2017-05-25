@@ -452,6 +452,7 @@ public class MainActivity extends AppCompatActivity {
      * @param degrees
      */
      void displayTemp(int degrees){
+         System.out.println("Setting Temp");
         String text = degrees + "\u2103";
         textElement.setText(text);
 

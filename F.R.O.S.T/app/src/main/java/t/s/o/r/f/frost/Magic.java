@@ -10,17 +10,20 @@ import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.Socket;
 import java.util.Arrays;
 
 /**
  * @author Pontus Laestadius
  * @since 05-05-2017
+ * @version 3.0
  */
-public class Magic extends AsyncTask<String, Void, Bitmap> {
+class Magic extends AsyncTask<String, Void, Bitmap> {
 
-    private DataOutputStream out;
-    private DataInputStream in;
+    private DataOutputStream out_commands;
+    private InputStream in_commands;
+    private DataInputStream in_camera;
     private Socket socket_camera;
     private Socket socket_commands;
     private boolean stupid = false;
@@ -28,7 +31,12 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
     private long looptime = 0;
     private MainActivity tt;
     private boolean lastImgLeftOver = false;
-    private int BIG_READ = 45000;
+    private int BIG_READ = 60000;
+    // private int IMG_DIS = (50)*(BIG_READ/1000);
+    private int IMG_DIS = 3000;
+    private int REL_DEC = 2000;
+    private int REL_INC = 300;
+    private byte[] leftOverRead = null;
 
     Magic(MainActivity ts){
         tt = ts;
@@ -40,7 +48,9 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
         if (!stupid) {
             try {
                 socket_camera = new Socket("172.24.1.1", 9005);
+                System.out.println("Connected to 9005");
                 socket_commands = new Socket("172.24.1.1", 9006);
+                System.out.println("Connected to 9006");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -54,13 +64,12 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
             long this_loop = looptime - System.currentTimeMillis();
             looptime = System.currentTimeMillis();
 
-            if (this_loop > 100){
+            if (this_loop > 20){
                 System.out.println("Slow loop: 0." + this_loop + "s");
             }
-            /*
 
             try { // Catches IO exceptions
-                out = new DataOutputStream(socket_commands.getOutputStream());
+                out_commands = new DataOutputStream(socket_commands.getOutputStream());
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -70,17 +79,52 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                 last = command;
                 try {
                     System.out.println("Sending:" + command + " L: " + last);
-                    out.writeUTF(command + "\n");
-                    out.flush();
+                    out_commands.writeUTF(command + "\n");
+                    out_commands.flush();
                     MainActivity.sendMe = "";
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-            */
 
             try{
-                in = new DataInputStream(new BufferedInputStream(socket_camera.getInputStream()));
+                in_commands = socket_commands.getInputStream();
+                if (in_commands.available() > 0){
+                    byte[] incoming = new byte[10];
+                    int count = in_commands.read(incoming);
+                    System.out.println("Read: " + count);
+                    String rec = "";
+                    boolean skip = false;
+
+                    if (leftOverRead != null){
+                        for (int i = 0; i < leftOverRead.length; i++){
+                            if (leftOverRead[i] == '\n'){
+                                rec += (char) incoming[i];
+                                skip = true;
+                                break;
+                            }
+                        }
+                        if (!skip)
+                            leftOverRead = null;
+                    }
+
+                    if (!skip)
+                    for (int i = 0; i < count; i++){
+                        if (incoming[i] == '\n'){
+                            leftOverRead = Arrays.copyOfRange(incoming, i, count);
+                            break;
+                        }
+                        rec += (char) incoming[i];
+                    }
+                    System.out.println("IN_COMMANDS: " + rec);
+                    readCommand(rec);
+                }
+            } catch (Exception e){
+                e.printStackTrace();
+            }
+
+            try{
+                in_camera = new DataInputStream(new BufferedInputStream(socket_camera.getInputStream()));
 
                 // start of image identifier identifiers
                 byte ff = (byte) 0xFF; // FF byte identifier
@@ -93,7 +137,7 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 boolean parsingImage = false;
 
-                byte[] data = new byte[1024*70];
+                byte[] data = new byte[1024*78];
                 int index = 0;
                 int count;
                 final int MIN_BUFFER = 2; // Only reads in 2 byte increments. :( Bit sad.
@@ -101,58 +145,56 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                 int start = 0;
 
                 long frameTime = System.currentTimeMillis();
-                if (in.available() > 0){
+                if (in_camera.available() > 0){
 
-                   try {
-                       while ((count = in.read(data, index, MIN_BUFFER)) > 0){
+                    try {
+                        while ((count = in_camera.read(data, index, MIN_BUFFER)) > 0){
 
                            /*
                            Each iteration increments the index with the number of bytes read.
                            That is then used to identify both the starting and ending bytes.
                             */
-                           index += count;
+                            index += count;
 
                            /*
                            ParsesImage identifies if it is currently in the process of reading an image.
                            False by default until it manages to find the start of image (SOI) bytes.
                             */
-                           if (!parsingImage){
+                            if (!parsingImage){
 
                                /*
                                Looks for the starting bytes in the bytes just read from the stream.
                                Also passes if LastImgLeftOver is true due to the last image reading
                                the starting bytes of the upcoming frame.
                                 */
-                               if ((data[index-2] == soi[0] && data[index-1] == soi[1]) || lastImgLeftOver){
-                                   // Either if it was true or false previously. Reset it.
-                                   lastImgLeftOver = false;
+                                if ((data[index-2] == soi[0] && data[index-1] == soi[1]) || lastImgLeftOver){
+                                    // Either if it was true or false previously. Reset it.
+                                    lastImgLeftOver = false;
                                    /*
                                    The start is always index-2 due to the the header bytes being
                                    two and due to the index+=count statement previously has to
                                    account for that change.
                                     */
-                                   start = index-2;
+                                    start = index-2;
 
-                                   //
+                                    //
                                    /*
                                    Indicate that the image has started to process and the loop
                                    will be redirected to the top level else statement until the
                                    frame has been finished.
                                     */
-                                   parsingImage = true;
+                                    parsingImage = true;
 
-                                   // System.out.println("SOI: " + index); // TODO: 25/05/2017 remove
+                                    // Read a set number of kb without checking any bytes
+                                    // for performance reasons.
+                                    while ((count = in_camera.read(data, index, BIG_BUFFER)) > 0){
+                                        index += count;
+                                        // If it reads less than the intended amount.
+                                        // Read less next time.
 
-                                   // Read a set number of kb without checking any bytes
-                                   // for performance reasons.
-                                   while ((count = in.read(data, index, BIG_BUFFER)) > 0){
-                                       index += count;
-                                       // If it reads less than the intended amount.
-                                       // Read less next time.
-
-                                       if (start+index >= BIG_READ)
-                                           break;
-                                   }
+                                        if (start+index >= BIG_READ)
+                                            break;
+                                    }
 
                                    /*
                                    If we didn't find the starting bytes and we have attempted
@@ -160,19 +202,19 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                                    an ArrayIndexOutOfBounds which slows the frame rate down.
                                    Due to the nature of catch().
                                     */
-                               } else if (index > 1000) {
-                                   index = 0;
-                               }
-                           } else {
+                                } else if (index > 1000) {
+                                    index = 0;
+                                }
+                            } else {
 
-                               // Identifies end of image.
+                                // Identifies end of image.
 
                                /*
                                Matches to see if any of the bytes just read match the first
                                indication of the end of image (EOI).
                                0xFF or -1 in a signed byte like Java's implementation.
                                 */
-                               if (data[index-2] == eoi[0] || data[index-1] == eoi[0]){
+                                if (data[index-2] == eoi[0] || data[index-1] == eoi[0]){
 
                                    /*
                                    Here is a visual example of how this works:
@@ -192,9 +234,9 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                                    that the ending bytes aren't just a part of the actual picture.
                                     */
 
-                                   if (data[index-1] == eoi[1]){ // Looks for D9
+                                    if (data[index-1] == eoi[1]){ // Looks for D9
                                         // System.out.println("EOI: index-1");
-                                       // Reads to see if the start bytes exist afterwards for new img.
+                                        // Reads to see if the start bytes exist afterwards for new img.
 
                                        /* Check if there is any bytes to be read.
                                           This is because if there are no bytes to be read, that
@@ -205,56 +247,61 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                                           The same logic is applied to the same code segment in the
                                           else statement.
                                         */
-                                       if (in.available() > 0){
+                                        if (in_camera.available() > 0){
 
-                                           // Reads another set of bytes the size of MIN_BUFFER
-                                           index += in.read(data, index, MIN_BUFFER);
+                                            // Reads another set of bytes the size of MIN_BUFFER
+                                            index += in_camera.read(data, index, MIN_BUFFER);
 
-                                           // If those two bytes both match the starting bytes
-                                           if (data[index-2] == soi[0] && data[index-1] == soi[1]){
+                                            // If those two bytes both match the starting bytes
+                                            if (data[index-2] == soi[0] && data[index-1] == soi[1]){
 
-                                               // Remeber for the next iteration that the starting
-                                               // bytes have already been read from the stream.
-                                               lastImgLeftOver = true;
-                                               break;
-                                           }
-                                       } else {
-                                           break;
-                                       }
+                                                // Remeber for the next iteration that the starting
+                                                // bytes have already been read from the stream.
+                                                lastImgLeftOver = true;
+                                                break;
+                                            }
+                                        } else {
+                                            break;
+                                        }
 
-                                   } else {
-                                       // Reads the next byte to see if it 0xD9.
-                                       index += in.read(data, index, 1);
-                                       if (data[index-1] == eoi[1]){
-                                           // System.out.println("EOI: index");
-                                           // Reads to see if the start bytes exist afterwards for new img.
+                                    } else {
+                                        // Reads the next byte to see if it 0xD9.
+                                        index += in_camera.read(data, index, 1);
+                                        if (data[index-1] == eoi[1]){
+                                            // System.out.println("EOI: index");
+                                            // Reads to see if the start bytes exist afterwards for new img.
 
-                                           if (in.available() > 0){
-                                               index += in.read(data, index, MIN_BUFFER);
-                                               if (data[index-2] == soi[0] && data[index-1] == soi[1]){
-                                                   lastImgLeftOver = true;
-                                                   break;
-                                               }
-                                           } else {
-                                               break;
-                                           }
-                                       }
-                                   }
-                               }
-                           }
-                       }
-                   } catch (ArrayIndexOutOfBoundsException ex){
-                       ex.printStackTrace();
-                       index = data.length;
-                   }
+                                            if (in_camera.available() > 0){
+                                                index += in_camera.read(data, index, MIN_BUFFER);
+                                                if (data[index-2] == soi[0] && data[index-1] == soi[1]){
+                                                    lastImgLeftOver = true;
+                                                    break;
+                                                }
+                                            } else {
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        if (index+BIG_BUFFER >= data.length){
+                            continue;
+                        }
+                    } catch (ArrayIndexOutOfBoundsException ex){
+                        ex.printStackTrace();
+                        // index = data.length;
+                        BIG_READ-=REL_DEC;
+
+                    }
                     if (index != 0){
 
-                        if (index+5000 > BIG_READ){
-                            BIG_READ += 100;
-                        } else if (index < BIG_READ){
-                            BIG_READ -= 2000;
+                        if (index-IMG_DIS > BIG_READ){
+                            BIG_READ += REL_INC;
+                        } else if ((index-start) < BIG_READ+IMG_DIS){
+                            BIG_READ -= REL_DEC;
                         }
-                        System.out.println("BR:" + BIG_READ + "I: " + (index-start));
+                        System.out.println("BR:" + BIG_READ + " I: " + (index-start));
 
                         final byte[] f_data = data;
                         final int f_start = start;
@@ -287,7 +334,6 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                 DisplayMetrics dm = new DisplayMetrics();
                 tt.getWindowManager().getDefaultDisplay().getMetrics(dm);
                 tt.ImageSequence.setImageBitmap(bm);
-                return;
             }
         });
     }
@@ -308,7 +354,8 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                             tt.updateCollisionIndicator(tt.ccValue, value);
                             break;
                         case 't': //Temperature sensor input.
-                            value = Integer.parseInt(s.substring(1)); //Ignores the first character of the input.
+                            value = Integer.parseInt(s.substring(1).replaceAll("\\D+","")); //Ignores the first character of the input.
+
 
                             tt.displayTemp(value);
                             break;
