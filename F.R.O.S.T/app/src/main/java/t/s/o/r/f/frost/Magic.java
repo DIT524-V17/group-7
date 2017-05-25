@@ -28,6 +28,7 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
     private long looptime = 0;
     private MainActivity tt;
     private boolean lastImgLeftOver = false;
+    private int BIG_READ = 45000;
 
     Magic(MainActivity ts){
         tt = ts;
@@ -56,6 +57,7 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
             if (this_loop > 100){
                 System.out.println("Slow loop: 0." + this_loop + "s");
             }
+            /*
 
             try { // Catches IO exceptions
                 out = new DataOutputStream(socket_commands.getOutputStream());
@@ -75,6 +77,7 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                     e.printStackTrace();
                 }
             }
+            */
 
             try{
                 in = new DataInputStream(new BufferedInputStream(socket_camera.getInputStream()));
@@ -90,7 +93,7 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 boolean parsingImage = false;
 
-                byte[] data = new byte[1024*64];
+                byte[] data = new byte[1024*70];
                 int index = 0;
                 int count;
                 final int MIN_BUFFER = 2; // Only reads in 2 byte increments. :( Bit sad.
@@ -102,40 +105,116 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
 
                    try {
                        while ((count = in.read(data, index, MIN_BUFFER)) > 0){
+
+                           /*
+                           Each iteration increments the index with the number of bytes read.
+                           That is then used to identify both the starting and ending bytes.
+                            */
                            index += count;
 
-                           // Identifies start of image.
+                           /*
+                           ParsesImage identifies if it is currently in the process of reading an image.
+                           False by default until it manages to find the start of image (SOI) bytes.
+                            */
                            if (!parsingImage){
+
+                               /*
+                               Looks for the starting bytes in the bytes just read from the stream.
+                               Also passes if LastImgLeftOver is true due to the last image reading
+                               the starting bytes of the upcoming frame.
+                                */
                                if ((data[index-2] == soi[0] && data[index-1] == soi[1]) || lastImgLeftOver){
+                                   // Either if it was true or false previously. Reset it.
                                    lastImgLeftOver = false;
-                                   System.out.println("SOI: " + index);
+                                   /*
+                                   The start is always index-2 due to the the header bytes being
+                                   two and due to the index+=count statement previously has to
+                                   account for that change.
+                                    */
                                    start = index-2;
+
+                                   //
+                                   /*
+                                   Indicate that the image has started to process and the loop
+                                   will be redirected to the top level else statement until the
+                                   frame has been finished.
+                                    */
                                    parsingImage = true;
+
+                                   // System.out.println("SOI: " + index); // TODO: 25/05/2017 remove
 
                                    // Read a set number of kb without checking any bytes
                                    // for performance reasons.
                                    while ((count = in.read(data, index, BIG_BUFFER)) > 0){
                                        index += count;
-                                       if (start+index >= 39000)
+                                       // If it reads less than the intended amount.
+                                       // Read less next time.
+
+                                       if (start+index >= BIG_READ)
                                            break;
                                    }
-                               } else {
-                                   // If it's been trying to look for a starting byte for way to long.
-                                   // Set it back to 0.
-                                   if (index > 10000)
-                                       index = 0;
+
+                                   /*
+                                   If we didn't find the starting bytes and we have attempted
+                                   for more than 1000 bytes, we reset the index to avoid reaching
+                                   an ArrayIndexOutOfBounds which slows the frame rate down.
+                                   Due to the nature of catch().
+                                    */
+                               } else if (index > 1000) {
+                                   index = 0;
                                }
                            } else {
 
                                // Identifies end of image.
-                               if (data[index-2] == eoi[0] || data[index-1] == eoi[0]){ // Looks for FF.
+
+                               /*
+                               Matches to see if any of the bytes just read match the first
+                               indication of the end of image (EOI).
+                               0xFF or -1 in a signed byte like Java's implementation.
+                                */
+                               if (data[index-2] == eoi[0] || data[index-1] == eoi[0]){
+
+                                   /*
+                                   Here is a visual example of how this works:
+                                   we read 2 bytes. X and Y.
+                                   X or Y was just confirmed to be 0xFF.
+                                   This next part identifies which one was 0xFF. Because they then
+                                   Need to be handled differently. SO in the optimal testcase:
+                                   If X was 0xFF then we look to see if Y is 0xD9.
+                                   If it's not we know it's not the end of the frame.
+
+                                   If Y was 0xFF then we need to read an additional byte. Because
+                                   Y was the last byte read. And if that new byte Matches 0xD9
+                                   Then we found the end of image.
+
+                                   The followup comment describes the inner workings of applying
+                                   the starting bytes for the following picture to make sure
+                                   that the ending bytes aren't just a part of the actual picture.
+                                    */
+
                                    if (data[index-1] == eoi[1]){ // Looks for D9
-                                        System.out.println("EOI: index-1");
+                                        // System.out.println("EOI: index-1");
                                        // Reads to see if the start bytes exist afterwards for new img.
 
+                                       /* Check if there is any bytes to be read.
+                                          This is because if there are no bytes to be read, that
+                                          means it is the end of the image.
+                                          But if there exists bytes to still be read.
+                                          And if those new bytes are the starting bytes of the next
+                                          frame then that also means it's the end of the image.
+                                          The same logic is applied to the same code segment in the
+                                          else statement.
+                                        */
                                        if (in.available() > 0){
+
+                                           // Reads another set of bytes the size of MIN_BUFFER
                                            index += in.read(data, index, MIN_BUFFER);
+
+                                           // If those two bytes both match the starting bytes
                                            if (data[index-2] == soi[0] && data[index-1] == soi[1]){
+
+                                               // Remeber for the next iteration that the starting
+                                               // bytes have already been read from the stream.
                                                lastImgLeftOver = true;
                                                break;
                                            }
@@ -143,11 +222,11 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                                            break;
                                        }
 
-                                   } else { // data[index-2] == eoi[0]
+                                   } else {
                                        // Reads the next byte to see if it 0xD9.
                                        index += in.read(data, index, 1);
                                        if (data[index-1] == eoi[1]){
-                                           System.out.println("EOI: index");
+                                           // System.out.println("EOI: index");
                                            // Reads to see if the start bytes exist afterwards for new img.
 
                                            if (in.available() > 0){
@@ -169,7 +248,14 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                        index = data.length;
                    }
                     if (index != 0){
-                        System.out.println("EOI: " + index + " IN " + (System.currentTimeMillis() - frameTime) + "ms");
+
+                        if (index+5000 > BIG_READ){
+                            BIG_READ += 100;
+                        } else if (index < BIG_READ){
+                            BIG_READ -= 2000;
+                        }
+                        System.out.println("BR:" + BIG_READ + "I: " + (index-start));
+
                         final byte[] f_data = data;
                         final int f_start = start;
                         final int f_index = index-(lastImgLeftOver?2:0);
@@ -181,6 +267,9 @@ public class Magic extends AsyncTask<String, Void, Bitmap> {
                                 displayImage(Arrays.copyOfRange(f_data, f_start, f_index));
                             }
                         });
+                        // Prints the byte length of the piture and the duration it took to process.
+                        System.out.println("EOI: " + index + " IN " +
+                                (System.currentTimeMillis() - frameTime) + "ms");
                     }
                 }
             } catch (IOException ex){
