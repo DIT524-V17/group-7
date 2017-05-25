@@ -230,4 +230,11 @@
         android:layout_alignParentTop="true"
         app:srcCompat="@drawable/aa" />
 
+    <!-- Battery level-->
+    <t.s.o.r.f.frost.BatteryView
+        android:layout_width="70dp"
+        android:layout_height="35dp"
+        android:id="@+id/battery"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"/>
 </RelativeLayout>

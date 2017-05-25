@@ -30,6 +30,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.Timer;
 
 import static t.s.o.r.f.frost.Client.*;
 
@@ -37,7 +38,7 @@ import static t.s.o.r.f.frost.Client.*;
  * Author: Sebastian Fransson
  * Last Updated: 19-04-2017
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity{
 
     //Views for collision animation.
     View v;
@@ -62,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        new threads().execute(); //Executes the AsyncTask and establishes Client connection.
+        //*new threads().execute(); //Executes the AsyncTask and establishes Client connection.
         tv = (TextView) findViewById(R.id.collision_text); //TextView for collision text.
         v = findViewById(R.id.cc_view4);
         tvbg = findViewById(R.id.text_background);
@@ -73,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
         animate();
         //Context used for the reconnect feature.
        final Context context = this;
-
 
         /**
          *  Menu for deactivating sensors either individually or in bulk.
@@ -108,44 +108,44 @@ public class MainActivity extends AppCompatActivity {
                                 case R.id.flame:
                                     item_flame_boolean = !item_flame_boolean;
                                     item.setChecked(item_flame_boolean);
-                                    threads.r1.write("F000?");
+                                    //*threads.r1.write("F000?");
                                     System.out.println("Flame");
                                     break;
                                 //The case for when the temperature checkbox is pressed
                                 case R.id.temperature:
                                     item_temperature_boolean = !item_temperature_boolean;
                                     item.setChecked(item_temperature_boolean);
-                                    threads.r1.write("T000?");
+                                    //*threads.r1.write("T000?");
                                     break;
                                 //The case for when the ultrasonic checkbox is pressed
                                 case R.id.ultrasonic:
                                     item_ultrasonic_boolean = !item_ultrasonic_boolean;
                                     item.setChecked(item_ultrasonic_boolean);
-                                    threads.r1.write("U000?");
+                                    //*threads.r1.write("U000?");
                                     break;
                                 //The case for when the motor checkbox is pressed
                                 case R.id.motor:
                                     item_motor_boolean = !item_motor_boolean;
                                     item.setChecked(item_motor_boolean);
-                                    threads.r1.write("M000?");
+                                    //*threads.r1.write("M000?");
                                     break;
                                 //The case for when the steer checkbox is pressed
                                 case R.id.steering:
                                     item_steering_boolean = !item_steering_boolean;
                                     item.setChecked(item_steering_boolean);
-                                    threads.r1.write("S000?");
+                                    //*threads.r1.write("S000?");
                                     break;
                                 //The case for when the "camera vertical" checkbox is pressed
                                 case R.id.camera_vertical:
                                     item_camera_vertical_boolean = !item_camera_vertical_boolean;
                                     item.setChecked(item_camera_vertical_boolean);
-                                    threads.r1.write("Y000");
+                                    //*threads.r1.write("Y000");
                                     break;
                                 //The case for when the "camera horizontal" checkbox is pressed
                                 case R.id.camera_horizontal:
                                     item_camera_horizontal_boolean = !item_camera_horizontal_boolean;
                                     item.setChecked(item_camera_horizontal_boolean);
-                                    threads.r1.write("X000");
+                                    //*threads.r1.write("X000");
                                     break;
                                 //The case for when the RIP checkbox is pressed
                                 case R.id.rip:
@@ -165,12 +165,12 @@ public class MainActivity extends AppCompatActivity {
                                     item.setChecked(item_rip_boolean);
                                     item_camera_horizontal.setChecked(item_rip_boolean);
                                     item_camera_vertical.setChecked(item_rip_boolean);
-                                    threads.r1.write("E000?");
+                                    //*threads.r1.write("E000?");
                                     break;
                             }
                             /*Just a random command to make sure that the car doesnt get spammed with the
                             command for turning a sensor on/off*/
-                            threads.r1.write("0000?");
+                            //*threads.r1.write("0000?");
 
                         } catch (Exception e) {
                             System.out.println("Error in popup menu");
@@ -208,12 +208,12 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         //Sends a "forward" commmand to the Raspberry pi (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                                threads.r1.write("d070?");
+                            //*threads.r1.write("d070?");
                             // System.out.println("Drive forward");
                         }
                         //Sends command to stop the current activity (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_UP) {
-                            threads.r1.write("d090?");
+                            //*threads.r1.write("d090?");
                             //System.out.println("stop driving");
                         }
                     } catch (Exception e) {
@@ -234,12 +234,12 @@ public class MainActivity extends AppCompatActivity {
                         //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
-                            threads.r1.write("d110?");
+                            //*threads.r1.write("d110?");
                             // System.out.println("Reversing");
                         }
                         //Sends command to stop reversing (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_UP) {
-                            threads.r1.write("d090?");
+                            //*threads.r1.write("d090?");
                             //  System.out.println("Stop reversing");
                         }
                     } catch (Exception e) {
@@ -259,12 +259,12 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         //Sends a "go right" commmand to the Raspberry pi (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                            threads.r1.write("a090?");
+                            //*threads.r1.write("a090?");
                             // System.out.println("Steer Right");
                         }
                         //Sends command to stop steering right (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_UP) {
-                            threads.r1.write("a045?");
+                            //*threads.r1.write("a045?");
                             // System.out.println("Stop steering right");
                         }
                     } catch (Exception e) {
@@ -284,12 +284,12 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         //Sends a "go left" commmand to the Raspberry pi (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                            threads.r1.write("a000?");
+                            //*threads.r1.write("a000?");
                             //  System.out.println("Steering Left");
                         }
                         //Sends command to stop steering left (to be integrated)
                         if (event.getAction() == MotionEvent.ACTION_UP) {
-                            threads.r1.write("a045?");
+                            //*threads.r1.write("a045?");
                             // System.out.println("Stop steering left");
                         }
                     } catch (Exception e) {
@@ -341,12 +341,12 @@ public class MainActivity extends AppCompatActivity {
                     //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
-                        threads.r1.write("y001?");
+                        //*threads.r1.write("y001?");
                         // System.out.println("Reversing");
                     }
                     //Sends command to stop reversing (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_UP) {
-                        threads.r1.write("y000?");
+                        //*threads.r1.write("y000?");
                         //  System.out.println("Stop reversing");
                     }
                 } catch (Exception e) {
@@ -367,12 +367,12 @@ public class MainActivity extends AppCompatActivity {
                     //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
-                        threads.r1.write("y002?");
+                        //*threads.r1.write("y002?");
                         // System.out.println("Reversing");
                     }
                     //Sends command to stop reversing (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_UP) {
-                        threads.r1.write("y000?");
+                        //*threads.r1.write("y000?");
                         //  System.out.println("Stop reversing");
                     }
                 } catch (Exception e) {
@@ -393,12 +393,12 @@ public class MainActivity extends AppCompatActivity {
                     //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
-                        threads.r1.write("x001?");
+                        //*threads.r1.write("x001?");
                         // System.out.println("Reversing");
                     }
                     //Sends command to stop reversing (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_UP) {
-                        threads.r1.write("x000?");
+                        //*threads.r1.write("x000?");
                         //  System.out.println("Stop reversing");
                     }
                 } catch (Exception e) {
@@ -419,12 +419,12 @@ public class MainActivity extends AppCompatActivity {
                     //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_DOWN) {
 
-                        threads.r1.write("x002?");
+                        //*threads.r1.write("x002?");
                         // System.out.println("Reversing");
                     }
                     //Sends command to stop reversing (to be integrated)
                     if (event.getAction() == MotionEvent.ACTION_UP) {
-                        threads.r1.write("x000?");
+                        //*threads.r1.write("x000?");
                         //  System.out.println("Stop reversing");
                     }
                 } catch (Exception e) {
@@ -449,7 +449,6 @@ public class MainActivity extends AppCompatActivity {
         });
         //Calling the method "displayTemp" which is defined below
        // displayTemp(theOutputFromTheSensor); //Test method call.
-
     }
 
 
@@ -475,6 +474,7 @@ public class MainActivity extends AppCompatActivity {
             SwitchImageTemp.setImageResource(R.drawable.tempmedium);
         }
     }
+
 
     //Method for collision button animation.
 
@@ -527,7 +527,7 @@ public class MainActivity extends AppCompatActivity {
      * Updated by: Sebastian Fransson
      */
     //Method for handling the received information from the Arduino sensors.
-    static void handleInput(){
+   /* void handleInput(){
         try {
             String s = threads.r1.read();
             //System.out.print(threads.r1.read());
@@ -535,6 +535,10 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("HandleInput: " + s);
             int value = Integer.parseInt(s.substring(1)); //Ignores the first character of the input.
             switch (s.charAt(0)) {
+                case 'v':
+
+                    //battery.drawBattery(Double.parseDouble(s.substring(1,5)));
+                    break;
                 case 'c': //Collision sensor input.
                     updateCollisionIndicator(ccValue, value);
                     break;
@@ -553,7 +557,7 @@ public class MainActivity extends AppCompatActivity {
             System.out.println("Inputs are coming in too fast, close the borders!");
             e.printStackTrace();
         }
-    }
+    }*/
 
     //Updates the collision indicator text.
     static void updateCollisionIndicator(TextView view, int value){
@@ -567,8 +571,8 @@ public class MainActivity extends AppCompatActivity {
      * Initiates the Transmitter with the 'host' id and correct port.
      * TODO: Rewrite this to actually make sense. Override the two other methods if they are needed later.
      */
-   public static class threads extends AsyncTask<String, Void, Void> {
-       static Transmitter r1;
+ /*  public class threads extends AsyncTask<String, Void, Void> {
+       Transmitter r1;
        int yes = 1;
 
         @Override
@@ -593,7 +597,7 @@ public class MainActivity extends AppCompatActivity {
 
         //closeConnection method for reconnecting without restarting the app. (Not working/used for now)
         //It should probably halt the current connection
-        public static void closeConnection (){
+        public void closeConnection (){
             try {
                 System.out.println("Entered closeConnection");
                 r1 = null;
@@ -603,5 +607,6 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
+
 }
