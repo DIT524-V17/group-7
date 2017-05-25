@@ -59,8 +59,6 @@ private:
     //Is true while a flame sensor thinks it sees the sun
     bool flame_sun = false;
 
-    //The output for when the flame sensor sees the sun
-    char sun[4]{'f', '1', '0', '0'};
     //A variable for saving the pointer to the char array that is the output from the read() method
     char* flame_status;
 

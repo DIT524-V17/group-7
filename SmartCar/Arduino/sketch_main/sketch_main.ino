@@ -1,3 +1,5 @@
+#include <Flame_array.h>
+
 #include <NewPing.h> // https://bitbucket.org/teckel12/arduino-new-ping/downloads/
 #include <Servo.h>
 //Library. Callibrates digital temperature readings.
@@ -27,6 +29,7 @@ int range;
 //Temperature variables
 int tempC;
 int oldTemp;
+int i = 0;
 
 int collisionServoPosition = START_POSITION_STEER_SERVO;
 int collision_delay = 250;
@@ -38,7 +41,6 @@ int tempDelay = 0;
 boolean collisionDirection;
 boolean obstacle;
 boolean completeCommand;
-boolean flame;
 
 //For turning modules on and off
 boolean flameActivation = true;
@@ -91,6 +93,8 @@ DeviceAddress thermometer;
   const int CAMERA_PIN_Y = 55; // Analog pin 1
   int cameraX_valueReceivedFromTheRaspberry = 0; // Last X input.
   int cameraY_valueReceivedFromTheRaspberry = 0; // Last Y input.
+  
+  Flame_array flame_array(A2,A3,A4,A6,A7);
 
 void setup() {
     //Sets the motor and steering servos to the default positions
@@ -252,7 +256,7 @@ void loop() {
         //Controls the speed
         case 'd':
             velocity = input.substring(1, 4).toInt();
-            if ((!flame && !obstacle) || velocity >= 90){
+            if (!obstacle || velocity >= 90){
                 motor.write(velocity);
             }
             break;
@@ -313,34 +317,33 @@ void loop() {
 //Activation of the flame-sensor: if flameActivation is false, this if-statement won't be executed. 
 //This is were the detection of flame is done
     if(flameActivation){
-      //Reads the valueReceivedFromTheRaspberry from the flame sensor
-      flame_pin = digitalRead (FLAME_SENSOR_PIN) ;
 
       //If the flame sensor sees a flame it writes a command that says it sees a flame
-      if (flame_pin == HIGH && !flame){
         if (++flame_delay >= 500){
-          Serial.write("f001\n");
+          char* flame_reading = flame_array.read();
+          if((*(flame_reading + 1)) != '2'){
+            String temp = "";
+            for(int i = 0; i < 4; i++){
+              temp += (*(flame_reading + i));
+            }
+            Serial.println(temp);
+            if (*(flame_reading + 3) == '1' && --i < 1){
+              digitalWrite(LED_PIN, HIGH);
+              i = 5;
+            } else{
+              digitalWrite(LED_PIN, LOW);
+             }
+          }
         }
-        flame = true;
-        digitalWrite(LED_PIN, HIGH);
-
-       //when the flame disapears it sends a command that it stopped seing a flame
-      }else if(flame && flame_pin == LOW){
-        Serial.write("f000\n");
-        flame = false;
-        digitalWrite(LED_PIN, LOW);
-        flame_delay = 0;
-      }  
+      
   }
 
 //Activation of ultrasonic sensor
   if(ultrasonicActivation){
    //Pings the ultrasonic sensor
-    range_string = sonar.ping_cm();
-    range = range_string.toInt();
-    range_string = "c" + range_string + '\n';
+    range = sonar.ping_cm();
+    range_string = "c" + range + '\n';
     if (lastDistance != range && ++distance_Delay >= 100){
-       // Serial.write(range);
         Serial.print(range_string);
         lastDistance = range;
         distance_Delay = 0;
@@ -351,7 +354,7 @@ void loop() {
 //Allows the car to drive backwards if an obstacle is in from of the car
 if (motorActivation && velocity < 90 ){
       //Is true if the range is less than 50 cm or if the flame sensor has set the flame variable to true
-        if (((range != 0 && range <= 50) && ++collision_delay >= 250) || flame){
+        if (((range != 0 && range <= 50) && ++collision_delay >= 250)){
             if (range > 20){
                 motor.write(velocity +(50 - range)/2);
             } else {

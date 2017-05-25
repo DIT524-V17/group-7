@@ -47,10 +47,9 @@ char* Flame_array::read_flame_array() {
 
     //Checks if the reading could be the sun
     flame_sun = (*(flame_array + index)).getFlameValue() >= MAX_READING;
+    command[0] = 'f';
     if(!flame_sun) {
         //Starts creating the array
-        command[0] = 'f';
-        command[1] = '0';
         command[2] = '0' + index;
 
         //Gets the value of the flame sensor
@@ -58,17 +57,30 @@ char* Flame_array::read_flame_array() {
         //Compares the reading to the readings of the other flame sensors
         if (compareToAverage(flame_value)) {
             //If its a flame it sets the flame bool to true and returns a char array that says it sees a flame
-            (*(flame_array + index)).setFlameBool(true);
+            if(!(*(flame_array + index)).getFlameBool()) {
+                (*(flame_array + index)).setFlameBool(true);
+                command[1] = '0';
+            } else{
+                command[1] = '2';
+            }
             command[3] = '1';
             return command;
         }
         //If it isnt a flame it sets the flame bool to false and then returns a char array that says that it doesnt see flame
-        (*(flame_array + index)).setFlameBool(false);
+        if((*(flame_array + index)).getFlameBool()) {
+            (*(flame_array + index)).setFlameBool(false);
+            command[1] = '0';
+        } else {
+            command[1] = '2';
+        }
         command[3] = '0';
         return command;
     }
+    command[1] = '1';
+    command[2] = '0';
+    command[3] = '0';
     //If the reading might be from sunlight then this will be returned
-    return sun;
+    return command;
 }
 
 //Compares the value with the values of the rest of the flame sensors and returns true if its at least bigger than the average
@@ -107,6 +119,7 @@ char* Flame_array::read() {
     flame_status = read_flame_array();
     //moves the index to the next sensor if the sensor is seeing something that isnt the sun
     //the array {'f', '1', '0', ''0} is sent if think that its the sun
+
     if(flame_status[1] != '1') {
         this->index++;
     }
