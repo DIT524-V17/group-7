@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.ImageView;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -363,13 +364,19 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                             tt.displayTemp(value);
                             break;
                         case 'f': //Flame sensor input
-                            value = Integer.parseInt(s.substring(1)); //Ignores the first character of the input.
+                            System.out.println("FOUND FLAME STUFF");
 
-                            if(s.charAt(3) == '1'){
-                                tt.fireImage.setVisibility(View.VISIBLE);
-                            } else {
-                                tt.fireImage.setVisibility(View.INVISIBLE);
+                            if(s.charAt(1) == '1') {
+                                tt.toMuchLight.setVisibility(View.VISIBLE);
+                                //Setting all indicators to invisible
+                                for (ImageView tempName : tt.fireArray){
+                                    tempName.setVisibility(View.INVISIBLE);
+                                }
+                            }else{
+                                tt.toMuchLight.setVisibility(View.INVISIBLE);
+                                tt.WhereFlameAt(Integer.parseInt(s.charAt(2) + ""), s.charAt(3));
                             }
+
                             break;
                     }
                 }catch(Exception e){

@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView fireImageNorthWest;
     private ImageView fireImageNorthNorthEast;
     private ImageView fireImageNorthEast;
-    private TextView toMuchLight;
+    TextView toMuchLight;
 
     public Button button6;
     private Boolean item_flame_boolean = true;
