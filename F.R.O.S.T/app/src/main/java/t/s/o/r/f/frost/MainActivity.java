@@ -489,6 +489,7 @@ public class MainActivity extends AppCompatActivity {
      * @param degrees
      */
     static void displayTemp(int degrees){
+        //testing
         String text = degrees + "\u2103";
         textElement.setText(text);
 
@@ -503,23 +504,6 @@ public class MainActivity extends AppCompatActivity {
             SwitchImageTemp.setImageResource(R.drawable.tempmedium);
         }
     }
-
-    /**
-     * Author: Isabelle Törnqvist
-     * Content: Checks to see if a flame is detected and where, and shows the appropriate image
-     * @param flameLocation
-     * @param flameStatus
-     */
-    static void WhereFlameAt(ImageView flameLocation, char flameStatus){
-        if(flameStatus == '1'){
-            flameLocation.setVisibility(View.VISIBLE);
-        }else{
-            flameLocation.setVisibility(View.INVISIBLE);
-            //flameLocation.setImageAlpha(30);
-        }
-
-    }
-
 
 
     //Method for collision button animation.
@@ -568,6 +552,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
+     * Author: Isabelle Törnqvist
+     * Content: Checks to see if a flame is detected and where, and shows the appropriate image
+     * @param pos - position of the value imageView in the array of ImageViews
+     * @param flameStatus
+     */
+    static void WhereFlameAt(int pos, char flameStatus){
+        //ImageView I = fireArray[pos];
+
+        if(flameStatus == '1'){
+            fireArray[pos].setVisibility(View.VISIBLE);
+        }else{
+            fireArray[pos].setVisibility(View.INVISIBLE);
+            //flameLocation.setImageAlpha(30);
+        }
+
+    }
+
+    /**
      * Created by: Pontus Laestadius
      * Integrated by: Pontus Laestadius, Sebastian Fransson
      * Updated by: Sebastian Fransson
@@ -595,9 +597,23 @@ public class MainActivity extends AppCompatActivity {
                             tempName.setVisibility(View.INVISIBLE);
                         }
 
-                    } else{
-                        toMuchLight.setVisibility(View.VISIBLE);
-                        WhereFlameAt(fireArray[s.charAt(2)], s.charAt(3));
+                    }
+                    //Debug/test code
+                    /**
+                     * else if(s.charAt(2) == '2'){
+                     if(s.charAt(3) == '1'){
+                     fireImageNorth.setVisibility(View.VISIBLE);
+                     }
+                     else {
+                     fireImageNorth.setVisibility(View.INVISIBLE);
+                     }
+                     }
+                     */
+
+
+                    else{
+                        toMuchLight.setVisibility(View.INVISIBLE);
+                        WhereFlameAt(s.charAt(2), s.charAt(3));
                     }
                     break;
             }
