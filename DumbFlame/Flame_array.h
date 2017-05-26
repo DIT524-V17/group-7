@@ -76,6 +76,7 @@ private:
 
     //The array of flame sensors
     Flame flame_array[5];
+    char last_command = '0';
     //The size of the array
     char* read_flame_array();
 };

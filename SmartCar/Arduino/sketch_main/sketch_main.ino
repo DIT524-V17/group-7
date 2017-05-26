@@ -323,9 +323,10 @@ void loop() {
           char* flame_reading = flame_array.read();
           if((*(flame_reading + 1)) != '2'){
             String temp = "";
-            for(int i = 0; i < 4; i++){
-              temp += (*(flame_reading + i));
-            }
+            temp += (*(flame_reading + 0));
+            temp += (*(flame_reading + 1));
+            temp += (*(flame_reading + 2));
+            temp += (*(flame_reading + 3));
             Serial.println(temp);
             if (*(flame_reading + 3) == '1' && --i < 1){
               digitalWrite(LED_PIN, HIGH);

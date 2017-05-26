@@ -74,12 +74,19 @@ char* Flame_array::read_flame_array() {
             command[1] = '2';
         }
         command[3] = '0';
+        last_command = '0';
+        return command;
+    } else if (!(last_command == '1')){
+        command[1] = '1';
+        command[2] = '0';
+        command[3] = '0';
+        last_command = '1';
+        //If the reading might be from sunlight then this will be returned
         return command;
     }
-    command[1] = '1';
+    command[1] = '2';
     command[2] = '0';
     command[3] = '0';
-    //If the reading might be from sunlight then this will be returned
     return command;
 }
 
