@@ -78,8 +78,17 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
             if (!command.equals("") && !command.equals(last)) {
                 last = command;
                 try {
+
                     System.out.println("Sending:" + command + " L: " + last);
-                    out_commands.writeUTF(command + "\n");
+
+
+                    if (command.equals("hai")){
+                        out_commands.writeUTF("x000?");
+                        out_commands.writeUTF("y000?");
+                    } else {
+                        out_commands.writeUTF(command);
+
+                    }
                     out_commands.flush();
                     MainActivity.sendMe = "";
                 } catch (Exception e) {

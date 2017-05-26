@@ -24,7 +24,7 @@ import android.widget.ViewSwitcher;
  * Author: Sebastian Fransson
  * Last Updated: 19-04-2017
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements JoystickCrossView.JoystickCrossListener{
 
     //Views for collision animation.
     View v;
@@ -567,5 +567,28 @@ public class MainActivity extends AppCompatActivity {
     //Updates the collision indicator text.
      void updateCollisionIndicator(TextView view, int value){
         view.setText(value == 0 ? "+" : value + "");
+    }
+
+    @Override
+    public void onJoystickCrossMoved(int direction, int id){
+
+        switch (direction){
+            case 0:
+                sendMe = "hai";
+                break;
+            case 1:
+                sendMe = "x002?";
+                break;
+            case 2:
+                sendMe = "y001?";
+                break;
+            case 3:
+                sendMe = "x001?";
+                break;
+            case 4:
+                sendMe = "y002?";
+                break;
+        }
+
     }
 }
