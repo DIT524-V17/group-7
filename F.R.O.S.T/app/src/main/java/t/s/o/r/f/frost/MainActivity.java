@@ -24,7 +24,11 @@ import android.widget.ViewSwitcher;
  * Author: Sebastian Fransson
  * Last Updated: 19-04-2017
  */
-public class MainActivity extends AppCompatActivity implements JoystickCrossView.JoystickCrossListener{
+public class MainActivity extends AppCompatActivity implements JoystickView.JoystickListener, JoystickCrossView.JoystickCrossListener{
+
+
+    private static double oldCarSpeed;
+    private static double oldCarAngle;
 
     //Views for collision animation.
     View v;
@@ -569,6 +573,64 @@ public class MainActivity extends AppCompatActivity implements JoystickCrossView
         view.setText(value == 0 ? "+" : value + "");
     }
 
+    /**
+     * Author: Elaine Qvarnström
+     * Implementation of JoystickListener.
+     * Create the commands for moving the car.
+     * @param speed
+     * @param angle
+     * @param id
+     */
+    @Override
+    public void onJoystickMoved(double speed, double angle, int id) {
+
+                sendCarCommand(angle, speed);
+
+    }
+
+    /**
+     * Author: Elaine Qvarnström
+     * 
+     * @param angle
+     * @param speed
+     */
+    private void sendCarCommand(double angle, double speed){
+        // The angle
+        //if(Math.abs(angle-oldCarAngle) < 10){
+        if(angle != oldCarAngle){
+            String command = "" + (int) Math.abs((90 - angle / 2));//angle <= 180? "" + (90 - (int) angle / 2) : "" +  (90 - (int) angle / 2);
+
+            for(int i = 0; command.length() < 3; i++)
+                command = "0" + command;
+            sendMe = "a" + command + "?";
+            oldCarAngle = angle;
+            //if(DEBUG )Log.e("V1 Car angle", "a" + command + "?");
+        }
+        // The speed
+        if (speed != oldCarSpeed){ //&& (speedPause % 5 == 0 || speed == 0)) {
+            String command = "";
+            // min 29
+            // max 52
+            // Translating input from joystick according to protocol
+            command = "" + (int) -(speed / 4 - 95);
+
+            for (int i = 0; command.length() < 3; i++)
+                command = "0" + command;
+            sendMe = "d" + command + "?";
+            oldCarSpeed = speed;
+            //speedPause++;
+            //if(DEBUG)Log.e("Speed", "d" + command + "?");
+        }
+
+    }
+
+    /**
+     * Author: Elaine Qvarnström
+     * Implementation of JoystickCrossListener.
+     * Create commands for moving the camera.
+     * @param direction
+     * @param id
+     */
     @Override
     public void onJoystickCrossMoved(int direction, int id){
 
