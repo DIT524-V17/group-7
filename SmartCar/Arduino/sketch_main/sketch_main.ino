@@ -12,23 +12,29 @@ Isabelle Tornqvist
 Tim Jonasson
 Pontus Laestadius
 Anthony Path
-
-@Version 1.2
+@Version 1.3
+2017-05-24
+Anthony Path: Added support of modified collision control system
 2017-05-11
 Anthony Path: Added battery voltage measurement feature to determine and display battery level.
-
 2017-05-10
 Tim Jonasson: Removed the delay that made it so it doesnt send commands when the value doesnt change and that caused issues since we didnt 
 get the temperature to the app when the temperature didnt change
 Fixed an issue with the flame commands not being sent properly
-
 2017-05-08
 Isabelle Törnqvist: Added code to allow for deactivation of camera servos, X and Y. Refined temperature code. 
 */
 
 const int ONE_WIRE_BUS_PIN = 3; //for temperature sensor
-const int ECHO_PIN = 2;
-const int TRIG_PIN = 4;
+const int ECHO_PIN_FRONT_MID = 2; //front
+const int TRIG_PIN_FRONT_MID = 4;
+const int ECHO_PIN_FRONT_RIGHT = A8; // front right
+const int TRIG_PIN_FRONT_RIGHT  = A9;
+const int ECHO_PIN_FRONT_LEFT  = A10; // front left
+const int TRIG_PIN_FRONT_LEFT  = A11;
+const int ECHO_PIN_BACK = A12; // back 
+const int TRIG_PIN_BACK = A13;
+const int ULTRASONIC_SENSOR_COUNT = 4; //Number of ultrasonic sensors
 const int STEER_PIN = 5;
 const int FLAME_SENSOR_PIN = 6; 
 const int MOTOR_PIN = 7;
@@ -46,7 +52,11 @@ const int MAX_DISTANCE_ULTRASONIC = 400;
 int flame_reading;
 
 int velocity;
-int ultrasonic_range;
+int ultrasonic_range_front_mid;
+int ultrasonic_range_front_right;
+int ultrasonic_range_front_left;
+int ultrasonic_range_back;
+
 //Temperature variables
 int temperature;
 
@@ -57,7 +67,8 @@ int last_distance_read = 0;
 int distance_delay = 0;
 int temp_delay = 0;
 
-boolean obstacle_detected;
+boolean obstacle_detected_front;
+boolean obstacle_detected_back;
 boolean complete_command;
 boolean flame_detected;
 
@@ -77,7 +88,14 @@ Servo steer;
 String input;
 String ultrasonic_distance_string;
 
-NewPing sonar(TRIG_PIN, ECHO_PIN, MAX_DISTANCE_ULTRASONIC);
+
+NewPing sonars [ULTRASONIC_SENSOR_COUNT] { //Array of NewPing sonars, must be updated if more are added
+  NewPing(TRIG_PIN_FRONT_MID, ECHO_PIN_FRONT_MID, MAX_DISTANCE_ULTRASONIC),
+  NewPing(TRIG_PIN_FRONT_RIGHT, ECHO_PIN_FRONT_RIGHT, MAX_DISTANCE_ULTRASONIC),
+  NewPing(TRIG_PIN_FRONT_LEFT, ECHO_PIN_FRONT_LEFT, MAX_DISTANCE_ULTRASONIC),
+  NewPing(TRIG_PIN_BACK, ECHO_PIN_BACK, MAX_DISTANCE_ULTRASONIC)
+};
+
 
 //Setup a oneWire, used for temperature sensor
 OneWire oneWire(ONE_WIRE_BUS_PIN);
@@ -255,7 +273,8 @@ void command() {
         //Controls the speed
         case 'd':
             velocity = input.substring(1, 4).toInt();
-            if ((!flame_detected && !obstacle_detected) || velocity >= 90){
+            //Allows car to drive forward if no obstacle or flame is in front of it, drive backward if there is no obstacle behind the car, or stand still
+            if ((!flame_detected && !obstacle_detected_front && velocity < 90) || (velocity > 90 && !obstacle_detected_back) || velocity == 90){
                 motor.write(velocity);
             }
             break;
@@ -341,6 +360,56 @@ void readFlame(){
       }  
 }
 
+//collision control system  - getting range from all ultrasonic sensors, and printing range of middle one to serial for display
+void collisionControl() {
+    ultrasonic_range_front_mid = sonars[0].ping_cm();
+    ultrasonic_distance_string = "c" + (String)ultrasonic_range_front_mid + '\n';
+    ultrasonic_range_front_right=sonars[1].ping_cm();
+    ultrasonic_range_front_left=sonars[2].ping_cm();
+    ultrasonic_range_back=sonars[3].ping_cm();
+    if (last_distance_read != ultrasonic_range_front_mid && ++distance_delay >= 100){
+       // Serial.write(range);
+        Serial.print(ultrasonic_distance_string);
+        last_distance_read = ultrasonic_range_front_mid;
+        distance_delay = 0;
+}
+//Collision control - front
+if (motor_activation && velocity < 90 ){
+      //Is true if the range in front is less than 50 cm, front left and front right - less than 25 cm or if the flame sensor has set the flame variable to true
+        if ((((ultrasonic_range_front_mid != 0 && ultrasonic_range_front_mid <= 50 )  ||
+        (ultrasonic_range_front_right != 0 && ultrasonic_range_front_right <= 25 ) ||
+        (ultrasonic_range_front_left != 0 && ultrasonic_range_front_left <= 25 ))
+        || flame_detected){            
+                obstacle_detected_front = true;
+                collision_delay = 0;
+                motor.write(START_POSITION_MOTOR_SERVO);           
+        //Sets obstacle to false if the obstacle in front of the car disapeared
+        } else if (obstacle_detected_front){
+            obstacle_detected_front = false;
+            motor.write(START_POSITION_MOTOR_SERVO);
+        }
+    }
+//Collision control - back
+if (motor_activation && velocity > 90){ 
+      //Is true if the range is less than 50 cm in the back
+        if (ultrasonic_range_back != 0 && ultrasonic_range_back <= 50)   {
+                obstacle_detected_back = true;
+                collision_delay = 0;
+             
+               
+                motor.write(START_POSITION_MOTOR_SERVO);
+            }
+        //Sets obstacle to false if the obstacle in front of the car disappeared
+         else if (obstacle_detected_back){
+            obstacle_detected_back = false;
+            motor.write(START_POSITION_MOTOR_SERVO);
+        }
+} 
+
+
+
+}
+
 void readTemp(){
     temperature_sensor.requestTemperatures(); // Get temperatures
     printTemperature(thermometer); //Call  
@@ -355,7 +424,7 @@ int value = analogRead(VOLT_PIN);
 float voltage = value * (5.00 / 1023.00*3.13/8);  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
  //Formula taken from here: https://www.arduino.cc/en/Tutorial/ReadAnalogVoltage
  //Multiplied 3.13 because 47 and 100 K Ohm resistors lower voltage about 3.13 times, then divided by 8 to get approximate voltage per cell.
- if (voltage<voltage_Now && ++voltage_delay>=1000){ //change global variable and send voltage to phone only when voltage drops
+ if (voltage<voltage_Now ){ //change global variable and send voltage to phone only when voltage drops
   voltage_Now=voltage;
  String voltage_string = "v" + String(voltage_Now,2); // Normal .toString() method doesn't work for Float, had to use String(float, decimal places) instead
 //Serial.println(voltage_Now);
@@ -364,6 +433,10 @@ String voltage_string_to_send=voltage_string.substring(0, 5) + '\n';
   Serial.println(voltage_string_to_send);
   //output examples: v1.39, v1.31 etc
  } 
+
+
+
+ 
 }
 void loop() { 
      //Is true when a command with a ? in the end is given or if the input reaches a length atleast 4
@@ -378,42 +451,16 @@ void loop() {
     if(flame_activation){
     readFlame();  
     }
+  if (++voltage_delay >= 1000){
 sendVoltage();
+  }  
 //_activation of ultrasonic sensor
-  if(ultrasonic_activation){
-   //Pings the ultrasonic sensor
-    ultrasonic_distance_string = (String)sonar.ping_cm();
-    ultrasonic_range = ultrasonic_distance_string.toInt();
-    ultrasonic_distance_string = "c" + ultrasonic_distance_string + '\n';
-    if (last_distance_read != ultrasonic_range && ++distance_delay >= 100){
-       // Serial.write(range);
-        Serial.print(ultrasonic_distance_string);
-        last_distance_read = ultrasonic_range;
-        distance_delay = 0;
+  if(ultrasonic_activation && ++collision_delay >= 10){
+   //Pings the ultrasonic sensors
+  collisionControl();
     }   
-  }
+  
 
-//_activation of motor
-//Allows the car to drive backwards if an obstacle is in from of the car
-if (motor_activation && velocity < 90 ){
-      //Is true if the range is less than 50 cm or if the flame sensor has set the flame variable to true
-        if (((ultrasonic_range != 0 && ultrasonic_range <= 50) && ++collision_delay >= 250) || flame_detected){
-            if (ultrasonic_range > 20){
-                motor.write(velocity +(50 - ultrasonic_range)/2);
-            } else {
-                obstacle_detected = true;
-                collision_delay = 0;
-    
-               // motor.write(START_POSITION_MOTOR_SERVO +30);
-               // delay(300);
-                motor.write(START_POSITION_MOTOR_SERVO);
-            }
-        //Sets obstacle to false if the obstacle in front of the car disapeared
-        } else if (obstacle_detected){
-            obstacle_detected = false;
-            motor.write(START_POSITION_MOTOR_SERVO);
-        }
-    }
 
 //_activation for temperature sensor
 if(temperature_activation && ++temp_delay >= 1000){
