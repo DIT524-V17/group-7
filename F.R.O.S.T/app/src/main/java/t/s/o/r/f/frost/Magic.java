@@ -91,12 +91,11 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
             try{
                 in_commands = socket_commands.getInputStream();
                 if (in_commands.available() > 0){
-                    byte[] incoming = new byte[10];
+                    byte[] incoming = new byte[4];
                     int count = in_commands.read(incoming);
-                    System.out.println("Read: " + count);
                     String rec = "";
                     boolean skip = false;
-
+                    /*
                     if (leftOverRead != null){
                         for (int i = 0; i < leftOverRead.length; i++){
                             if (leftOverRead[i] == '\n'){
@@ -108,6 +107,7 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                         if (!skip)
                             leftOverRead = null;
                     }
+                    */
 
                     if (!skip)
                     for (int i = 0; i < count; i++){
@@ -117,7 +117,6 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                         }
                         rec += (char) incoming[i];
                     }
-                    System.out.println("IN_COMMANDS: " + rec);
                     readCommand(rec);
                 }
             } catch (Exception e){
@@ -349,6 +348,8 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 int value;
                 if (s.length() < 2 || s.length() > 7) return;
+
+                System.out.println("FOUND: " + s);
 
                 try {
                     switch (s.charAt(0)) {
