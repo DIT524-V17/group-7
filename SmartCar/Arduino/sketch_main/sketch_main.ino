@@ -378,7 +378,7 @@ if (motor_activation && velocity < 90 ){
       //Is true if the range in front is less than 50 cm, front left and front right - less than 25 cm or if the flame sensor has set the flame variable to true
         if ((((ultrasonic_range_front_mid != 0 && ultrasonic_range_front_mid <= 50 )  ||
         (ultrasonic_range_front_right != 0 && ultrasonic_range_front_right <= 25 ) ||
-        (ultrasonic_range_front_left != 0 && ultrasonic_range_front_left <= 25 ) )&& ++collision_delay >= 10)
+        (ultrasonic_range_front_left != 0 && ultrasonic_range_front_left <= 25 ))
         || flame_detected){            
                 obstacle_detected_front = true;
                 collision_delay = 0;
@@ -390,7 +390,7 @@ if (motor_activation && velocity < 90 ){
         }
     }
 //Collision control - back
-if (motor_activation && velocity > 90 && ++collision_delay >= 10){ 
+if (motor_activation && velocity > 90){ 
       //Is true if the range is less than 50 cm in the back
         if (ultrasonic_range_back != 0 && ultrasonic_range_back <= 50)   {
                 obstacle_detected_back = true;
@@ -424,7 +424,7 @@ int value = analogRead(VOLT_PIN);
 float voltage = value * (5.00 / 1023.00*3.13/8);  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
  //Formula taken from here: https://www.arduino.cc/en/Tutorial/ReadAnalogVoltage
  //Multiplied 3.13 because 47 and 100 K Ohm resistors lower voltage about 3.13 times, then divided by 8 to get approximate voltage per cell.
- if (voltage<voltage_Now && ++voltage_delay >= 1000){ //change global variable and send voltage to phone only when voltage drops
+ if (voltage<voltage_Now ){ //change global variable and send voltage to phone only when voltage drops
   voltage_Now=voltage;
  String voltage_string = "v" + String(voltage_Now,2); // Normal .toString() method doesn't work for Float, had to use String(float, decimal places) instead
 //Serial.println(voltage_Now);
@@ -451,9 +451,11 @@ void loop() {
     if(flame_activation){
     readFlame();  
     }
+  if (++voltage_delay >= 1000){
 sendVoltage();
+  }  
 //_activation of ultrasonic sensor
-  if(ultrasonic_activation){
+  if(ultrasonic_activation && ++collision_delay >= 10){
    //Pings the ultrasonic sensors
   collisionControl();
     }   
