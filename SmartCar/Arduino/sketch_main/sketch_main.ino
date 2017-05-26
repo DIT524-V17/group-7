@@ -30,7 +30,7 @@ int range;
 int tempC;
 int oldTemp;
 int i = 0;
-
+ 
 int collisionServoPosition = START_POSITION_STEER_SERVO;
 int collision_delay = 250;
 int flame_delay = 500;
