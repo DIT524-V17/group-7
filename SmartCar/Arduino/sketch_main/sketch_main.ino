@@ -376,7 +376,7 @@ void collisionControl() {
 //Collision control - front
 if (motor_activation && velocity < 90 ){
       //Is true if the range in front is less than 50 cm, front left and front right - less than 25 cm or if the flame sensor has set the flame variable to true
-        if ((((ultrasonic_range_front_mid != 0 && ultrasonic_range_front_mid <= 50 )  ||
+        if (((ultrasonic_range_front_mid != 0 && ultrasonic_range_front_mid <= 50 )  ||
         (ultrasonic_range_front_right != 0 && ultrasonic_range_front_right <= 25 ) ||
         (ultrasonic_range_front_left != 0 && ultrasonic_range_front_left <= 25 ))
         || flame_detected){            
