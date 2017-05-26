@@ -31,10 +31,10 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
     private long looptime = 0;
     private MainActivity tt;
     private boolean lastImgLeftOver = false;
-    private int BIG_READ = 60000;
+    private int BIG_READ = 35000;
     // private int IMG_DIS = (50)*(BIG_READ/1000);
-    private int IMG_DIS = 3000;
-    private int REL_DEC = 2000;
+    private int IMG_DIS = 5000;
+    private int REL_DEC = 1000;
     private int REL_INC = 300;
     private byte[] leftOverRead = null;
 
@@ -137,11 +137,11 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 boolean parsingImage = false;
 
-                byte[] data = new byte[1024*78];
+                byte[] data = new byte[1024*70];
                 int index = 0;
                 int count;
                 final int MIN_BUFFER = 2; // Only reads in 2 byte increments. :( Bit sad.
-                final int BIG_BUFFER = MIN_BUFFER*1024;
+                final int BIG_BUFFER = MIN_BUFFER*1024*2;
                 int start = 0;
 
                 long frameTime = System.currentTimeMillis();
@@ -292,8 +292,11 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                         ex.printStackTrace();
                         // index = data.length;
                         BIG_READ-=REL_DEC;
-
                     }
+
+                    if (BIG_READ < 0)
+                        BIG_READ = 15000;
+
                     if (index != 0){
 
                         if (index-IMG_DIS > BIG_READ){
