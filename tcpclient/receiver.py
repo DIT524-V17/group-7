@@ -105,7 +105,7 @@ class Receiver:
                     # If there does not exist a message due to a connection issue, End loop.
 			
 
-                    if self.msg and False:
+                    if self.msg:
 
 			
                             # Decodes the message received from bytes to text using either utf or ascii.
@@ -113,7 +113,7 @@ class Receiver:
 
                             # Writes the message to the serial port on the Arduino.
                             if (self.msg_last != self.msg):
-                                print("2. To Arduino: ") 
+                                # print("2. To Arduino: ") 
                                 usb.write(self.msg)
                                 self.msg_last = self.msg
 
@@ -128,9 +128,9 @@ class Receiver:
                         # Grabs an entire line (until a newline character exists). And decode in to readable text.
                         try:
                             pass
-                             info = usb.readline().decode()
-                             print("3. To Android: " + info)
-                       	     self.client.send(info.encode(coding))
+                            info = usb.readline().decode()
+                            print("3. To Android: " + info)
+                       	    self.client.send(info.encode(coding))
                        	except:
                             print("Unable to read")
                             # Send the message to the client.
@@ -148,7 +148,6 @@ class Receiver:
         print("Disconnected at: %s" % s)
 
     def openImg(self):
-        print('4.5')
         with open('img.jpg',"rb") as imageFile:
             self.b = bytearray(imageFile.read()) # Create a byte array of the saved image file.
             threading.Thread(target=self.sendFrame, args=(self.b,)).start()
@@ -170,11 +169,11 @@ class Receiver:
                 # Set the video port to True for an increase in sending speed while sacrificing quality.
                 # resize=(int(1280/4), int(720/4)),
                 camera.capture('img.jpg', use_video_port=True)
-                self.ite += 1
-                if (int(time.time()) >= self.fps+2):
-                    print("FPS: {}".format(self.ite/2))
-                    self.fps = int(time.time())
-                    self.ite = 0
+                # self.ite += 1
+                # if (int(time.time()) >= self.fps+2):
+                    # print("FPS: {}".format(self.ite/2))
+                    # self.fps = int(time.time())
+                    # self.ite = 0
      
                 threading.Thread(target=self.openImg).start()
                 
@@ -198,7 +197,7 @@ class Receiver:
             #threading.Thread(target=self.sendInBG, args= (b[index*div::],)).start()
             #threading.Thread(target=self.sendInBG, args= (b[index*div::],)).start()
 
-            print("Frame sent with length: {}".format(len(b)) )
+           # print("Frame sent with length: {}".format(len(b)) )
         except:
             traceback.print_exc()
             return
