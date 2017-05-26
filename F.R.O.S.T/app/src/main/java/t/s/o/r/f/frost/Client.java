@@ -13,7 +13,7 @@ import java.util.*;
 public class Client {
 
     static int port = 9005;
-    static String host = "192.168.0.120";
+    static String host = "172.24.1.1";
     static Boolean c = false;
 
     public static Transmitter init(String host, int port){

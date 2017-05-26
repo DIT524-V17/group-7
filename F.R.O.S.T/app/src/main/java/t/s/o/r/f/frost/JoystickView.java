@@ -110,45 +110,19 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
 
                 double hypotenuse = Math.sqrt(Math.pow(e.getX() - centerX, 2) + Math.pow(e.getY() - centerY, 2));
 
-
-                //float cos = (e.getX() - centerX) / hypotenuse; //cos = a/h
-
-                //float angle = (float) Math.toDegrees(sin);
-                //if(e.getY() - centerY < 0)
-
-                Log.e("X", "" + e.getX());
-                Log.e("Y", "" + (e.getY()-centerY));
-                if(getId() == R.id.joystickCamera && displacement < baseRadius){
+                if(displacement < baseRadius){
                     double sin = (e.getY() - centerY) / hypotenuse; //sin = o/h
-                    //double angle = (Math.toDegrees( Math.atan2(e.getY() - centerY, e.getX() - centerX)));//(float) Math.toDegrees(sin);
-                    double ratio = baseRadius / displacement;
-                    double constrainedX = centerX + (e.getX() - centerX) * ratio;
-                    double constrainedY = centerY + (e.getY() - centerY) * ratio;
-                }
-                else if(getId() == R.id.joystickCamera){
-                    if(getX() == centerX && getY() < centerY ){
-                        joystickCallback.onJoystickMoved(0, 90, getId());
-                    }
-                    else if(getX() == centerX && getY() > centerY){
-                        joystickCallback.onJoystickMoved(0, 270, getId());
-                    }
-                    else if(getY()==)
-
-                }
-                else if(displacement < baseRadius) {
-                    double sin = (e.getY() - centerY) / hypotenuse; //sin = o/h
-                    double angle = 360.0 - (Math.toDegrees( Math.atan2(e.getY() - centerY, e.getX() - centerX)) + 360.0) % 360.0;//(float) Math.toDegrees(sin);
+                    double angle = 360.0 - (Math.toDegrees( Math.atan2(e.getY() - centerY, e.getX() - centerX)) + 360.0) % 360.0;
                     if(e.getY() - centerY > 0)
                         speed = -speed;
 
                     drawJoystick(e.getX(), e.getY());
                     //Log.e("Joystick angle", speed/baseRadius * 100 +"");
                     joystickCallback.onJoystickMoved(speed/baseRadius * 100, angle, getId());
-
                 }
-                else {
+                else{
                     double sin = (e.getY() - centerY) / hypotenuse; //sin = o/h
-                    //double angle = (Math.toDegrees( Math.atan2(e.getY() - centerY, e.getX() - centerX)));//(float) Math.toDegrees(sin);
+
                     double ratio = baseRadius / displacement;
                     double constrainedX = centerX + (e.getX() - centerX) * ratio;
                     double constrainedY = centerY + (e.getY() - centerY) * ratio;
@@ -156,10 +130,12 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
                     speed = 100;
                     if(e.getY() - centerY > 0)
                         speed = -speed;
-                    Log.e("X", "" + e.getX());
+
                     drawJoystick(constrainedX, constrainedY);
-                    joystickCallback.onJoystickMoved(speed, angle, getId());//(constrainedX - centerX) / baseRadius, (constrainedY - centerY) / baseRadius, getId());
+                    joystickCallback.onJoystickMoved(speed, angle, getId());
+
                 }
+
             }
             else{
                 drawJoystick(centerX, centerY);

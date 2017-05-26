@@ -11,18 +11,24 @@
     android:orientation="horizontal"
     tools:context="t.s.o.r.f.frost.MainActivity">
 
+    <t.s.o.r.f.frost.CrossJoystickView
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:id="@+id/crossTest"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"/>
     <t.s.o.r.f.frost.JoystickView
         android:layout_width="130dp"
         android:layout_height="130dp"
         android:id="@+id/joystickCar"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"/>
-    <t.s.o.r.f.frost.JoystickView
+    <!--<t.s.o.r.f.frost.JoystickView
         android:layout_width="130dp"
         android:layout_height="130dp"
         android:id="@+id/joystickCamera"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"/>-->
 
 
 

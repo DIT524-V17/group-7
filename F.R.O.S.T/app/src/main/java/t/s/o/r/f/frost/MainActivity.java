@@ -22,7 +22,7 @@ import java.util.Scanner;
 import static t.s.o.r.f.frost.Client.*;
 
 
-public class MainActivity extends AppCompatActivity implements JoystickView.JoystickListener {
+public class MainActivity extends AppCompatActivity implements JoystickView.JoystickListener, CrossJoystickView.CrossJoystickListener {
 
     static boolean DEBUG = true;
     TextView tv;
@@ -36,7 +36,6 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        JoystickView joystick = new JoystickView(this);
         setContentView(R.layout.activity_main);
         //new threads().execute();
         tv = (TextView) findViewById(R.id.collision_text);
@@ -50,13 +49,39 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
     public void onJoystickMoved(double speed, double angle, int id) {
 
         switch (id) {
-            case R.id.joystickCamera:
+            /*case R.id.joystickCamera:
                 sendCameraCommand(angle);
-                break;
+                break;*/
             case R.id.joystickCar:
                 sendCarCommandv1(angle, speed);
                 //sendCarCommandv2(angle, speed);
         break;
+        }
+
+    }
+    @Override
+    public void onCrossJoystickMoved(int direction, int id){
+
+        switch (direction){
+            case 0:
+          //       threads.r1.write("x000?");
+                break;
+            case 1:
+                Log.e("Test", 1 + "");
+            //     threads.r1.write("x001?");
+                break;
+            case 2:
+                Log.e("Test", 2 + "");
+              //   threads.r1.write("y002?");
+                break;
+            case 3:
+                Log.e("Test", 3 + "");
+                // threads.r1.write("x002?");
+                break;
+            case 4:
+                Log.e("Test", 4 + "");
+                 //threads.r1.write("y001?");
+                break;
         }
 
     }
@@ -83,16 +108,17 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
 
     private void sendCarCommandv1(double angle, double speed){
         // The angle
-        if(Math.abs(angle-oldCarAngle) < 10){
-            String command = angle <= 180? "" + (90 - (int) angle / 2) : "" + (int)(360-angle)/2;
+        //if(Math.abs(angle-oldCarAngle) < 10){
+        if(angle != oldCarAngle){
+            String command = "" + (int) Math.abs((90 - angle / 2));//angle <= 180? "" + (90 - (int) angle / 2) : "" +  (90 - (int) angle / 2);
 
             for(int i = 0; command.length() < 3; i++)
                 command = "0" + command;
             // threads.r1.write("a" + command + "?");
-            if(DEBUG && command.length() == 3)Log.e("V1 Car angle", "a" + command + "?");
+            if(DEBUG )Log.e("V1 Car angle", "a" + command + "?");
         }
         // The speed
-        if (speed != oldCarSpeed && (speedPause % 5 == 0 || speed == 0)) {
+        if (speed != oldCarSpeed){ //&& (speedPause % 5 == 0 || speed == 0)) {
             String command = "";
             // min 29
             // max 52
@@ -104,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
             // threads.r1.write("d" + command + "?");
             oldCarSpeed = speed;
             speedPause++;
-            if(DEBUG)Log.e("Car speed", "d" + command + "?");
+            if(DEBUG)Log.e("Speed", "d" + command + "?");
         }
 
     }
@@ -148,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
             oldCarSpeed = speed;
             speedPause++;
         }
-        if(DEBUG)Log.e("Car speed", "d" + command + "?");
+        if(DEBUG)Log.e("Speed", "d" + command + "?");
     }
     //static String drive = "d070";
     /*@Override
@@ -268,7 +294,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
      * Initiates the Transmitter with the 'host' id and correct port.
      * TODO: Rewrite this to actually make sense. Override the two other methods if they are needed later.
      */
-  /* public static class threads extends AsyncTask<String, Void, Void> {
+   /*public static class threads extends AsyncTask<String, Void, Void> {
        static Transmitter r1;
         @Override
         public Void doInBackground(String... params) {
@@ -330,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
         });
     }
 
-  /*  static void handleInput(){
+    /*static void handleInput(){
         String s = threads.r1.read();
         if (s.length() < 2) return;
         System.out.println("HandleInput: " + s);
