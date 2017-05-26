@@ -30,11 +30,21 @@ public class MainActivity extends AppCompatActivity {
     View v;
     TextView tv;
     View tvbg;
+
     ImageView ImageSequence;
     ImageView fireImage;
     TextView ccValue;
     TextView textElement;
     ImageSwitcher SwitchImageTemp;
+
+  //ImageViews for flame detection
+    private ImageView fireImageNorth;
+    private ImageView fireImageNorthNorthWest;
+    private ImageView fireImageNorthWest;
+    private ImageView fireImageNorthNorthEast;
+    private ImageView fireImageNorthEast;
+    private TextView toMuchLight;
+
     public Button button6;
     private Boolean item_flame_boolean = true;
     private Boolean item_temperature_boolean = true;
@@ -45,6 +55,10 @@ public class MainActivity extends AppCompatActivity {
     private Boolean item_camera_horizontal_boolean = true;
     private Boolean item_camera_vertical_boolean = true;
     public static String sendMe = "";
+
+    static ImageView[] fireArray = new ImageView[]{fireImageNorth, fireImageNorthNorthWest, fireImageNorthWest,
+            fireImageNorthNorthEast, fireImageNorthEast};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,9 +71,26 @@ public class MainActivity extends AppCompatActivity {
         tv = (TextView) findViewById(R.id.collision_text); //TextView for collision text.
         v = findViewById(R.id.cc_view4);
         tvbg = findViewById(R.id.text_background);
-        fireImage = (ImageView)findViewById(R.id.imageView1);
-        fireImage.setVisibility(View.INVISIBLE);
-        ImageSequence = (ImageView) findViewById(R.id.imageSequence);
+
+        //added 2017-05-23 for flame detection using 5-channel
+        fireImageNorth = (ImageView)findViewById(R.id.imageView1);
+        fireImageNorth.setVisibility(View.INVISIBLE);
+
+        fireImageNorthNorthWest = (ImageView)findViewById(R.id.imageView);
+        fireImageNorthNorthWest.setVisibility(View.INVISIBLE);
+
+        fireImageNorthWest = (ImageView)findViewById(R.id.imageView3);
+        fireImageNorthWest.setVisibility(View.INVISIBLE);
+
+        fireImageNorthNorthEast = (ImageView)findViewById(R.id.imageView2);
+        fireImageNorthNorthEast.setVisibility(View.INVISIBLE);
+
+        fireImageNorthEast = (ImageView)findViewById(R.id.imageView4);
+        fireImageNorthEast.setVisibility(View.INVISIBLE);
+
+        toMuchLight = (TextView)findViewById(R.id.textView4);
+        toMuchLight.setVisibility(View.INVISIBLE);
+
         ccValue = (TextView) findViewById(R.id.ccValue); //TextView for collision distance value.
         animate();
         //Context used for the reconnect feature.
@@ -439,7 +470,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         //Calling the method "displayTemp" which is defined below
-       // displayTemp(theOutputFromTheSensor); //Test method call.
+        //displayTemp(60); //Test method call.
 
     }
 
@@ -467,6 +498,7 @@ public class MainActivity extends AppCompatActivity {
             SwitchImageTemp.setImageResource(R.drawable.tempmedium);
         }
     }
+
 
     //Method for collision button animation.
 
@@ -511,6 +543,23 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    /**
+     * Author: Isabelle Törnqvist 2017-05-24
+     * Content: Checks to see if a flame is detected and where, and shows the appropriate image
+     * @param pos - position of the value imageView in the array of ImageViews
+     * @param flameStatus
+     */
+    static void WhereFlameAt(int pos, char flameStatus){
+        //ImageView I = fireArray[pos];
+
+        if(flameStatus == '1'){
+            fireArray[pos].setVisibility(View.VISIBLE);
+        }else{
+            fireArray[pos].setVisibility(View.INVISIBLE);
+            //flameLocation.setImageAlpha(30);
+        }
     }
 
     //Updates the collision indicator text.
