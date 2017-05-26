@@ -552,7 +552,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Author: Isabelle Törnqvist
+     * Author: Isabelle Törnqvist 2017-05-24
      * Content: Checks to see if a flame is detected and where, and shows the appropriate image
      * @param pos - position of the value imageView in the array of ImageViews
      * @param flameStatus
@@ -566,7 +566,6 @@ public class MainActivity extends AppCompatActivity {
             fireArray[pos].setVisibility(View.INVISIBLE);
             //flameLocation.setImageAlpha(30);
         }
-
     }
 
     /**
@@ -596,22 +595,7 @@ public class MainActivity extends AppCompatActivity {
                         for (ImageView tempName : fireArray){
                             tempName.setVisibility(View.INVISIBLE);
                         }
-
-                    }
-                    //Debug/test code
-                    /**
-                     * else if(s.charAt(2) == '2'){
-                     if(s.charAt(3) == '1'){
-                     fireImageNorth.setVisibility(View.VISIBLE);
-                     }
-                     else {
-                     fireImageNorth.setVisibility(View.INVISIBLE);
-                     }
-                     }
-                     */
-
-
-                    else{
+                    }else{
                         toMuchLight.setVisibility(View.INVISIBLE);
                         WhereFlameAt(s.charAt(2), s.charAt(3));
                     }
