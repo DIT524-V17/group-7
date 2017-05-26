@@ -15,7 +15,7 @@ import serial
 coding = 'utf-8' # 'ISO8859-1'
 
 # Arduino connected via a specific USB port.
-usb = serial.Serial('/dev/ttyACM0', 9600, timeout=.2)
+usb = serial.Serial('/dev/ttyACM0', 9600, timeout=.1)
 
 
 class Receiver:
@@ -27,6 +27,7 @@ class Receiver:
     connection = False
     address = None
     msg = None
+    msg_last = None
     prv = 0
     b = None
     client = None
@@ -93,7 +94,7 @@ class Receiver:
                     # This follows this example of how to use select in python:
                     # http://stackoverflow.com/questions/2719017/how-to-set-timeout-on-pythons-socket-recv-method
                     # This will give me a none blocking message receiver.
-                    ready = select.select([self.client], [], [], 0.2)
+                    ready = select.select([self.client], [], [], 0.1)
 
                     # Times out according to previous declaration.
                     if ready[0]:
@@ -104,15 +105,17 @@ class Receiver:
                     # If there does not exist a message due to a connection issue, End loop.
 			
 
-                    if self.msg:
+                    if self.msg and False:
 
 			
                             # Decodes the message received from bytes to text using either utf or ascii.
-                            #self.msg = self.msg.decode(coding)
-                            print("2. To Arduino: ")
+                            # self.msg = self.msg.decode(coding)
 
                             # Writes the message to the serial port on the Arduino.
-                            usb.write(self.msg)
+                            if (self.msg_last != self.msg):
+                                print("2. To Arduino: ") 
+                                usb.write(self.msg)
+                                self.msg_last = self.msg
 
                             # Flush the stream to force it to write to the buffer.
                             usb.flush()
@@ -125,9 +128,9 @@ class Receiver:
                         # Grabs an entire line (until a newline character exists). And decode in to readable text.
                         try:
                             pass
-                            info = usb.readline().decode()
-                            print("3. To Android: " + info)
-                       	    self.client.send(info.encode(coding))
+                             info = usb.readline().decode()
+                             print("3. To Android: " + info)
+                       	     self.client.send(info.encode(coding))
                        	except:
                             print("Unable to read")
                             # Send the message to the client.
@@ -145,17 +148,18 @@ class Receiver:
         print("Disconnected at: %s" % s)
 
     def openImg(self):
+        print('4.5')
         with open('img.jpg',"rb") as imageFile:
             self.b = bytearray(imageFile.read()) # Create a byte array of the saved image file.
             threading.Thread(target=self.sendFrame, args=(self.b,)).start()
-
 
     def drawme(self):
         # Sets the camera object and resolution.
         with picamera.PiCamera() as camera:
             res_width = 1280
             res_height = 720
-            camera.resolution = (res_width, res_height)  # Sets the resolution to 1280x720.
+            camera.framerate = 10
+            camera.resolution = (320, 191)  # Sets the resolution to 1280x720.
             camera.brightness = 45
             
             time.sleep(2) # Let the camera warm up for 2 seconds.
@@ -164,16 +168,17 @@ class Receiver:
             while self.connection:
                 # Capture an image and rezize it to 426x240.
                 # Set the video port to True for an increase in sending speed while sacrificing quality.
+                # resize=(int(1280/4), int(720/4)),
+                camera.capture('img.jpg', use_video_port=True)
                 self.ite += 1
                 if (int(time.time()) >= self.fps+2):
                     print("FPS: {}".format(self.ite/2))
                     self.fps = int(time.time())
                     self.ite = 0
-                    
-                
-                camera.capture('img.jpg', resize=(int(res_width/3), int(res_height/3)),use_video_port=True)
+     
                 threading.Thread(target=self.openImg).start()
                 
+            
     
     # Method for sending the frames through the Java Client
     # b is the byte array
@@ -203,7 +208,6 @@ class Receiver:
         try:
             self.camera_feed.send(b) # Sends the image through the socket to the Java client.
             #self.camera_feed.send(b[int(len(b)/2):len(b)]) # Sends the image through the socket to the Java client.
-
         # Catch error and try to resend the image.
         except BlockingIOError: 
             time.sleep(0.1)
