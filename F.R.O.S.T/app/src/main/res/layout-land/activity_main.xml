@@ -12,6 +12,11 @@
     android:background="@android:color/black"
     tools:context="t.s.o.r.f.frost.MainActivity">
 
+    <!---Camera Feed-->
+    <ImageView
+        android:id="@+id/imageSequence"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <!---Steer Right Button-->
     <Button
@@ -195,6 +200,7 @@
         android:layout_alignBottom="@+id/button9"
         android:layout_alignStart="@+id/button3" />
 
+    <!---Camera Down-->
     <Button
         android:id="@+id/button9"
         android:layout_width="wrap_content"
@@ -207,6 +213,7 @@
         android:layout_alignStart="@+id/button10"
         android:layout_alignEnd="@+id/button10" />
 
+    <!---Camera Up-->
     <Button
         android:id="@+id/button10"
         android:layout_width="wrap_content"
@@ -217,13 +224,7 @@
         android:layout_toEndOf="@+id/cc_view4"
         android:text="Camera Down" />
 
-    <!---Custom Style
-    <style android:name="BackGroundImageView">
-        <item android:name = "android:alpha">0.5</item>
-        <item android:name="android:scaleType">fitXY</item>
-        <item android:name="android:src">@drawable/img_background</item>
-    </style>-->
-
+    <!---flame indication-->
     <ImageView
         android:id="@+id/imageView5"
         android:layout_width="400px"
@@ -288,6 +289,8 @@
         android:text="To much light"
         android:layout_alignParentTop="true"
         android:layout_alignEnd="@+id/button8" />
+
+
 
 
 
