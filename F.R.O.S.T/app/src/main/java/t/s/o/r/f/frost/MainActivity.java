@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private Boolean item_camera_vertical_boolean = true;
     public static String sendMe = "";
 
-    static ImageView[] fireArray = new ImageView[]{fireImageNorth, fireImageNorthNorthWest, fireImageNorthWest,
+     ImageView[] fireArray = new ImageView[]{fireImageNorth, fireImageNorthNorthWest, fireImageNorthWest,
             fireImageNorthNorthEast, fireImageNorthEast};
 
 
@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
         tv = (TextView) findViewById(R.id.collision_text); //TextView for collision text.
         v = findViewById(R.id.cc_view4);
         tvbg = findViewById(R.id.text_background);
+
+        ImageSequence = (ImageView) findViewById(R.id.imageSequence);
 
         //added 2017-05-23 for flame detection using 5-channel
         fireImageNorth = (ImageView)findViewById(R.id.imageView1);
@@ -551,7 +553,7 @@ public class MainActivity extends AppCompatActivity {
      * @param pos - position of the value imageView in the array of ImageViews
      * @param flameStatus
      */
-    static void WhereFlameAt(int pos, char flameStatus){
+     void WhereFlameAt(int pos, char flameStatus){
         //ImageView I = fireArray[pos];
 
         if(flameStatus == '1'){
