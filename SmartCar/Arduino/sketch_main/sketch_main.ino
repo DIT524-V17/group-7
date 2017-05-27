@@ -362,7 +362,11 @@ void readFlame(){
 
 //collision control system  - getting range from all ultrasonic sensors, and printing range of middle one to serial for display
 void collisionControl() {
-    ultrasonic_range_front_mid = sonars[0].ping_cm();
+  
+  //Doesnt work
+  
+  
+    /*ultrasonic_range_front_mid = sonars[0].ping_cm();
     ultrasonic_distance_string = "c" + (String)ultrasonic_range_front_mid + '\n';
     ultrasonic_range_front_right=sonars[1].ping_cm();
     ultrasonic_range_front_left=sonars[2].ping_cm();
@@ -372,9 +376,9 @@ void collisionControl() {
         Serial.print(ultrasonic_distance_string);
         last_distance_read = ultrasonic_range_front_mid;
         distance_delay = 0;
-}
-//Collision control - front
-if (motor_activation && velocity < 90 ){
+    }
+    //Collision control - front
+    if (motor_activation && velocity < 90 ){
       //Is true if the range in front is less than 50 cm, front left and front right - less than 25 cm or if the flame sensor has set the flame variable to true
         if (((ultrasonic_range_front_mid != 0 && ultrasonic_range_front_mid <= 50 )  ||
         (ultrasonic_range_front_right != 0 && ultrasonic_range_front_right <= 25 ) ||
@@ -389,8 +393,8 @@ if (motor_activation && velocity < 90 ){
             motor.write(START_POSITION_MOTOR_SERVO);
         }
     }
-//Collision control - back
-if (motor_activation && velocity > 90){ 
+    //Collision control - back
+    if (motor_activation && velocity > 90){ 
       //Is true if the range is less than 50 cm in the back
         if (ultrasonic_range_back != 0 && ultrasonic_range_back <= 50)   {
                 obstacle_detected_back = true;
@@ -404,10 +408,7 @@ if (motor_activation && velocity > 90){
             obstacle_detected_back = false;
             motor.write(START_POSITION_MOTOR_SERVO);
         }
-} 
-
-
-
+    } */
 }
 
 void readTemp(){
