@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.ImageView;
 
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
@@ -17,7 +18,7 @@ import java.util.Arrays;
 /**
  * @author Pontus Laestadius
  * @since 05-05-2017
- * @version 3.0
+ * @version 3.2
  */
 class Magic extends AsyncTask<String, Void, Bitmap> {
 
@@ -28,15 +29,14 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
     private Socket socket_commands;
     private boolean stupid = false;
     private String last = "";
-    private long looptime = 0;
     private MainActivity tt;
     private boolean lastImgLeftOver = false;
-    private int BIG_READ = 35000;
-    // private int IMG_DIS = (50)*(BIG_READ/1000);
-    private int IMG_DIS = 5000;
+    private int BIG_READ = 20000;
+    private int IMG_DIS = 20000;
+    private int MIN_READ = 10000;
     private int REL_DEC = 1000;
-    private int REL_INC = 300;
-    private byte[] leftOverRead = null;
+    private int REL_INC = 500;
+    // private byte[] leftOverRead = null;
 
     Magic(MainActivity ts){
         tt = ts;
@@ -59,14 +59,7 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
 
         boolean alwaysTrue = true;
 
-        while (alwaysTrue) {
-
-            long this_loop = looptime - System.currentTimeMillis();
-            looptime = System.currentTimeMillis();
-
-            if (this_loop > 20){
-                System.out.println("Slow loop: 0." + this_loop + "s");
-            }
+        while (alwaysTrue) { // I wish the IDE wouldn't complain about always true always.
 
             try { // Catches IO exceptions
                 out_commands = new DataOutputStream(socket_commands.getOutputStream());
@@ -99,12 +92,19 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
             try{
                 in_commands = socket_commands.getInputStream();
                 if (in_commands.available() > 0){
-                    byte[] incoming = new byte[10];
+                    byte[] incoming = new byte[4];
                     int count = in_commands.read(incoming);
-                    System.out.println("Read: " + count);
                     String rec = "";
-                    boolean skip = false;
+                    // boolean skip = false;
 
+                    /*
+                    This feature did not work so it is commented out.
+                    It's intended purpose was to save left over parts of the commands
+                    until next iteration when they get passed so we don't cut of
+                    any commands.
+                     */
+
+                    /*
                     if (leftOverRead != null){
                         for (int i = 0; i < leftOverRead.length; i++){
                             if (leftOverRead[i] == '\n'){
@@ -116,21 +116,38 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                         if (!skip)
                             leftOverRead = null;
                     }
+                    */
 
-                    if (!skip)
+                    // if (!skip)
                     for (int i = 0; i < count; i++){
                         if (incoming[i] == '\n'){
-                            leftOverRead = Arrays.copyOfRange(incoming, i, count);
+                            //leftOverRead = Arrays.copyOfRange(incoming, i, count);
                             break;
                         }
                         rec += (char) incoming[i];
                     }
-                    System.out.println("IN_COMMANDS: " + rec);
                     readCommand(rec);
                 }
             } catch (Exception e){
                 e.printStackTrace();
             }
+
+            /*
+            Camera feed below
+            * @author Pontus Laestadius
+            * With help from Sebastian Fransson
+            * @since 05-18-2017
+            * @version 2.0
+            *
+            * Copyright 2017. Please don't steal this. It's under GPL 3.0
+            *
+            * There was no suitable solution. So I reinvented the wheel.
+            * It decodes byte arrays received from the camera socket which
+            * then interprets the starting and ending bytes using a self-made algorithm
+            * Then processes a BitMap to display the picture.
+            * If you want the details of how it works it's fully documented below as
+            * this is just a brief overview.
+             */
 
             try{
                 in_camera = new DataInputStream(new BufferedInputStream(socket_camera.getInputStream()));
@@ -146,7 +163,7 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 boolean parsingImage = false;
 
-                byte[] data = new byte[1024*70];
+                byte[] data = new byte[1024*(((BIG_READ/2000)+40)*2)];
                 int index = 0;
                 int count;
                 final int MIN_BUFFER = 2; // Only reads in 2 byte increments. :( Bit sad.
@@ -294,17 +311,35 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                                 }
                             }
                         }
+
+                        /*
+                        Avoids ArrayIndexOutOfBounds Because it slows the program down
+                        As it would cause a stacktrace and the system to slow down by about
+                        100-300ms.
+                         */
+
                         if (index+BIG_BUFFER >= data.length){
-                            continue;
+                            break;
                         }
+
+                        /*
+                        If AIOFBE occurs, I want to reduce the number of bytes should be pre-read
+                        so it does not occur for the next image.
+                         */
                     } catch (ArrayIndexOutOfBoundsException ex){
                         ex.printStackTrace();
-                        // index = data.length;
                         BIG_READ-=REL_DEC;
                     }
 
-                    if (BIG_READ < 0)
-                        BIG_READ = 15000;
+                    /*
+                    Dymanically changes the expected read amount to reduce latency between each image.
+                    It will to to always be within the expected amount IMG_DIS. These values should
+                    be optimized depending on what size the image you are attempting to send.
+                    This is currently set to work for 30-50k with sudden drops of 4000 bytes.
+                     */
+
+                    if (BIG_READ < MIN_READ)
+                        BIG_READ = MIN_READ;
 
                     if (index != 0){
 
@@ -313,13 +348,16 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                         } else if ((index-start) < BIG_READ+IMG_DIS){
                             BIG_READ -= REL_DEC;
                         }
-                        System.out.println("BR:" + BIG_READ + " I: " + (index-start));
 
                         final byte[] f_data = data;
                         final int f_start = start;
+                        // If we used the lastImgLeftOver that means the
+                        // Starting bytes have already been read and should be at position 2.
                         final int f_index = index-(lastImgLeftOver?2:0);
 
                         // Copies the part of the array that was filled with data.
+                        // This part runs on a seperate thread to reduce usage on the background one.
+                        // Copying the array takes some time and effort from the computer :(
                         tt.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -327,7 +365,8 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                             }
                         });
                         // Prints the byte length of the piture and the duration it took to process.
-                        System.out.println("EOI: " + index + " IN " +
+                        System.out.println("BR:" + BIG_READ + " I: " +
+                                (index-start) + " EOI: " + index + " IN " +
                                 (System.currentTimeMillis() - frameTime) + "ms");
                     }
                 }
@@ -338,6 +377,10 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
         return null;
     }
 
+    /*
+    Used for setting the BitMap to display the camera feed to the user.
+    @Author Sebastian
+     */
     private void displayImage(final byte[] arr){
         tt.runOnUiThread(new Runnable() {
             @Override
@@ -350,6 +393,12 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
         });
     }
 
+    /*
+    Pass any command that should interact with any UI element on the main thread.
+    That is not the camera feed.
+    Previously called:
+    static void handleInput(String s)
+     */
     private void readCommand(final String s){
         tt.runOnUiThread(new Runnable() {
             @Override
@@ -357,6 +406,8 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 int value;
                 if (s.length() < 2 || s.length() > 7) return;
+
+                System.out.println("FOUND: " + s);
 
                 try {
                     switch (s.charAt(0)) {
@@ -371,17 +422,22 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                         case 't': //Temperature sensor input.
                             value = Integer.parseInt(s.substring(1).replaceAll("\\D+","")); //Ignores the first character of the input.
 
-
                             tt.displayTemp(value);
                             break;
                         case 'f': //Flame sensor input
-                            value = Integer.parseInt(s.substring(1)); //Ignores the first character of the input.
+                            System.out.println("FOUND FLAME STUFF");
 
-                            if(s.charAt(3) == '1'){
-                                tt.fireImage.setVisibility(View.VISIBLE);
-                            } else {
-                                tt.fireImage.setVisibility(View.INVISIBLE);
+                            if(s.charAt(1) == '1') {
+                                tt.toMuchLight.setVisibility(View.VISIBLE);
+                                //Setting all indicators to invisible
+                                for (ImageView tempName : tt.fireArray){
+                                    tempName.setVisibility(View.INVISIBLE);
+                                }
+                            }else{
+                                tt.toMuchLight.setVisibility(View.INVISIBLE);
+                                tt.WhereFlameAt(Integer.parseInt(s.charAt(2) + ""), s.charAt(3));
                             }
+
                             break;
                     }
                 }catch(Exception e){

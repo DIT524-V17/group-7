@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
     private ImageView fireImageNorthWest;
     private ImageView fireImageNorthNorthEast;
     private ImageView fireImageNorthEast;
-    private TextView toMuchLight;
+    TextView toMuchLight;
 
     public Button button6;
     private Boolean item_flame_boolean = true;
@@ -60,8 +60,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
     private Boolean item_camera_vertical_boolean = true;
     public static String sendMe = "";
 
-     ImageView[] fireArray = new ImageView[]{fireImageNorth, fireImageNorthNorthWest, fireImageNorthWest,
-            fireImageNorthNorthEast, fireImageNorthEast};
+     ImageView[] fireArray;
 
 
     @Override
@@ -101,6 +100,9 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
         animate();
         //Context used for the reconnect feature.
        final Context context = this;
+
+        fireArray = new ImageView[]{fireImageNorth, fireImageNorthNorthWest, fireImageNorthWest,
+                fireImageNorthNorthEast, fireImageNorthEast};
 
 
         /*
@@ -353,9 +355,9 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
      * @param flameStatus
      */
      void WhereFlameAt(int pos, char flameStatus){
-        //ImageView I = fireArray[pos];
+         System.out.println("POS: " + pos +  "STATUS: " + flameStatus);
 
-        if(flameStatus == '1'){
+        if((int) flameStatus == (int) '1'){
             fireArray[pos].setVisibility(View.VISIBLE);
         }else{
             fireArray[pos].setVisibility(View.INVISIBLE);
