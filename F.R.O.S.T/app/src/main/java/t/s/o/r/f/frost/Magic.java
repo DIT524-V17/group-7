@@ -18,7 +18,7 @@ import java.util.Arrays;
 /**
  * @author Pontus Laestadius
  * @since 05-05-2017
- * @version 3.1
+ * @version 3.2
  */
 class Magic extends AsyncTask<String, Void, Bitmap> {
 
@@ -29,14 +29,14 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
     private Socket socket_commands;
     private boolean stupid = false;
     private String last = "";
-    private long looptime = 0;
     private MainActivity tt;
     private boolean lastImgLeftOver = false;
     private int BIG_READ = 20000;
-    private int IMG_DIS = 15000;
-    private int REL_DEC = 300;
-    private int REL_INC = 300;
-    private byte[] leftOverRead = null;
+    private int IMG_DIS = 20000;
+    private int MIN_READ = 10000;
+    private int REL_DEC = 1000;
+    private int REL_INC = 500;
+    // private byte[] leftOverRead = null;
 
     Magic(MainActivity ts){
         tt = ts;
@@ -59,14 +59,7 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
 
         boolean alwaysTrue = true;
 
-        while (alwaysTrue) {
-
-            long this_loop = looptime - System.currentTimeMillis();
-            looptime = System.currentTimeMillis();
-
-            if (this_loop > 20){
-                System.out.println("Slow loop: 0." + this_loop + "s");
-            }
+        while (alwaysTrue) { // I wish the IDE wouldn't complain about always true always.
 
             try { // Catches IO exceptions
                 out_commands = new DataOutputStream(socket_commands.getOutputStream());
@@ -93,7 +86,15 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                     byte[] incoming = new byte[4];
                     int count = in_commands.read(incoming);
                     String rec = "";
-                    boolean skip = false;
+                    // boolean skip = false;
+
+                    /*
+                    This feature did not work so it is commented out.
+                    It's intended purpose was to save left over parts of the commands
+                    until next iteration when they get passed so we don't cut of
+                    any commands.
+                     */
+
                     /*
                     if (leftOverRead != null){
                         for (int i = 0; i < leftOverRead.length; i++){
@@ -108,10 +109,10 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                     }
                     */
 
-                    if (!skip)
+                    // if (!skip)
                     for (int i = 0; i < count; i++){
                         if (incoming[i] == '\n'){
-                            leftOverRead = Arrays.copyOfRange(incoming, i, count);
+                            //leftOverRead = Arrays.copyOfRange(incoming, i, count);
                             break;
                         }
                         rec += (char) incoming[i];
@@ -128,6 +129,8 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
             * With help from Sebastian Fransson
             * @since 05-18-2017
             * @version 2.0
+            *
+            * Copyright 2017. Please don't steal this. It's under GPL 3.0
             *
             * There was no suitable solution. So I reinvented the wheel.
             * It decodes byte arrays received from the camera socket which
@@ -151,7 +154,7 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 boolean parsingImage = false;
 
-                byte[] data = new byte[1024*(((BIG_READ/2000)+20)*2)];
+                byte[] data = new byte[1024*(((BIG_READ/2000)+40)*2)];
                 int index = 0;
                 int count;
                 final int MIN_BUFFER = 2; // Only reads in 2 byte increments. :( Bit sad.
@@ -316,7 +319,6 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                          */
                     } catch (ArrayIndexOutOfBoundsException ex){
                         ex.printStackTrace();
-                        // index = data.length;
                         BIG_READ-=REL_DEC;
                     }
 
@@ -327,8 +329,8 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                     This is currently set to work for 30-50k with sudden drops of 4000 bytes.
                      */
 
-                    if (BIG_READ < 10000)
-                        BIG_READ = 20000;
+                    if (BIG_READ < MIN_READ)
+                        BIG_READ = MIN_READ;
 
                     if (index != 0){
 
@@ -345,6 +347,8 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                         final int f_index = index-(lastImgLeftOver?2:0);
 
                         // Copies the part of the array that was filled with data.
+                        // This part runs on a seperate thread to reduce usage on the background one.
+                        // Copying the array takes some time and effort from the computer :(
                         tt.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -364,6 +368,10 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
         return null;
     }
 
+    /*
+    Used for setting the BitMap to display the camera feed to the user.
+    @Author Sebastian
+     */
     private void displayImage(final byte[] arr){
         tt.runOnUiThread(new Runnable() {
             @Override
@@ -376,6 +384,12 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
         });
     }
 
+    /*
+    Pass any command that should interact with any UI element on the main thread.
+    That is not the camera feed.
+    Previously called:
+    static void handleInput(String s)
+     */
     private void readCommand(final String s){
         tt.runOnUiThread(new Runnable() {
             @Override
