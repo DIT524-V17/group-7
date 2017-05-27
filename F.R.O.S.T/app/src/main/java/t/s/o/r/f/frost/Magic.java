@@ -18,7 +18,7 @@ import java.util.Arrays;
 /**
  * @author Pontus Laestadius
  * @since 05-05-2017
- * @version 3.0
+ * @version 3.1
  */
 class Magic extends AsyncTask<String, Void, Bitmap> {
 
@@ -34,7 +34,7 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
     private boolean lastImgLeftOver = false;
     private int BIG_READ = 35000;
     // private int IMG_DIS = (50)*(BIG_READ/1000);
-    private int IMG_DIS = 5000;
+    private int IMG_DIS = 4000;
     private int REL_DEC = 1000;
     private int REL_INC = 300;
     private byte[] leftOverRead = null;
@@ -123,6 +123,21 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                 e.printStackTrace();
             }
 
+            /*
+            Camera feed below
+            * @author Pontus Laestadius
+            * With help from Sebastian Fransson
+            * @since 05-18-2017
+            * @version 2.0
+            *
+            * There was no suitable solution. So I reinvented the wheel.
+            * It decodes byte arrays received from the camera socket which
+            * then interprets the starting and ending bytes using a self-made algorithm
+            * Then processes a BitMap to display the picture.
+            * If you want the details of how it works it's fully documented below as
+            * this is just a brief overview.
+             */
+
             try{
                 in_camera = new DataInputStream(new BufferedInputStream(socket_camera.getInputStream()));
 
@@ -137,7 +152,7 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 boolean parsingImage = false;
 
-                byte[] data = new byte[1024*70];
+                byte[] data = new byte[1024*((int)((BIG_READ/2000)+15)*2)];
                 int index = 0;
                 int count;
                 final int MIN_BUFFER = 2; // Only reads in 2 byte increments. :( Bit sad.
@@ -288,14 +303,26 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                         if (index+BIG_BUFFER >= data.length){
                             continue;
                         }
+
+                        /*
+                        If AIOFBE occurs, I want to reduce the number of bytes should be pre-read
+                        so it does not occur for the next image.
+                         */
                     } catch (ArrayIndexOutOfBoundsException ex){
                         ex.printStackTrace();
                         // index = data.length;
                         BIG_READ-=REL_DEC;
                     }
 
-                    if (BIG_READ < 0)
-                        BIG_READ = 15000;
+                    /*
+                    Dymanically changes the expected read amount to reduce latency between each image.
+                    It will to to always be within the expected amount IMG_DIS. These values should
+                    be optimized depending on what size the image you are attempting to send.
+                    This is currently set to work for 30-50k with sudden drops of 4000 bytes.
+                     */
+
+                    if (BIG_READ < 10000)
+                        BIG_READ = 20000;
 
                     if (index != 0){
 
@@ -308,6 +335,8 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
 
                         final byte[] f_data = data;
                         final int f_start = start;
+                        // If we used the lastImgLeftOver that means the
+                        // Starting bytes have already been read and should be at position 2.
                         final int f_index = index-(lastImgLeftOver?2:0);
 
                         // Copies the part of the array that was filled with data.
