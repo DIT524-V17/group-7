@@ -127,7 +127,62 @@ public class JoystickCrossView extends SurfaceView implements SurfaceHolder.Call
                 // Restricts the joystick to the cross
                 if(e.getX()> centerX - crossWidth && e.getY() > centerY - crossWidth &&
                         e.getX() < centerX + crossWidth && e.getY() < centerX + crossWidth){
+
                     drawJoystick(e.getX(),e.getY());
+                    joystickCallback.onJoystickCrossMoved(0, getId());
+
+                }else if(e.getY() > centerY - crossWidth && e.getY() < centerY + crossWidth){
+
+                    if(e.getX() < centerX){
+
+                        if(e.getX() > centerX - baseRadius) {
+                            drawJoystick(e.getX(), centerY);
+                        }else{
+                            drawJoystick(centerX - baseRadius, centerY);
+                        }
+                        joystickCallback.onJoystickCrossMoved(1, getId());
+
+                    }else if(e.getX() > centerX){
+
+                        if(e.getX() < centerX + baseRadius){
+                            drawJoystick(e.getX(), centerY);
+                        } else{
+                            drawJoystick(centerX + baseRadius, centerY);
+                        }
+                        joystickCallback.onJoystickCrossMoved(3, getId());
+                    }
+
+                }else if(e.getX() > centerX - crossWidth && e.getX() < centerX + crossWidth){
+
+                    if (e.getY() > centerY) {
+
+                        if(e.getY() < centerY + baseRadius){
+                            drawJoystick(centerX, e.getY());
+                        }else{
+                            drawJoystick(centerX, centerY + baseRadius);
+                        }
+                        joystickCallback.onJoystickCrossMoved(2, getId());
+
+                    }else if(e.getY() < centerY){
+
+                        if(e.getY() > centerY - baseRadius){
+                            drawJoystick(centerX, e.getY());
+                        }else{
+                            drawJoystick(centerX, centerY - baseRadius);
+                        }
+                        joystickCallback.onJoystickCrossMoved(4, getId());
+                    }
+                }
+
+
+
+
+
+                // A lot of double checks
+                if(e.getX()> centerX - crossWidth && e.getY() > centerY - crossWidth &&
+                        e.getX() < centerX + crossWidth && e.getY() < centerX + crossWidth){
+                    drawJoystick(e.getX(),e.getY());
+                    joystickCallback.onJoystickCrossMoved(0, getId());
                 }
                 else if(e.getX() > centerX - baseRadius && e.getX() < centerX &&
                         e.getY() > centerY - crossWidth && e.getY() < centerY + crossWidth) {
@@ -140,7 +195,7 @@ public class JoystickCrossView extends SurfaceView implements SurfaceHolder.Call
                         e.getX() > centerX - crossWidth && e.getX() < centerX + crossWidth) {
 
                     drawJoystick(centerX, e.getY());
-                    joystickCallback.onJoystickCrossMoved(4, getId());
+                    joystickCallback.onJoystickCrossMoved(2, getId());
 
                 }
                 else if (e.getX() > centerX && e.getX() < centerX + baseRadius &&
@@ -150,11 +205,11 @@ public class JoystickCrossView extends SurfaceView implements SurfaceHolder.Call
                     joystickCallback.onJoystickCrossMoved(3, getId());
 
                 }
-                else if (e.getY() > centerY - crossWidth && e.getY() < centerY &&
+                else if (e.getY() > centerY - baseRadius && e.getY() < centerY &&
                         e.getX() > centerX - crossWidth && e.getX() < centerX + crossWidth) {
 
                     drawJoystick(centerX, e.getY());
-                    joystickCallback.onJoystickCrossMoved(2, getId());
+                    joystickCallback.onJoystickCrossMoved(4, getId());
 
                 }
                 else if (e.getX() <= centerX - baseRadius &&
@@ -168,7 +223,7 @@ public class JoystickCrossView extends SurfaceView implements SurfaceHolder.Call
                         e.getX() > centerX - crossWidth && e.getX() < centerX + crossWidth){
 
                     drawJoystick(centerX, centerY + baseRadius);
-                    joystickCallback.onJoystickCrossMoved(4, getId());
+                    joystickCallback.onJoystickCrossMoved(2, getId());
 
                 }
                 else if(e.getX() > centerX + baseRadius &&
@@ -182,7 +237,7 @@ public class JoystickCrossView extends SurfaceView implements SurfaceHolder.Call
                         e.getX() > centerX - crossWidth && e.getX() < centerX + crossWidth) {
 
                     drawJoystick(centerX, centerY - baseRadius);
-                    joystickCallback.onJoystickCrossMoved(2, getId());
+                    joystickCallback.onJoystickCrossMoved(4, getId());
 
                 }
 

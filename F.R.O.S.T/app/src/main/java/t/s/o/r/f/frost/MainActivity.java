@@ -590,7 +590,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
 
     /**
      * Author: Elaine Qvarnström
-     * 
+     *
      * @param angle
      * @param speed
      */
@@ -642,13 +642,13 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
                 sendMe = "x002?";
                 break;
             case 2:
-                sendMe = "y001?";
+                sendMe = "y002?";
                 break;
             case 3:
                 sendMe = "x001?";
                 break;
             case 4:
-                sendMe = "y002?";
+                sendMe = "y001?";
                 break;
         }
 
