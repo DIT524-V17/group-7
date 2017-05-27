@@ -205,21 +205,10 @@ public class MainActivity extends AppCompatActivity{
         forward.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    try {
-                        //Sends a "forward" commmand to the Raspberry pi (to be integrated)
-                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                            //*threads.r1.write("d070?");
-                            // System.out.println("Drive forward");
-                        }
-                        //Sends command to stop the current activity (to be integrated)
-                        if (event.getAction() == MotionEvent.ACTION_UP) {
-                            //*threads.r1.write("d090?");
-                            //System.out.println("stop driving");
-                        }
-                    } catch (Exception e) {
-                        System.out.println("MAH GOD WHY");
-                        e.printStackTrace();
-                    }
+
+                    BatteryView battery = (BatteryView) findViewById(R.id.battery);
+                    battery.drawBattery(0);
+
                     return false;
                 }
             });
@@ -449,6 +438,7 @@ public class MainActivity extends AppCompatActivity{
         });
         //Calling the method "displayTemp" which is defined below
        // displayTemp(theOutputFromTheSensor); //Test method call.
+
     }
 
 
@@ -537,7 +527,7 @@ public class MainActivity extends AppCompatActivity{
             switch (s.charAt(0)) {
                 case 'v':
 
-                    //battery.drawBattery(Double.parseDouble(s.substring(1,5)));
+                    //battery.drawBattery(Double.parseDouble(s.substring(1,5)) / 100.0);
                     break;
                 case 'c': //Collision sensor input.
                     updateCollisionIndicator(ccValue, value);

@@ -26,29 +26,23 @@ public class BatteryView extends SurfaceView implements SurfaceHolder.Callback{
 
     public BatteryView(Context context){
         super(context);
-        //setZOrderOnTop(true);
         getHolder().addCallback(this);
-        //getHolder().setFormat(PixelFormat.TRANSPARENT);
         if(context instanceof BatteryLevelListener)
-            batteryCallback = (BatteryLevelListener) context;
+         batteryCallback = (BatteryLevelListener) context;
     }
 
     public BatteryView(Context context, AttributeSet attributes, int style){
         super(context, attributes, style);
-        //setZOrderOnTop(true);
         getHolder().addCallback(this);
-        //getHolder().setFormat(PixelFormat.TRANSPARENT);
         if(context instanceof BatteryLevelListener)
-            batteryCallback = (BatteryLevelListener) context;
+         batteryCallback = (BatteryLevelListener) context;
     }
 
     public BatteryView(Context context, AttributeSet attributes){
         super(context, attributes);
-        //setZOrderOnTop(true);
         getHolder().addCallback(this);
-        //getHolder().setFormat(PixelFormat.TRANSPARENT);
         if(context instanceof BatteryLevelListener)
-            batteryCallback = (BatteryLevelListener) context;
+         batteryCallback = (BatteryLevelListener) context;
     }
 
     public void drawBattery(double volt) {
@@ -118,9 +112,8 @@ public class BatteryView extends SurfaceView implements SurfaceHolder.Callback{
             y2 = getHeight();
             myCanvas.drawRect(x1, y1, x2, y2, colors);
 
-
-
             getHolder().unlockCanvasAndPost(myCanvas);
+
         }
     }
 
