@@ -14,11 +14,13 @@ Isabelle Tornqvist
 Tim Jonasson
 Pontus Laestadius
 Anthony Path
+
 @Version 1.4
 2017-05-27
 Tim Jonasson: Integrated the library for the 5 channel flame sensor
 2017-05-27
 Tim Jonasson: Commented out collision control cause it broke everything and increased the temperature delay
+
 2017-05-24
 Anthony Path: Added support of modified collision control system
 2017-05-11
@@ -360,6 +362,7 @@ void readFlame(){
             temp += (*(flame_reading + 3));
             Serial.println(temp);
         }
+
 }
 
 //collision control system  - getting range from all ultrasonic sensors, and printing range of middle one to serial for display
@@ -453,6 +456,7 @@ void loop() {
 //This is were the detection of flame is done
     if(flame_activation && ++flame_delay >= 500){
         readFlame();  
+
     }
   if (++voltage_delay >= 1000){
 sendVoltage();
