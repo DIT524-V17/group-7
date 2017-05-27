@@ -14,7 +14,9 @@ Isabelle Tornqvist
 Tim Jonasson
 Pontus Laestadius
 Anthony Path
-@Version 1.3.2
+@Version 1.4
+2017-05-27
+Tim Jonasson: Integrated the library for the 5 channel flame sensor
 2017-05-27
 Tim Jonasson: Commented out collision control cause it broke everything and increased the temperature delay
 2017-05-24
@@ -349,7 +351,6 @@ void command() {
 
 void readFlame(){
 //Reads the value_received_from_the_raspberry from the flame sensor
-      if (++flame_delay >= 500){
           char* flame_reading = flame_array.read();
           if((*(flame_reading + 1)) != '2'){
             String temp = "";
@@ -358,7 +359,6 @@ void readFlame(){
             temp += (*(flame_reading + 2));
             temp += (*(flame_reading + 3));
             Serial.println(temp);
-          }
         }
 }
 
@@ -451,8 +451,8 @@ void loop() {
 
 //_activation of the flame-sensor: if flame_activation is false, this if-statement won't be executed. 
 //This is were the detection of flame is done
-    if(flame_activation){
-    readFlame();  
+    if(flame_activation && ++flame_delay >= 500){
+        readFlame();  
     }
   if (++voltage_delay >= 1000){
 sendVoltage();
