@@ -409,17 +409,19 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
             // min 29
             // max 52
             // Translating input from joystick according to protocol
+            String speedCommand = (int) -(speed / 4 - 95) + "";
+            speedCommand = Integer.parseInt(speedCommand) <= 110 ? speedCommand + "" : 110 + "";
             command = "" + (int) -(speed / 4 - 95);
 
-            for (int i = 0; command.length() < 3; i++)
-                command = "0" + command;
-            sendMe = "d" + command + "?";
+            for (int i = 0; speedCommand.length() < 3; i++)
+                speedCommand = "0" + speedCommand;
+            sendMe = "d" + speedCommand + "?";
             oldCarSpeed = speed;
             //speedPause++;
             //if(DEBUG)Log.e("Speed", "d" + command + "?");
         }
 
-    }
+
 
     /**
      * Author: Elaine Qvarnström
