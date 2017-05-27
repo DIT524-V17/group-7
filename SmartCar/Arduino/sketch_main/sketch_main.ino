@@ -41,7 +41,7 @@ const int MOTOR_PIN = 7;
 const int COLLISION_SERVO_PIN = 8;
 const int LED_PIN = 12;
 const int  VOLT_PIN = A5;
-float voltage_Now=1.5;
+int voltage_Now=150;
 
 const int START_POSITION_MOTOR_SERVO = 90;
 const int START_POSITION_STEER_SERVO = 45;
@@ -362,7 +362,11 @@ void readFlame(){
 
 //collision control system  - getting range from all ultrasonic sensors, and printing range of middle one to serial for display
 void collisionControl() {
-    ultrasonic_range_front_mid = sonars[0].ping_cm();
+  
+  //Doesnt work
+  
+  
+    /*ultrasonic_range_front_mid = sonars[0].ping_cm();
     ultrasonic_distance_string = "c" + (String)ultrasonic_range_front_mid + '\n';
     ultrasonic_range_front_right=sonars[1].ping_cm();
     ultrasonic_range_front_left=sonars[2].ping_cm();
@@ -372,9 +376,9 @@ void collisionControl() {
         Serial.print(ultrasonic_distance_string);
         last_distance_read = ultrasonic_range_front_mid;
         distance_delay = 0;
-}
-//Collision control - front
-if (motor_activation && velocity < 90 ){
+    }
+    //Collision control - front
+    if (motor_activation && velocity < 90 ){
       //Is true if the range in front is less than 50 cm, front left and front right - less than 25 cm or if the flame sensor has set the flame variable to true
         if (((ultrasonic_range_front_mid != 0 && ultrasonic_range_front_mid <= 50 )  ||
         (ultrasonic_range_front_right != 0 && ultrasonic_range_front_right <= 25 ) ||
@@ -389,8 +393,8 @@ if (motor_activation && velocity < 90 ){
             motor.write(START_POSITION_MOTOR_SERVO);
         }
     }
-//Collision control - back
-if (motor_activation && velocity > 90){ 
+    //Collision control - back
+    if (motor_activation && velocity > 90){ 
       //Is true if the range is less than 50 cm in the back
         if (ultrasonic_range_back != 0 && ultrasonic_range_back <= 50)   {
                 obstacle_detected_back = true;
@@ -404,10 +408,7 @@ if (motor_activation && velocity > 90){
             obstacle_detected_back = false;
             motor.write(START_POSITION_MOTOR_SERVO);
         }
-} 
-
-
-
+    } */
 }
 
 void readTemp(){
@@ -421,15 +422,15 @@ Measure voltage of each cell of motor's battery and print it to serial. Works fo
 */
 void sendVoltage(){ 
 int value = analogRead(VOLT_PIN); 
-float voltage = value * (5.00 / 1023.00*3.13/8);  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+int voltage = value * (5 / 1023*3.13/8) * 100;  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
  //Formula taken from here: https://www.arduino.cc/en/Tutorial/ReadAnalogVoltage
- //Multiplied 3.13 because 47 and 100 K Ohm resistors lower voltage about 3.13 times, then divided by 8 to get approximate voltage per cell.
+ //Multiplied 313 because 47 and 100 K Ohm resistors lower voltage about 3.13 times, then divided by 800 to get approximate voltage per cell.
  if (voltage<voltage_Now ){ //change global variable and send voltage to phone only when voltage drops
   voltage_Now=voltage;
- String voltage_string = "v" + String(voltage_Now,2); // Normal .toString() method doesn't work for Float, had to use String(float, decimal places) instead
+ String voltage_string = "v" + voltage_Now;
 //Serial.println(voltage_Now);
   voltage_delay=0;
-String voltage_string_to_send=voltage_string.substring(0, 5) + '\n';
+String voltage_string_to_send=voltage_string.substring(0, 5);
   Serial.println(voltage_string_to_send);
   //output examples: v1.39, v1.31 etc
  } 
@@ -463,7 +464,7 @@ sendVoltage();
 
 
 //_activation for temperature sensor
-if(temperature_activation && ++temp_delay >= 1000){
+if(temperature_activation && ++temp_delay >= 10000){
     readTemp();   
     temp_delay = 0;
 }
