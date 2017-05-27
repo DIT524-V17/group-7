@@ -24,7 +24,11 @@ import android.widget.ViewSwitcher;
  * Author: Sebastian Fransson
  * Last Updated: 19-04-2017
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements JoystickView.JoystickListener, JoystickCrossView.JoystickCrossListener{
+
+    BatteryView battery = (BatteryView) findViewById(R.id.battery);
+    private static double oldCarSpeed;
+    private static double oldCarAngle;
 
     //Views for collision animation.
     View v;
@@ -224,108 +228,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-        Button forward = (Button) findViewById(R.id.button);
-        //Sets the TouchListener to 'button' which in this case refers to the *FORWARD* button. (Check XML).
-        forward.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    try {
-                        //Sends a "forward" commmand to the Raspberry pi (to be integrated)
-                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                                sendMe = ("d070?");
-                            // System.out.println("Drive forward");
-                        }
-                        //Sends command to stop the current activity (to be integrated)
-                        if (event.getAction() == MotionEvent.ACTION_UP) {
-                            sendMe = ("d090?");
-                            //System.out.println("stop driving");
-                        }
-                    } catch (Exception e) {
-                        System.out.println("MAH GOD WHY");
-                        e.printStackTrace();
-                    }
-                    return false;
-                }
-            });
-
-            //TouchListener for reverse button.
-            Button reverse = (Button) findViewById(R.id.button2);
-            //Sets the TouchListener to 'button2' which in this case refers to the *Reverse* button. (Check XML).
-            reverse.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    try {
-                        //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
-                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-
-                            sendMe = ("d110?");
-                            // System.out.println("Reversing");
-                        }
-                        //Sends command to stop reversing (to be integrated)
-                        if (event.getAction() == MotionEvent.ACTION_UP) {
-                            sendMe = ("d090?");
-                            //  System.out.println("Stop reversing");
-                        }
-                    } catch (Exception e) {
-                        System.out.println("MAH GOD WHY");
-                        e.printStackTrace();
-                    }
-                    return false;
-                }
-            });
-
-            //TouchListener for rightSteer button.
-            Button rightSteer = (Button) findViewById(R.id.button4);
-            //Sets the TouchListener to 'button4' which in this case refers to the *Right Steer* button. (Check XML).
-            rightSteer.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    try {
-                        //Sends a "go right" commmand to the Raspberry pi (to be integrated)
-                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                            sendMe = ("a090?");
-                            // System.out.println("Steer Right");
-                        }
-                        //Sends command to stop steering right (to be integrated)
-                        if (event.getAction() == MotionEvent.ACTION_UP) {
-                            sendMe = ("a045?");
-                            // System.out.println("Stop steering right");
-                        }
-                    } catch (Exception e) {
-                        System.out.println("MAH GOD WHY");
-                        e.printStackTrace();
-                    }
-                    return false;
-                }
-            });
-
-            //TouchListener for leftSteer button.
-            Button leftSteer = (Button) findViewById(R.id.button3);
-            //Sets the TouchListener to 'button3' which in this case refers to the *Steer Left* button. (Check XML).
-            leftSteer.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    try {
-                        //Sends a "go left" commmand to the Raspberry pi (to be integrated)
-                        if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                            sendMe = ("a000?");
-                            //  System.out.println("Steering Left");
-                        }
-                        //Sends command to stop steering left (to be integrated)
-                        if (event.getAction() == MotionEvent.ACTION_UP) {
-                            sendMe = ("a045?");
-                            // System.out.println("Stop steering left");
-                        }
-                    } catch (Exception e) {
-                        System.out.println("MAH GOD WHY");
-                        e.printStackTrace();
-                    }
-                    return false;
-                }
-            });
-
         /*
          * Created by Anthony Path
          * Integrated by: Sebastian Fransson
@@ -357,109 +259,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //TouchListener for camera down button.
-        Button camDown = (Button) findViewById(R.id.button10);
-        //Sets the TouchListener to 'button10' which in this case refers to the *Reverse* button. (Check XML).
-        camDown.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                try {
-                    //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-
-                        sendMe = ("y001?");
-                        // System.out.println("Reversing");
-                    }
-                    //Sends command to stop reversing (to be integrated)
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        sendMe = ("y000?");
-                        //  System.out.println("Stop reversing");
-                    }
-                } catch (Exception e) {
-                    System.out.println("MAH GOD WHY");
-                    e.printStackTrace();
-                }
-                return false;
-            }
-        });
-
-        //TouchListener for camera up button.
-        Button camUp = (Button) findViewById(R.id.button9);
-        //Sets the TouchListener to 'button9' which in this case refers to the *Reverse* button. (Check XML).
-        camUp.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                try {
-                    //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-
-                        sendMe = ("y002?");
-                        // System.out.println("Reversing");
-                    }
-                    //Sends command to stop reversing (to be integrated)
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        sendMe = ("y000?");
-                        //  System.out.println("Stop reversing");
-                    }
-                } catch (Exception e) {
-                    System.out.println("MAH GOD WHY");
-                    e.printStackTrace();
-                }
-                return false;
-            }
-        });
-
-        //TouchListener for camera left button.
-        Button cameraLeft = (Button) findViewById(R.id.button8);
-        //Sets the TouchListener to 'button8' which in this case refers to the *Reverse* button. (Check XML).
-        cameraLeft.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                try {
-                    //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-
-                        sendMe = ("x001?");
-                        // System.out.println("Reversing");
-                    }
-                    //Sends command to stop reversing (to be integrated)
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        sendMe = ("x000?");
-                        //  System.out.println("Stop reversing");
-                    }
-                } catch (Exception e) {
-                    System.out.println("MAH GOD WHY");
-                    e.printStackTrace();
-                }
-                return false;
-            }
-        });
-
-        //TouchListener for camera right button.
-        Button cameraRight = (Button) findViewById(R.id.button7);
-        //Sets the TouchListener to 'button7' which in this case refers to the *Reverse* button. (Check XML).
-        cameraRight.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                try {
-                    //Sends a "reverse" commmand to the Raspberry pi (to be integrated)
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
-
-                        sendMe = ("x002?");
-                        // System.out.println("Reversing");
-                    }
-                    //Sends command to stop reversing (to be integrated)
-                    if (event.getAction() == MotionEvent.ACTION_UP) {
-                        sendMe = ("x000?");
-                        //  System.out.println("Stop reversing");
-                    }
-                } catch (Exception e) {
-                    System.out.println("MAH GOD WHY");
-                    e.printStackTrace();
-                }
-                return false;
-            }
-        });
 
         //Creating the text view where the temperature is show
         textElement = (TextView) findViewById(R.id.textView);
@@ -569,5 +368,86 @@ public class MainActivity extends AppCompatActivity {
     //Updates the collision indicator text.
      void updateCollisionIndicator(TextView view, int value){
         view.setText(value == 0 ? "+" : value + "");
+    }
+
+    /**
+     * Author: Elaine Qvarnström
+     * Implementation of JoystickListener.
+     * Create the commands for moving the car.
+     * @param speed
+     * @param angle
+     * @param id
+     */
+    @Override
+    public void onJoystickMoved(double speed, double angle, int id) {
+
+                sendCarCommand(angle, speed);
+
+    }
+
+    /**
+     * Author: Elaine Qvarnström
+     *
+     * @param angle
+     * @param speed
+     */
+    private void sendCarCommand(double angle, double speed){
+        // The angle
+        //if(Math.abs(angle-oldCarAngle) < 10){
+        if(angle != oldCarAngle){
+            String command = "" + (int) Math.abs((90 - angle / 2));//angle <= 180? "" + (90 - (int) angle / 2) : "" +  (90 - (int) angle / 2);
+
+            for(int i = 0; command.length() < 3; i++)
+                command = "0" + command;
+            sendMe = "a" + command + "?";
+            oldCarAngle = angle;
+            //if(DEBUG )Log.e("V1 Car angle", "a" + command + "?");
+        }
+        // The speed
+        if (speed != oldCarSpeed){ //&& (speedPause % 5 == 0 || speed == 0)) {
+            String command = "";
+            // min 29
+            // max 52
+            // Translating input from joystick according to protocol
+            command = "" + (int) -(speed / 4 - 95);
+
+            for (int i = 0; command.length() < 3; i++)
+                command = "0" + command;
+            sendMe = "d" + command + "?";
+            oldCarSpeed = speed;
+            //speedPause++;
+            //if(DEBUG)Log.e("Speed", "d" + command + "?");
+        }
+
+    }
+
+    /**
+     * Author: Elaine Qvarnström
+     * Implementation of JoystickCrossListener.
+     * Create commands for moving the camera.
+     * @param direction
+     * @param id
+     */
+    @Override
+    public void onJoystickCrossMoved(int direction, int id){
+
+        switch (direction){
+            case 0:
+                sendMe = "hai";
+                break;
+            case 1:
+                sendMe = "x002?";
+                break;
+            case 2:
+                sendMe = "y002?";
+                break;
+            case 3:
+                sendMe = "x001?";
+                break;
+            case 4:
+                sendMe = "y001?";
+                break;
+        }
+
     }
 }

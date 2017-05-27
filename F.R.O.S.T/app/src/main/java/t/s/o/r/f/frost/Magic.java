@@ -71,8 +71,17 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
             if (!command.equals("") && !command.equals(last)) {
                 last = command;
                 try {
+
                     System.out.println("Sending:" + command + " L: " + last);
-                    out_commands.writeUTF(command + "\n");
+
+
+                    if (command.equals("hai")){
+                        out_commands.writeUTF("x000?");
+                        out_commands.writeUTF("y000?");
+                    } else {
+                        out_commands.writeUTF(command);
+
+                    }
                     out_commands.flush();
                     MainActivity.sendMe = "";
                 } catch (Exception e) {
@@ -402,6 +411,9 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 try {
                     switch (s.charAt(0)) {
+                        case 'v':
+                            value = Integer.parseInt(s.substring(1));
+                            tt.battery.drawBattery(value / 100.0);
                         case 'c': //Collision sensor input.
                             value = Integer.parseInt(s.substring(1)); //Ignores the first character of the input.
 

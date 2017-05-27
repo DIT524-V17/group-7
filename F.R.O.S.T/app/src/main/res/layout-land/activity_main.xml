@@ -289,9 +289,20 @@
         android:text="To much light"
         android:layout_alignParentTop="true"
         android:layout_alignEnd="@+id/button8" />
+    <!-- Camera joystick -->
+    <t.s.o.r.f.frost.JoystickCrossView
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:id="@+id/cameraJoystick"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"/>
 
-
-
+    <t.s.o.r.f.frost.JoystickView
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        android:id="@+id/joystickCar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"/>
 
 
 </RelativeLayout>
