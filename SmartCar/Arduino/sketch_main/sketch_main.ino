@@ -464,7 +464,7 @@ sendVoltage();
 
 
 //_activation for temperature sensor
-if(temperature_activation && ++temp_delay >= 1000){
+if(temperature_activation && ++temp_delay >= 10000){
     readTemp();   
     temp_delay = 0;
 }
