@@ -32,10 +32,9 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
     private long looptime = 0;
     private MainActivity tt;
     private boolean lastImgLeftOver = false;
-    private int BIG_READ = 35000;
-    // private int IMG_DIS = (50)*(BIG_READ/1000);
-    private int IMG_DIS = 4000;
-    private int REL_DEC = 1000;
+    private int BIG_READ = 20000;
+    private int IMG_DIS = 15000;
+    private int REL_DEC = 300;
     private int REL_INC = 300;
     private byte[] leftOverRead = null;
 
@@ -152,7 +151,7 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 boolean parsingImage = false;
 
-                byte[] data = new byte[1024*((int)((BIG_READ/2000)+15)*2)];
+                byte[] data = new byte[1024*(((BIG_READ/2000)+20)*2)];
                 int index = 0;
                 int count;
                 final int MIN_BUFFER = 2; // Only reads in 2 byte increments. :( Bit sad.
@@ -300,8 +299,15 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                                 }
                             }
                         }
+
+                        /*
+                        Avoids ArrayIndexOutOfBounds Because it slows the program down
+                        As it would cause a stacktrace and the system to slow down by about
+                        100-300ms.
+                         */
+
                         if (index+BIG_BUFFER >= data.length){
-                            continue;
+                            break;
                         }
 
                         /*
@@ -331,7 +337,6 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                         } else if ((index-start) < BIG_READ+IMG_DIS){
                             BIG_READ -= REL_DEC;
                         }
-                        System.out.println("BR:" + BIG_READ + " I: " + (index-start));
 
                         final byte[] f_data = data;
                         final int f_start = start;
@@ -347,7 +352,8 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                             }
                         });
                         // Prints the byte length of the piture and the duration it took to process.
-                        System.out.println("EOI: " + index + " IN " +
+                        System.out.println("BR:" + BIG_READ + " I: " +
+                                (index-start) + " EOI: " + index + " IN " +
                                 (System.currentTimeMillis() - frameTime) + "ms");
                     }
                 }
@@ -389,7 +395,6 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                             break;
                         case 't': //Temperature sensor input.
                             value = Integer.parseInt(s.substring(1).replaceAll("\\D+","")); //Ignores the first character of the input.
-
 
                             tt.displayTemp(value);
                             break;
