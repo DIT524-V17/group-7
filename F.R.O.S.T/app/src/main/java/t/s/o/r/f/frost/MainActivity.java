@@ -26,7 +26,7 @@ import android.widget.ViewSwitcher;
  */
 public class MainActivity extends AppCompatActivity implements JoystickView.JoystickListener, JoystickCrossView.JoystickCrossListener{
 
-    BatteryView battery = (BatteryView) findViewById(R.id.battery);
+    BatteryView battery;
     private static double oldCarSpeed;
     private static double oldCarAngle;
 
@@ -274,7 +274,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
         });
         //Calling the method "displayTemp" which is defined below
         //displayTemp(60); //Test method call.
-
+        battery = (BatteryView) findViewById(R.id.battery);
     }
 
 
