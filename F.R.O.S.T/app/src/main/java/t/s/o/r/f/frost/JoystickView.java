@@ -106,7 +106,7 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
 
         if(view.equals(this)){
 
-            if(e.getAction() != e.ACTION_UP) {
+            if(e.getAction() != MotionEvent.ACTION_UP) {
                 double displacement = Math.sqrt(Math.pow((e.getX() - centerX), 2) + Math.pow(e.getY() - centerY, 2));
                 double speed = displacement;
 

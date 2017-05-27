@@ -123,7 +123,7 @@ public class JoystickCrossView extends SurfaceView implements SurfaceHolder.Call
 
         if(view.equals(this)) {
 
-            if (e.getAction() != e.ACTION_UP) {
+            if (e.getAction() != MotionEvent.ACTION_UP) {
                 // Restricts the joystick to the cross
                 if(e.getX()> centerX - crossWidth && e.getY() > centerY - crossWidth &&
                         e.getX() < centerX + crossWidth && e.getY() < centerX + crossWidth){

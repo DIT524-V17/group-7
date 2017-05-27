@@ -360,6 +360,9 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 try {
                     switch (s.charAt(0)) {
+                        case 'v':
+                            value = Integer.parseInt(s.substring(1));
+                            tt.battery.drawBattery(value / 100.0);
                         case 'c': //Collision sensor input.
                             value = Integer.parseInt(s.substring(1)); //Ignores the first character of the input.
 

@@ -26,7 +26,7 @@ import android.widget.ViewSwitcher;
  */
 public class MainActivity extends AppCompatActivity implements JoystickView.JoystickListener, JoystickCrossView.JoystickCrossListener{
 
-
+    BatteryView battery = (BatteryView) findViewById(R.id.battery);
     private static double oldCarSpeed;
     private static double oldCarAngle;
 
