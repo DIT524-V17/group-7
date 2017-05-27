@@ -6,6 +6,8 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.graphics.*;
 
+import static android.R.color.holo_green_light;
+
 /**
  * Created by Elaine on 2017-05-09.
  */
@@ -65,7 +67,7 @@ public class BatteryView extends SurfaceView implements SurfaceHolder.Callback{
                 colors.setColor(Color.BLACK);
             }
             else{
-                colors.setColor(Color.GREEN);
+                colors.setColor(getResources().getColor(holo_green_light));
             }
             x1 = y1 = 2 * divider;
             x2 = x1 + cell;

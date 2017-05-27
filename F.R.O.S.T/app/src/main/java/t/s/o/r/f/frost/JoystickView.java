@@ -75,7 +75,7 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
             Paint colors = new Paint();
             myCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); //Clear the BG
             //colors.setARGB(55,50,50,50); //Color of joystick base
-            colors.setColor(getResources().getColor(holo_green_light));
+            colors.setARGB(140, 152, 203, 0);
             myCanvas.drawCircle((float)centerX, (float)centerY, (float)baseRadius, colors); //Draw the joystick base
             colors.setColor(getResources().getColor(holo_green_dark));//ARGB(255,0,0,255); // Color of joystick itself
             myCanvas.drawCircle((float)newX, (float)newY, (float)hatRadius, colors); //Draw the joystick hat

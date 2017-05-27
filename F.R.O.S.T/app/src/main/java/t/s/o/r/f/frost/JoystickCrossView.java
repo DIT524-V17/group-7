@@ -34,7 +34,7 @@ public class JoystickCrossView extends SurfaceView implements SurfaceHolder.Call
         centerY = getHeight() / 2;
         baseRadius = Math.min(getWidth(), getHeight()) / (float) 3;
         hatRadius = Math.min(getWidth(), getHeight()) / (float)6.4;
-        crossWidth = Math.min(getWidth(), getHeight()) / (float) 8;
+        crossWidth = Math.min(getWidth(), getHeight()) / (float) 9;
 
     }
 
@@ -77,7 +77,7 @@ public class JoystickCrossView extends SurfaceView implements SurfaceHolder.Call
             Paint colors = new Paint();
             myCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); //Clear the BG
             //colors.setARGB(100,50,50,50); //Color of joystick base
-            colors.setColor(getResources().getColor(holo_green_light));
+            colors.setARGB(140, 152, 203, 0);
             // Draw the cross base
             double x1,x2,y1,y2;
             x1 = centerX - baseRadius;

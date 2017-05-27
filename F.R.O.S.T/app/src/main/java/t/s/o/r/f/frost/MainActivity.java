@@ -391,20 +391,20 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
      * @param angle
      * @param speed
      */
-    private void sendCarCommand(double angle, double speed){
+    private void sendCarCommand(double angle, double speed) {
         // The angle
         //if(Math.abs(angle-oldCarAngle) < 10){
-        if(angle != oldCarAngle){
+        if (angle != oldCarAngle) {
             String command = "" + (int) Math.abs((90 - angle / 2));//angle <= 180? "" + (90 - (int) angle / 2) : "" +  (90 - (int) angle / 2);
 
-            for(int i = 0; command.length() < 3; i++)
+            for (int i = 0; command.length() < 3; i++)
                 command = "0" + command;
             sendMe = "a" + command + "?";
             oldCarAngle = angle;
             //if(DEBUG )Log.e("V1 Car angle", "a" + command + "?");
         }
         // The speed
-        if (speed != oldCarSpeed){ //&& (speedPause % 5 == 0 || speed == 0)) {
+        if (speed != oldCarSpeed) { //&& (speedPause % 5 == 0 || speed == 0)) {
             String command = "";
             // min 29
             // max 52
@@ -420,6 +420,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
             //speedPause++;
             //if(DEBUG)Log.e("Speed", "d" + command + "?");
         }
+    }
 
 
 
