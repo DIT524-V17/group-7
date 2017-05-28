@@ -1,0 +1,2 @@
+Move "{ImageFolder}/1494148967200.png"
+MouseLeftPress
