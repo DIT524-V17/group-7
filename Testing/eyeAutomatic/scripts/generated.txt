@@ -1,0 +1,7 @@
+Call "EyeAutomatic/scripts/defaultTest.txt"
+Call "scripts/steerleft.txt"
+Call "scripts/release.txt"
+Call "scripts/steerright.txt"
+Call "scripts/release.txt"
+Call "scripts/drivebackward.txt"
+Call "scripts/release.txt"
