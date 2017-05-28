@@ -67,7 +67,7 @@ int ultrasonic_range_front_mid;
 int ultrasonic_range_front_right;
 int ultrasonic_range_front_left;
 int ultrasonic_range_back;
-int voltage_Now=150;
+float voltage_Now=150;
 
 //Temperature variables
 int temperature;
@@ -386,16 +386,12 @@ void readFlame(){
 
 //collision control system  - getting range from all ultrasonic sensors, and printing range of middle one to serial for display
 void collisionControl() {
-  
-  //Doesnt work
-  
-  
-    /*ultrasonic_range_front_mid = sonars[0].ping_cm();
+    ultrasonic_range_front_mid = sonars[0].ping_cm();
     ultrasonic_distance_string = "c" + (String)ultrasonic_range_front_mid + '\n';
     ultrasonic_range_front_right=sonars[1].ping_cm();
     ultrasonic_range_front_left=sonars[2].ping_cm();
     ultrasonic_range_back=sonars[3].ping_cm();
-    if (last_distance_read != ultrasonic_range_front_mid && ++distance_delay >= 100){
+   if (last_distance_read != ultrasonic_range_front_mid && ++distance_delay >= 100){
        // Serial.write(range);
         Serial.print(ultrasonic_distance_string);
         last_distance_read = ultrasonic_range_front_mid;
@@ -432,7 +428,7 @@ void collisionControl() {
             obstacle_detected_back = false;
             motor.write(START_POSITION_MOTOR_SERVO);
         }
-    } */
+    } 
 }
 
 /*
@@ -450,23 +446,24 @@ Measure voltage of each cell of motor's battery and print it to serial. Works fo
 */
 void sendVoltage(){ 
 int value = analogRead(VOLT_PIN); 
-int voltage = value * (5 / 1023*3.13/8) * 100;  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+float voltage = value * (5.00 / 1023.00*3.13/8);  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
  //Formula taken from here: https://www.arduino.cc/en/Tutorial/ReadAnalogVoltage
- //Multiplied 313 because 47 and 100 K Ohm resistors lower voltage about 3.13 times, then divided by 800 to get approximate voltage per cell.
- if (voltage<voltage_Now ){ //change global variable and send voltage to phone only when voltage drops
+ //Multiplied 3.13 because 47 and 100 K Ohm resistors lower voltage about 3.13 times, then divided by 8 to get approximate voltage per cell.
+ if (voltage<voltage_Now && ++voltageDelay>=1000){ //change global variable and send voltage to phone only when voltage drops
   voltage_Now=voltage;
- String voltage_string = "v" + voltage_Now;
+ String voltage_string = "v" + String(voltage_Now,2); // Normal .toString() method doesn't work for Float, had to use String(float, decimal places) instead
 //Serial.println(voltage_Now);
-  voltage_delay=0;
-String voltage_string_to_send=voltage_string.substring(0, 5);
+  voltageDelay=0;
+String voltage_string_to_send=voltage_string.substring(0, 5) + '\n';
   Serial.println(voltage_string_to_send);
   //output examples: v1.39, v1.31 etc
  } 
+}
 
 
 
  
-}
+
 void loop() { 
      //Is true when a command with a ? in the end is given or if the input reaches a length atleast 4
     if(complete_command){
