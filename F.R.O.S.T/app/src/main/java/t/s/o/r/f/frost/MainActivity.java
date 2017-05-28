@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
         mg.execute();
         tv = (TextView) findViewById(R.id.collision_text); //TextView for collision text.
         v = findViewById(R.id.cc_view4);
-        tvbg = findViewById(R.id.text_background);
+        //tvbg = findViewById(R.id.text_background);
 
         ImageSequence = (ImageView) findViewById(R.id.imageSequence);
 
@@ -322,7 +322,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
         v.startAnimation(s);
         tvbg.setVisibility(View.INVISIBLE);
 
-        Button button = (Button)findViewById(R.id.buttonCC);
+       /* Button button = (Button)findViewById(R.id.buttonCC);
         button.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -345,7 +345,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
                 }
 
             }
-        });
+        });*/
     }
 
     /**

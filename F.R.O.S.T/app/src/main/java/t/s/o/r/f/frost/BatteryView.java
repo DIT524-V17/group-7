@@ -7,6 +7,7 @@ import android.view.SurfaceView;
 import android.graphics.*;
 
 import static android.R.color.holo_green_light;
+import static android.R.color.holo_red_dark;
 
 /**
  * Created by Elaine on 2017-05-09.
@@ -51,7 +52,7 @@ public class BatteryView extends SurfaceView implements SurfaceHolder.Callback{
             Paint colors = new Paint();
             myCanvas.drawColor(Color.BLACK, PorterDuff.Mode.CLEAR); //Clear the BG
             if (volt < 1.0) {
-                colors.setColor(Color.RED);
+                colors.setARGB(255,253, 1, 0);
             } else {
                 colors.setColor(Color.WHITE);
             }
@@ -62,8 +63,10 @@ public class BatteryView extends SurfaceView implements SurfaceHolder.Callback{
             float y2 = getHeight() - divider;
             myCanvas.drawRect(x1, y1, x2, y2, colors);
 
+            Paint red = new Paint();
+            red.setARGB(255, 253, 1,0);
             // Draw 1st cell
-            if (colors.getColor() == Color.RED){
+            if (colors.getColor() == red.getColor()){
                 colors.setColor(Color.BLACK);
             }
             else{

@@ -38,14 +38,6 @@
 
     <!-- Collision Control GUI-->
 
-    <View android:layout_width="70dp"
-        android:layout_height="30dp"
-        android:background="@drawable/square"
-        android:id="@+id/text_background"
-        android:layout_toEndOf="@+id/cc_view4"
-        android:layout_alignTop="@+id/cc_view2"
-        android:layout_alignBottom="@+id/cc_view4" />
-
     <View android:layout_width="44dp"
         android:layout_height="44dp"
         android:background="@drawable/circle2"
@@ -73,15 +65,15 @@
         android:layout_alignEnd="@+id/buttonCC" />
 
     <TextView
-        android:text="Collision"
+        android:text="Distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/collision_text"
         android:textColor="#ffff"
         android:textSize="14sp"
         android:alpha="1"
-        android:layout_alignTop="@+id/buttonCC"
-        android:layout_alignEnd="@+id/text_background" />
+        android:layout_below="@+id/cc_view2"
+        android:layout_alignEnd="@+id/cameraJoystick" />
 
     <Button
         android:layout_width="40dp"
@@ -122,7 +114,7 @@
         android:id="@+id/imgsw"
         android:layout_width="200px"
         android:layout_height="200px"
-        android:layout_alignTop="@+id/battery"
+        android:layout_below="@+id/battery"
         android:layout_alignParentEnd="true">
 
     </ImageSwitcher>
@@ -223,7 +215,7 @@
         android:layout_width="45dp"
         android:layout_height="23dp"
         android:id="@+id/battery"
-        android:layout_alignTop="@+id/collision_text"
+        android:layout_alignBottom="@+id/cc_view4"
         android:layout_alignParentEnd="true" />
 
 
