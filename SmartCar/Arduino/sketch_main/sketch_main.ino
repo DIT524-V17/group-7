@@ -402,8 +402,7 @@ void collisionControl() {
       //Is true if the range in front is less than 50 cm, front left and front right - less than 25 cm or if the flame sensor has set the flame variable to true
         if (((ultrasonic_range_front_mid != 0 && ultrasonic_range_front_mid <= 50 )  ||
         (ultrasonic_range_front_right != 0 && ultrasonic_range_front_right <= 25 ) ||
-        (ultrasonic_range_front_left != 0 && ultrasonic_range_front_left <= 25 ))
-        || flame_detected){            
+        (ultrasonic_range_front_left != 0 && ultrasonic_range_front_left <= 25 ))){            
                 obstacle_detected_front = true;
                 collision_delay = 0;
                 motor.write(START_POSITION_MOTOR_SERVO);           
