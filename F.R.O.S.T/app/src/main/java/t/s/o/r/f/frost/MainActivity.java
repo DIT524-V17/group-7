@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
     //Views for collision animation.
     View v;
     TextView tv;
-    // View tvbg;
+    View tvbg;
 
     ImageView ImageSequence;
     ImageView fireImage;
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
         mg.execute();
         tv = (TextView) findViewById(R.id.collision_text); //TextView for collision text.
         v = findViewById(R.id.cc_view4);
-        //// tvbg = findViewById(R.id.text_background);
+        //tvbg = findViewById(R.id.text_background);
 
         ImageSequence = (ImageView) findViewById(R.id.imageSequence);
 
@@ -320,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
         // s.addAnimation(rotationback);
         rotation.setRepeatCount(Animation.INFINITE);
         v.startAnimation(s);
-        // tvbg.setVisibility(View.INVISIBLE);
+        tvbg.setVisibility(View.INVISIBLE);
 
        /* Button button = (Button)findViewById(R.id.buttonCC);
         button.setOnClickListener(new View.OnClickListener(){
@@ -338,9 +338,9 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
                 // click handling code
                 if (tv.getText().equals("Collision")){
                     tv.setText("");
-                    // tvbg.setVisibility(View.INVISIBLE);
+                    tvbg.setVisibility(View.INVISIBLE);
                 } else {
-                    // tvbg.setVisibility(View.VISIBLE);
+                    tvbg.setVisibility(View.VISIBLE);
                     tv.setText("Collision");
                 }
 
