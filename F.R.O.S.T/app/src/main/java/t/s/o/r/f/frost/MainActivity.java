@@ -94,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
         fireImageNorthEast.setVisibility(View.INVISIBLE);
 
         toMuchLight = (TextView)findViewById(R.id.textView4);
-        toMuchLight.setVisibility(View.INVISIBLE);
+        //toMuchLight.setVisibility(View.INVISIBLE);
 
         ccValue = (TextView) findViewById(R.id.ccValue); //TextView for collision distance value.
         animate();
@@ -391,38 +391,30 @@ public class MainActivity extends AppCompatActivity implements JoystickView.Joys
      * @param angle
      * @param speed
      */
-    private void sendCarCommand(double angle, double speed) {
+    private void sendCarCommand(double angle, double speed){
         // The angle
-        //if(Math.abs(angle-oldCarAngle) < 10){
-        if (angle != oldCarAngle) {
-            String command = "" + (int) Math.abs((90 - angle / 2));//angle <= 180? "" + (90 - (int) angle / 2) : "" +  (90 - (int) angle / 2);
+        if(angle != oldCarAngle){
+            String command = "" + (int) Math.abs((90 - angle / 2));
 
-            for (int i = 0; command.length() < 3; i++)
+            for(int i = 0; command.length() < 3; i++)
                 command = "0" + command;
             sendMe = "a" + command + "?";
             oldCarAngle = angle;
-            //if(DEBUG )Log.e("V1 Car angle", "a" + command + "?");
+
         }
         // The speed
-        if (speed != oldCarSpeed) { //&& (speedPause % 5 == 0 || speed == 0)) {
-            String command = "";
-            // min 29
-            // max 52
-            // Translating input from joystick according to protocol
-            String speedCommand = (int) -(speed / 4 - 95) + "";
-            speedCommand = Integer.parseInt(speedCommand) <= 110 ? speedCommand + "" : 110 + "";
-            command = "" + (int) -(speed / 4 - 95);
+        if (speed != oldCarSpeed){
 
-            for (int i = 0; speedCommand.length() < 3; i++)
-                speedCommand = "0" + speedCommand;
-            sendMe = "d" + speedCommand + "?";
+            // Translating input from joystick according to protocol
+            String command = "" + (int)(60 + speed * 10);
+
+            for (int i = 0; command.length() < 3; i++)
+                command = "0" + command;
+            sendMe = "d" + command + "?";
             oldCarSpeed = speed;
-            //speedPause++;
-            //if(DEBUG)Log.e("Speed", "d" + command + "?");
+
         }
     }
-
-
 
     /**
      * Author: Elaine Qvarnström

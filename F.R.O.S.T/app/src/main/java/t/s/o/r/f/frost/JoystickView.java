@@ -74,10 +74,9 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
             Canvas myCanvas = this.getHolder().lockCanvas(); //Stuff to draw
             Paint colors = new Paint();
             myCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); //Clear the BG
-            //colors.setARGB(55,50,50,50); //Color of joystick base
-            colors.setARGB(140, 152, 203, 0);
+            colors.setARGB(130, 152, 203, 0); //Color of joystick base
             myCanvas.drawCircle((float)centerX, (float)centerY, (float)baseRadius, colors); //Draw the joystick base
-            colors.setColor(getResources().getColor(holo_green_dark));//ARGB(255,0,0,255); // Color of joystick itself
+            colors.setColor(getResources().getColor(holo_green_dark)); // Color of joystick itself
             myCanvas.drawCircle((float)newX, (float)newY, (float)hatRadius, colors); //Draw the joystick hat
             getHolder().unlockCanvasAndPost(myCanvas); //Write the new drawing to the SurfaceView
 
@@ -108,46 +107,42 @@ public class JoystickView extends SurfaceView implements SurfaceHolder.Callback,
 
             if(e.getAction() != MotionEvent.ACTION_UP) {
                 double displacement = Math.sqrt(Math.pow((e.getX() - centerX), 2) + Math.pow(e.getY() - centerY, 2));
-                double speed = displacement;
-
-                double hypotenuse = Math.sqrt(Math.pow(e.getX() - centerX, 2) + Math.pow(e.getY() - centerY, 2));
 
                 if(displacement < baseRadius){
-                    double sin = (e.getY() - centerY) / hypotenuse; //sin = o/h
+
                     double angle = 360.0 - (Math.toDegrees( Math.atan2(e.getY() - centerY, e.getX() - centerX)) + 360.0) % 360.0;
-                    if(e.getY() - centerY > 0)
-                        speed = -speed;
 
                     drawJoystick(e.getX(), e.getY());
-                    //Log.e("Joystick angle", speed/baseRadius * 100 +"");
-                    joystickCallback.onJoystickMoved(speed/baseRadius * 100, angle, getId());
+                    joystickCallback.onJoystickMoved(e.getY() / Math.abs(centerY - baseRadius), angle, getId());
                 }
                 else{
-                    double sin = (e.getY() - centerY) / hypotenuse; //sin = o/h
 
                     double ratio = baseRadius / displacement;
                     double constrainedX = centerX + (e.getX() - centerX) * ratio;
                     double constrainedY = centerY + (e.getY() - centerY) * ratio;
                     double angle = 360.0 - (Math.toDegrees( Math.atan2(constrainedY - centerY, constrainedX - centerX)) + 360.0) % 360.0;
-                    speed = 100;
-                    if(e.getY() - centerY > 0)
-                        speed = -speed;
+
+                    if(e.getY() - centerY > 0){
+                        joystickCallback.onJoystickMoved((centerY + baseRadius) / Math.abs(centerY - baseRadius), angle, getId());
+                    }
+                    else{
+                        joystickCallback.onJoystickMoved((centerY - baseRadius) / Math.abs(centerY - baseRadius), angle, getId());
+                    }
 
                     drawJoystick(constrainedX, constrainedY);
-                    joystickCallback.onJoystickMoved(speed, angle, getId());
 
                 }
 
             }
             else{
                 drawJoystick(centerX, centerY);
-                joystickCallback.onJoystickMoved(20,90,getId());
+                joystickCallback.onJoystickMoved(centerY / Math.abs(centerY - baseRadius),90,getId());
             }
         }
         return true;
     }
 
     public interface JoystickListener{
-        void onJoystickMoved(double speed, double angle, int id);//float xPrecent, float yPercent, int id);
+        void onJoystickMoved(double speed, double angle, int id);
     }
 }

@@ -110,6 +110,12 @@ public class BatteryView extends SurfaceView implements SurfaceHolder.Callback{
             y2 = getHeight();
             myCanvas.drawRect(x1, y1, x2, y2, colors);
 
+            x1 = getWidth() - (cell/6 * 5);
+            y1 = getHeight() /3;
+            x2 = getWidth();
+            y2 = getHeight() / 3 * 2;
+            myCanvas.drawRect(x1, y1, x2, y2, colors);
+
             getHolder().unlockCanvasAndPost(myCanvas);
 
         }

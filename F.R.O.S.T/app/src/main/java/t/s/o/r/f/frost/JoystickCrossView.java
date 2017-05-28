@@ -76,8 +76,7 @@ public class JoystickCrossView extends SurfaceView implements SurfaceHolder.Call
             Canvas myCanvas = this.getHolder().lockCanvas(); //Stuff to draw
             Paint colors = new Paint();
             myCanvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR); //Clear the BG
-            //colors.setARGB(100,50,50,50); //Color of joystick base
-            colors.setARGB(140, 152, 203, 0);
+            colors.setARGB(130, 152, 203, 0);
             // Draw the cross base
             double x1,x2,y1,y2;
             x1 = centerX - baseRadius;

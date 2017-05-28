@@ -16,7 +16,10 @@
     <ImageView
         android:id="@+id/imageSequence"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_alignTop="@+id/imageView"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="16dp" />
 
 
 
@@ -92,13 +95,15 @@
 
     <!---Reconnection Button-->
     <Button
+        android:layout_width="80dp"
+        android:layout_height="40dp"
         android:text="Reconnect"
         android:id="@+id/button5"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:background="@drawable/rounded_reconnect"
-        android:textColor="@android:color/holo_red_dark"
-        android:layout_below="@+id/imageView3"
+        android:textColor="@android:color/white"
+
+        android:textSize="10dp"
+        android:layout_below="@+id/cc_view2"
         android:layout_alignParentStart="true" />
 
     <TextView
@@ -106,7 +111,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Degrees"
-        android:textSize="24sp"
+        android:textSize="20sp"
         android:textColor="@android:color/darker_gray"
         tools:layout_editor_absoluteX="61dp"
         tools:layout_editor_absoluteY="56dp"
@@ -117,20 +122,21 @@
         android:id="@+id/imgsw"
         android:layout_width="200px"
         android:layout_height="200px"
-        android:layout_below="@+id/battery"
+        android:layout_alignTop="@+id/battery"
         android:layout_alignParentEnd="true">
 
     </ImageSwitcher>
 
     <Button
         android:id="@+id/button6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/buttonCC"
+        android:layout_width="80dp"
+        android:layout_height="40dp"
         android:background="@drawable/rounded_corners"
         android:text="Menu"
-        android:textColor="@android:color/white" />
+        android:textColor="@android:color/white"
+        android:textSize="11dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true" />
 
 
     <!---flame indication-->
@@ -139,8 +145,8 @@
         android:layout_width="400px"
         android:layout_height="70px"
         app:srcCompat="@drawable/flame_background"
-        android:layout_below="@+id/collision_text"
-        android:layout_toStartOf="@+id/textView" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
 
 
     <!--North image -->
@@ -149,8 +155,9 @@
         android:layout_width="50px"
         android:layout_height="50px"
         app:srcCompat="@drawable/flame_image"
-        android:layout_alignBottom="@+id/ccValue"
-        android:layout_toStartOf="@+id/imageView2" />
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="21dp" />
 
     <!--North NorthWest image -->
     <ImageView
@@ -158,8 +165,8 @@
         android:layout_width="50px"
         android:layout_height="50px"
         app:srcCompat="@drawable/flame_image"
-        android:layout_alignBottom="@+id/cc_view2"
-        android:layout_toEndOf="@+id/imageView3" />
+        android:layout_alignTop="@+id/imageView5"
+        android:layout_toStartOf="@+id/imageView1" />
 
     <!--North NorthEast image -->
     <ImageView
@@ -168,8 +175,7 @@
         android:layout_height="50px"
         app:srcCompat="@drawable/flame_image"
         android:layout_below="@+id/textView4"
-        android:layout_alignEnd="@+id/button3"
-        android:layout_marginEnd="13dp" />
+        android:layout_toEndOf="@+id/imageView1" />
 
     <!--NorthWest image -->
     <ImageView
@@ -177,8 +183,8 @@
         android:layout_width="50px"
         android:layout_height="50px"
         app:srcCompat="@drawable/flame_image"
-        android:layout_alignTop="@+id/imgsw"
-        android:layout_toStartOf="@+id/textView4" />
+        android:layout_alignParentBottom="true"
+        android:layout_toStartOf="@+id/imageView" />
 
     <!--NorthEast image -->
     <ImageView
@@ -186,36 +192,36 @@
         android:layout_width="50px"
         android:layout_height="50px"
         app:srcCompat="@drawable/flame_image"
-        android:layout_alignBottom="@+id/imageView5"
-        android:layout_toStartOf="@+id/button7" />
+        android:layout_alignParentBottom="true"
+        android:layout_toEndOf="@+id/imageView2" />
 
     <TextView
         android:id="@+id/textView4"
-        android:layout_width="wrap_content"
+        android:layout_width="102dp"
         android:layout_height="wrap_content"
         android:textColor="@android:color/black"
         android:background="@android:color/white"
-        android:text="To much light"
-        android:layout_alignParentTop="true"
-        android:layout_alignEnd="@+id/button8" />
+        android:text=" Too much light"
+        android:layout_above="@+id/imageSequence"
+        android:layout_centerHorizontal="true" />
     <!-- Camera joystick -->
     <t.s.o.r.f.frost.JoystickCrossView
-        android:layout_width="130dp"
-        android:layout_height="130dp"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
         android:id="@+id/cameraJoystick"
         android:layout_alignParentBottom="true"
         android:layout_alignParentStart="true" />
 
     <t.s.o.r.f.frost.JoystickView
-        android:layout_width="130dp"
-        android:layout_height="130dp"
+        android:layout_width="140dp"
+        android:layout_height="140dp"
         android:id="@+id/joystickCar"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true" />
 
     <t.s.o.r.f.frost.BatteryView
-        android:layout_width="70dp"
-        android:layout_height="35dp"
+        android:layout_width="45dp"
+        android:layout_height="23dp"
         android:id="@+id/battery"
         android:layout_alignTop="@+id/collision_text"
         android:layout_alignParentEnd="true" />
