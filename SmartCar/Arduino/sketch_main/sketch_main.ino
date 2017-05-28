@@ -44,12 +44,15 @@ const int ECHO_PIN_BACK = A12; // back
 const int TRIG_PIN_BACK = A13;
 const int ULTRASONIC_SENSOR_COUNT = 4; //Number of ultrasonic sensors
 const int STEER_PIN = 5;
-const int FLAME_SENSOR_PIN = 6; 
 const int MOTOR_PIN = 7;
 const int COLLISION_SERVO_PIN = 8;
 const int LED_PIN = 12;
-const int  VOLT_PIN = A5;
-int voltage_Now=150;
+const int VOLT_PIN = A5;
+const int FLAME_PIN_WEST = A2;
+const int FLAME_PIN_NORTH_WEST = A3;
+const int FLAME_PIN_NORTH = A4;
+const int FLAME_PIN_NORTH_EAST = A6;
+const int FLAME_PIN_EAST = A7;
 
 const int START_POSITION_MOTOR_SERVO = 90;
 const int START_POSITION_STEER_SERVO = 45;
@@ -64,6 +67,7 @@ int ultrasonic_range_front_mid;
 int ultrasonic_range_front_right;
 int ultrasonic_range_front_left;
 int ultrasonic_range_back;
+int voltage_Now=150;
 
 //Temperature variables
 int temperature;
@@ -78,7 +82,6 @@ int temp_delay = 0;
 boolean obstacle_detected_front;
 boolean obstacle_detected_back;
 boolean complete_command;
-boolean flame_detected;
 
 //For turning modules on and off
 boolean flame_activation = true;
@@ -115,7 +118,11 @@ DallasTemperature temperature_sensor(&oneWire);
 DeviceAddress thermometer;
 
 //The array of flame sensors
-Flame_array flame_array(A2,A3,A4,A6,A7);
+Flame_array flame_array(FLAME_PIN_WEST, 
+                        FLAME_PIN_NORTH_WEST, 
+                        FLAME_PIN_NORTH, 
+                        FLAME_PIN_NORTH_EAST, 
+                        FLAME_PIN_EAST);
 
 /*
   * Camera servos.
@@ -149,7 +156,6 @@ void setup() {
     steer.write(START_POSITION_STEER_SERVO);
 
     pinMode(LED_PIN, OUTPUT);
-    pinMode(FLAME_SENSOR_PIN, INPUT);
 
     camera_servo_x_axis.attach(CAMERA_PIN_X); //analog pin 0
     camera_servo_y_axis.attach(CAMERA_PIN_Y);  //analog pin 1
@@ -285,7 +291,7 @@ void command() {
         case 'd':
             velocity = input.substring(1, 4).toInt();
             //Allows car to drive forward if no obstacle or flame is in front of it, drive backward if there is no obstacle behind the car, or stand still
-            if ((!flame_detected && !obstacle_detected_front && velocity < 90) || (velocity > 90 && !obstacle_detected_back) || velocity == 90){
+            if ((!obstacle_detected_front && velocity < 90) || (velocity > 90 && !obstacle_detected_back) || velocity == 90){
                 motor.write(velocity);
             }
             break;
