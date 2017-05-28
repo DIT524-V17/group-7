@@ -31,9 +31,9 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
     private String last = "";
     private MainActivity tt;
     private boolean lastImgLeftOver = false;
-    private int BIG_READ = 20000;
+    private int BIG_READ = 30000;
     private int IMG_DIS = 20000;
-    private int MIN_READ = 10000;
+    private int MIN_READ = 8000;
     private int REL_DEC = 1000;
     private int REL_INC = 500;
     // private byte[] leftOverRead = null;
@@ -73,7 +73,6 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
                 try {
 
                     System.out.println("Sending:" + command + " L: " + last);
-
 
                     if (command.equals("hai")){
                         out_commands.writeUTF("x000?");
@@ -163,7 +162,7 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 boolean parsingImage = false;
 
-                byte[] data = new byte[1024*(((BIG_READ/2000)+40)*2)];
+                byte[] data = new byte[1024*(((BIG_READ/2000)+60)*2)];
                 int index = 0;
                 int count;
                 final int MIN_BUFFER = 2; // Only reads in 2 byte increments. :( Bit sad.
