@@ -1,9 +1,11 @@
-/*   SR_04 Pins:
+/*  HC SR_04 Pins:
         VCC: +5VDC
         Trig : Trigger (INPUT) - Pin11
         Echo: Echo (OUTPUT) - Pin 12
         GND: GND
  */
+
+
  #include <Servo.h>
  int pos=45;
  Servo rotat;
