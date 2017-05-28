@@ -274,6 +274,12 @@ namespace camera {
   }
 }
 
+/*
+  * Method for using the commands
+  * Author: Tim Jonasson
+  * Comment: Several people contributed to the switch case
+  */
+
 void command() {
       // Improves readability.
       int value_received_from_the_raspberry = input.substring(1, 4).toInt();
@@ -357,6 +363,13 @@ void command() {
     
 }
 
+
+/*
+  * Method for reading the 5 channel flame sensor
+  * Author: Tim Jonasson
+  */
+
+
 void readFlame(){
 //Reads the value_received_from_the_raspberry from the flame sensor
           char* flame_reading = flame_array.read();
@@ -422,6 +435,10 @@ void collisionControl() {
     } */
 }
 
+/*
+  * Author: Isabelle Tornqvist
+  */
+
 void readTemp(){
     temperature_sensor.requestTemperatures(); // Get temperatures
     printTemperature(thermometer); //Call  
@@ -481,6 +498,11 @@ if(temperature_activation && ++temp_delay >= 10000){
     temp_delay = 0;
 }
 }
+
+/*
+  * Reads the input from the serial
+  * Author: Tim Jonasson
+  */
 
 void serialEvent() {
     //Records one command at a time when availible
