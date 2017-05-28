@@ -37,7 +37,9 @@ class Receiver:
     camera_feed = None
     fps = time.time()
     ite = 0
-    
+    save = 1
+    new = False
+    skip = 0
 
     # Constructor
     def __init__(self, host, port):
@@ -84,6 +86,9 @@ class Receiver:
 
             # Runs the image capturing in a seperate thread.
             threading.Thread(target=self.drawme).start()
+            # time.sleep(2)
+            # threading.Thread(target=self.openImg).start()
+
             
             # Make the new opened socket use a none-blocking flag, so it can read and write.
             self.client.setblocking(0)
@@ -147,46 +152,54 @@ class Receiver:
         print("Disconnected at: %s" % s)
 
     def openImg(self):
-        with open('img.jpg',"rb") as imageFile:
-            self.b = bytearray(imageFile.read()) # Create a byte array of the saved image file.
-            threading.Thread(target=self.sendFrame, args=(self.b,)).start()
-
+        with open('img0.jpg',"rb") as imageFile:
+                b = bytearray(imageFile.read()) # Create a byte array of the saved image file.
+                print("FRAME LEN: {}".format(len(b)))
+                self.camera_feed.send(b) # Sends the image through the socket to the Java client.
+                self.prv = len(b)
+                time.sleep(1/30) # This does nothing. But solves everything.
+        
+        
     def drawme(self):
         # Sets the camera object and resolution.
         with picamera.PiCamera() as camera:
-            camera.framerate = 10
-            camera.resolution = (320, 191)  # Sets the resolution to 320x191.
-            camera.brightness = 45
-            
+            camera.resolution = (340, 191)
+            camera.framerate = 30
             time.sleep(2) # Let the camera warm up for 2 seconds.
-
+            
             #Loops through indefinetly for capturing sequence
             while self.connection:
                 # Capture an image
                 # Set the video port to True for an increase in sending speed while sacrificing quality.
-                camera.capture('img.jpg', use_video_port=True)
-     
+                camera.capture_sequence(
+                        ['img0.jpg'],
+                        use_video_port=True)
                 threading.Thread(target=self.openImg).start()
-                
-            
+
+               
+     
+                        
     
     # Method for sending the frames through the Java Client.
     # b is the byte array.
     # camera_feed is the used socket .                                                                                                                           
     def sendFrame(self, b):
+        
         try:
-            index = 1
-            div = 1024*8
+            pass
+            # index = 1
+            # div = 1024*16
             # Chop up the image and send it in smaller packages.
-            for i in range (int(len(b)/div)):
-                self.sendInBG(b[(index-1)*div:index*div])
-                index += 1
+            # for i in range (int(len(b)/div)):
+                # self.sendInBG(b[(index-1)*div:index*div])
+                # index += 1
 
             # Sends the remaining bytes which is smaller than a package.
-            self.sendInBG(b[(index-1)*div::])
+            # self.sendInBG(b[(index-1)*div::])
         except:
-            traceback.print_exc()
-            return
+            pass
+            # traceback.print_exc()
+            # return
 
     # Send the images and check for occurrances of IOErrors.
     def sendInBG(self, b):
