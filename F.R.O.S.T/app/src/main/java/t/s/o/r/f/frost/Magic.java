@@ -162,7 +162,7 @@ class Magic extends AsyncTask<String, Void, Bitmap> {
 
                 boolean parsingImage = false;
 
-                byte[] data = new byte[1024*(((BIG_READ/2000)+30)*2)];
+                byte[] data = new byte[1024*(((BIG_READ/2000)+60)*2)];
                 int index = 0;
                 int count;
                 final int MIN_BUFFER = 2; // Only reads in 2 byte increments. :( Bit sad.
