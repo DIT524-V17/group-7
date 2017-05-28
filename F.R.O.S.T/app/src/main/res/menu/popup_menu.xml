@@ -18,6 +18,10 @@
             android:title="Motor"/>
 
         <item
+            android:id="@+id/siren"
+            android:title="Siren"/>
+        
+        <item
             android:id="@+id/steering"
             android:title="Steering"/>
 
