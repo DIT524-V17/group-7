@@ -9,3 +9,42 @@ Fixed a bug in the arduino sketch for the steering and speed controlling.
 Made a pull request with the sketch to master.
 Worked in intregation of the flame sensor with Isabelle.
 Started working on communication from arduino to raspberry.
+
+Monday 08/05: 9 Hours
+Title: 5channel flame sensor and flame GUI
+Worked a bit on the algorithm for the 5channel flame sensor and I also started working on
+integrating bedrus flame gui into the android application.
+Did a review on the "CameraServoDeactivation" pull request and requested some changes to be made
+to it.
+
+Tuesday 09/05: 8 Hours
+Title: 5Channel flame sensor testing and learning c++ 
+Tested the 5channel flame sensor and did some modifications to it. 
+Started learning c++ for another task.
+
+Wednesday 10/05: 9 Hours
+Title: A bit of everything
+Learning c++, finishing the integration of the flame UI, fixing the arduino sketch on the master branch, reviewing code in pull requests
+
+Thursday 11/05: 5 Hours
+Title: Learning c++
+
+Friday 12/05: 7 Hours
+Title: Learning c++
+Started with writing the library for the flame sensor
+
+Monday 15/05: 4 Hours
+Title: started writing the library
+Continued with working on the library
+
+Tuesday 16/05: 5 Hours
+Title: Removing unsupporded code like vectors
+
+Wednesday 17/05: 7 Hours
+Title: Trying to make the library work
+
+Thursday 18/05: 5 Hours
+Title: The library works somehow
+
+Friday 19/05:
+Title: Integrating the 5channel flame sensor
